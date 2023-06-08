@@ -26,3 +26,6 @@ phases:
        - docker build -t publicrepo .
        - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
        - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
+       - printf '[{"name":"exp-code-pipline","imageUri":"%"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinition.json
+artifacts:
+  file: imagedefinitions.json
