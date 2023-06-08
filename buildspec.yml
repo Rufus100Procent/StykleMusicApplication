@@ -12,7 +12,8 @@ phases:
       - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
       - docker push $REPOSITORY_URI --all-tags
 
-
+artifact:
+  files:imagedefinitions.json
 
 #version: 0.2
 #
