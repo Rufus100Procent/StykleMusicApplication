@@ -4,70 +4,26 @@ phases:
   install:
     runtime-versions:
       java: corretto17
-  pre_build:
+  Clean:
     commands:
-      - echo "Building the project..."
+      - echo "running maven clean."
       - mvn clean
 
-  build:
+
+
+  Test:
     commands:
       - echo "Running tests..."
-      - mvn test-compile
-      - echo "Packaging the project..."
-      - mvn package
+      - mvn surefire:test
+      -  echo 'finished test'
 
-  post_build:
+  Deploy:
     commands:
-      - echo "Deploying the project..."
+      - echo "creating .war..."
+      - war:war
+      - echo "ROOT.war ready to be used"
 
-#version: 0.2
-#
-#phases:
-#  pre_build:
-#    commands:
-#      - REPOSITORY_URI=public.ecr.aws/j0p0p7e9/publicrepo
-#      - echo "Loggin in to AWS ECR"
-#      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-#
-#  build:
-#    commands:
-#      - docker build -t publicrepo .
-#      - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
-#      - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
 
-#version: 0.2
-#
-#phases:
-#  install:
-#    runtime-versions:
-#      java: corretto17
-#    commands:
-#      - echo "Installing dependencies..."
-#      - apt-get install -y maven
-#
-#  pre_build:
-#    commands:
-#      - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
-#      - echo "Loggin in to AWS ECR"
-#      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-#      - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
-#
-#
-#  build:
-#    commands:
-#      - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
-#
-#
-#  test:
-#    commands:
-#      - mvn clean
-#      - echo "Building the project..."
-#      - mvn test-compile
-#      - echo "Running tests..."
-#      - mvn surefire:test
-#      - find ./target/surefire-reports -name "*.xml" | xargs junitreport --format junit --output-dir reports || true
-#
-#  post_build:
-#    commands:
-#      - echo Pushing the Docker images...
-#      - docker push $REPOSITORY_URI:latest
+    }
+
+
