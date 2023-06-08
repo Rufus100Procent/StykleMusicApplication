@@ -1,36 +1,52 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      java: corretto17
-    commands:
-      - echo "Installing dependencies..."
-      - apt-get install -y maven
-
   pre_build:
     commands:
       - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
       - echo "Loggin in to AWS ECR"
-      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-      - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
-
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
 
   build:
     commands:
       - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
+      - docker push $REPOSITORY_URI --all-tags
 
 
-  test:
-    commands:
-      - mvn clean
-      - echo "Building the project..."
-      - mvn test-compile
-      - echo "Running tests..."
-      - mvn surefire:test
-      - find ./target/surefire-reports -name "*.xml" | xargs junitreport --format junit --output-dir reports || true
 
-  post_build:
-    commands:
-      - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:latest
+#version: 0.2
+#
+#phases:
+#  install:
+#    runtime-versions:
+#      java: corretto17
+#    commands:
+#      - echo "Installing dependencies..."
+#      - apt-get install -y maven
+#
+#  pre_build:
+#    commands:
+#      - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
+#      - echo "Loggin in to AWS ECR"
+#      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
+#      - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
+#
+#
+#  build:
+#    commands:
+#      - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
+#
+#
+#  test:
+#    commands:
+#      - mvn clean
+#      - echo "Building the project..."
+#      - mvn test-compile
+#      - echo "Running tests..."
+#      - mvn surefire:test
+#      - find ./target/surefire-reports -name "*.xml" | xargs junitreport --format junit --output-dir reports || true
+#
+#  post_build:
+#    commands:
+#      - echo Pushing the Docker images...
+#      - docker push $REPOSITORY_URI:latest
