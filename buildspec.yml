@@ -6,8 +6,6 @@ phases:
       java: corretto17
   pre_build:
     commands:
-      - echo "Cloning the repository..."
-      - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
       - echo "Building the project..."
       - mvn clean
 
