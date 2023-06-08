@@ -9,8 +9,9 @@ phases:
 
   build:
     commands:
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker push $REPOSITORY_URI --all-tags
+      - docker build -t publicrepo .
+      - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
+      - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
 
 #version: 0.2
 #
