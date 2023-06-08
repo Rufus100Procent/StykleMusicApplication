@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
+      - echo "Loggin in to AWS ECR"
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin  $REPOSITORY_URI
+
+  build:
+    commands:
+      - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
+      - docker push $REPOSITORY_URI --all-tags
