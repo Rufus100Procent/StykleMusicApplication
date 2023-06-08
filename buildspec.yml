@@ -15,7 +15,7 @@ phases:
       - mvn surefire:test
       - echo "Finished test"
 
-  post_build:
+  Deploy:
     commands:
        - echo "Creating .war..."
        - mvn war:war
