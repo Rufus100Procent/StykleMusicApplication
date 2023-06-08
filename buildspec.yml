@@ -10,23 +10,27 @@ phases:
 
   pre_build:
     commands:
-      - echo "Cloning the repository..."
+      - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
+      - echo "Loggin in to AWS ECR"
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
-      - echo "Cleaning the project..."
-      - mvn clean
+
 
   build:
     commands:
-      - echo "Building the project..."
-      - mvn test-compile
+      - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
+
 
   test:
     commands:
+      - mvn clean
+      - echo "Building the project..."
+      - mvn test-compile
       - echo "Running tests..."
       - mvn surefire:test
       - find ./target/surefire-reports -name "*.xml" | xargs junitreport --format junit --output-dir reports || true
 
   post_build:
     commands:
-      - echo "Packaging the project..."
-      - mvn war:war
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
