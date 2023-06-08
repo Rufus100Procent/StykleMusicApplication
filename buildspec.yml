@@ -27,7 +27,7 @@ phases:
        -  mv target/ROOT.war arn:aws:s3:::deploybucket88
        -
        - echo "building dockerfile"
-       - docker build  .
+       - docker build -t publicrepo .
        - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
        - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
 
