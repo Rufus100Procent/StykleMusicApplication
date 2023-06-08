@@ -16,16 +16,15 @@ phases:
       - mvn surefire:test
       - echo "Finished test"
 
+      - echo "Creating .jar..."
+      - mvn jar:jar
+      - echo "ROOT.jar is ready to be used"
+
+      - docker build -t publicrepo .
+      - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
   post_build:
-    commands:
-       - echo "Creating .war..."
-       - mvn war:war
-       - echo "ROOT.war is ready to be used"
-       -  mv target/ROOT.war arn:aws:s3:::deploybucket88
-       - echo "building dock"
-       - docker build -t publicrepo .
-       - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
-       - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
-       - printf '[{"name":"exp-code-pipline","imageUri":"%"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinition.json
+      commands:
+       - docker push $REPOSITORY_URI:latest
+#       - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
 artifacts:
   file: imagedefinitions.json
