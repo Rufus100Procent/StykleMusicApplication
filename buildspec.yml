@@ -8,7 +8,7 @@ phases:
     commands:
       - REPOSITORY_URI=public.ecr.aws/j0p0p7e9/publicrepo
       - echo "Loggin in to AWS ECR"
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin  $REPOSITORY_URI
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin   $REPOSITORY_URI
 
       - echo "Building the project..."
       - mvn clean
@@ -26,4 +26,8 @@ phases:
        - echo "ROOT.war is ready to be used"
        -  mv target/ROOT.war arn:aws:s3:::deploybucket88
        -
+       - echo "building dockerfile"
+       - docker build -t publicrepo .
+       - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
+       - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
 
