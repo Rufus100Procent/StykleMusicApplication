@@ -4,26 +4,18 @@ phases:
   install:
     runtime-versions:
       java: corretto17
-  Clean:
+  pre_build:
     commands:
-      - echo "running maven clean."
+      - echo "Building the project..."
       - mvn clean
 
-
-
-  Test:
+  build:
     commands:
       - echo "Running tests..."
-      - mvn surefire:test
-      -  echo 'finished test'
+      - mvn test-compile
+      - echo "Packaging the project..."
+      - mvn package
 
-  Deploy:
+  post_build:
     commands:
-      - echo "creating .war..."
-      - war:war
-      - echo "ROOT.war ready to be used"
-
-
-    }
-
-
+      - echo "Deploying the project..."
