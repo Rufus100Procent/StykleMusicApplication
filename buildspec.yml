@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: corretto11
+      java: corretto17
     commands:
       - echo "Installing dependencies..."
       - apt-get install -y maven
@@ -30,5 +30,3 @@ phases:
     commands:
       - echo "Packaging the project..."
       - mvn war:war
-
-
