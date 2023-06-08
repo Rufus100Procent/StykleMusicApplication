@@ -20,3 +20,4 @@ phases:
        - echo "Creating .war..."
        - mvn war:war
        - echo "ROOT.war is ready to be used"
+       - mv target/ROOT.war arn:aws:s3:::deploybucket88
