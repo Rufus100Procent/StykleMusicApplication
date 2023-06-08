@@ -5,33 +5,75 @@ phases:
     runtime-versions:
       java: corretto17
     commands:
-      - echo "Installing Maven..."
-      - curl -sSL "https://apache.osuosl.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz" -o apache-maven.tar.gz
-      - tar xzf apache-maven.tar.gz
-      - export PATH="$PWD/apache-maven-3.8.4/bin:$PATH"
+      - echo "Installing dependencies..."
+      - apt-get install -y maven
 
   pre_build:
     commands:
-      - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
-      - echo "Logging in to AWS ECR"
-      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - echo "Cloning the repository..."
       - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
+      - echo "Building the project..."
+      - mvn clean
 
   build:
     commands:
-      - echo "Building the project..."
-      - mvn test-compile
       - echo "Running tests..."
-      - mvn surefire:test
-      - find ./target/surefire-reports -name "*.xml" | xargs junitreport --format junit --output-dir reports || true
-      - echo "Docker build and push..."
-      - REPOSITORY_URI=public.ecr.aws/j0p0p7e9/publicrepo
-      - echo "Logging in to AWS ECR"
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker push $REPOSITORY_URI --all-tags
+      - mvn test-compile
+      - echo "Packaging the project..."
+      - mvn package
 
   post_build:
     commands:
-      - echo "Pushing the Docker images..."
-      - docker push $REPOSITORY_URI:latest
+      - echo "Deploying the project..."
+
+#version: 0.2
+#
+#phases:
+#  pre_build:
+#    commands:
+#      - REPOSITORY_URI=public.ecr.aws/j0p0p7e9/publicrepo
+#      - echo "Loggin in to AWS ECR"
+#      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
+#
+#  build:
+#    commands:
+#      - docker build -t publicrepo .
+#      - docker tag publicrepo:latest public.ecr.aws/j0p0p7e9/publicrepo:latest
+#      - docker push public.ecr.aws/j0p0p7e9/publicrepo:latest
+
+#version: 0.2
+#
+#phases:
+#  install:
+#    runtime-versions:
+#      java: corretto17
+#    commands:
+#      - echo "Installing dependencies..."
+#      - apt-get install -y maven
+#
+#  pre_build:
+#    commands:
+#      - REPOSITORY_URI=003048939092.dkr.ecr.eu-north-1.amazonaws.com/privatedocker
+#      - echo "Loggin in to AWS ECR"
+#      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
+#      - git clone --branch master --single-branch --depth 1 https://git-codecommit.eu-north-1.amazonaws.com/v1/repos/AWS-File-Hosting
+#
+#
+#  build:
+#    commands:
+#      - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$(date +'%Y%m%d-%H%M') .
+#
+#
+#  test:
+#    commands:
+#      - mvn clean
+#      - echo "Building the project..."
+#      - mvn test-compile
+#      - echo "Running tests..."
+#      - mvn surefire:test
+#      - find ./target/surefire-reports -name "*.xml" | xargs junitreport --format junit --output-dir reports || true
+#
+#  post_build:
+#    commands:
+#      - echo Pushing the Docker images...
+#      - docker push $REPOSITORY_URI:latest
