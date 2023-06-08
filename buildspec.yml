@@ -4,18 +4,20 @@ phases:
   install:
     runtime-versions:
       java: corretto17
-  pre_build:
+  Clean:
     commands:
-      - echo "Building the project..."
+      - echo "Running Maven clean..."
       - mvn clean
 
-  build:
+  Test:
     commands:
       - echo "Running tests..."
-      - mvn test-compile
-      - echo "Packaging the project..."
-      - mvn package
+      - mvn surefire:test
+      - echo "Finished test"
 
-  post_build:
+  Deploy:
     commands:
-      - echo "Deploying the project..."
+      - echo "Creating .war..."
+      - mvn war:war
+      - echo "ROOT.war is ready to be used"
+      - mv target/ROOT.war arn:aws:s3:::deploybucket88
