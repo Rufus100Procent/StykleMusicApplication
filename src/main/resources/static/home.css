@@ -1,0 +1,116 @@
+/* Global styles */
+
+/* Set the font and text alignment for the whole page */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+/* Set the maximum width, margin, and padding for the container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Set the color for the heading */
+h1 {
+  color: #333;
+}
+
+
+/* Button styles */
+
+/* Basic button styles */
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Add pulsating animation to the upload button */
+button.upload {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* Search form styles */
+
+/* Set margin for the search form */
+form {
+  margin: 20px 0;
+}
+
+/* Style the search input field */
+input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+/* File list styles */
+
+/* Remove default list styles and set margin for each list item */
+.file-list {
+  list-style: none;
+  padding: 0;
+}
+
+.file-list li {
+  margin: 10px 0;
+}
+
+
+/* Layout styles */
+
+/* Set the container to display as a flex column and center its children */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Add margin between container children */
+.container > * {
+  margin: 10px 0;
+}
+
+/* Set the width of form elements */
+.container > form > input[type="text"],
+.container > form > button {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Align the buttons and set their width */
+.container > .buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.container > .buttons > button {
+  flex: 1;
+}
