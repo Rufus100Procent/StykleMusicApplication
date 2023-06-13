@@ -1,7 +1,5 @@
 package AWS.File.hosting.API;
 
-
-import AWS.File.hosting.Cognito.Cognito;
 import AWS.File.hosting.Service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,128 +33,54 @@ public class FileController {
     }
 
     @GetMapping("/")
-    public String GetLogin(){
-
-        return "login";
-    }
-
-
-    @PostMapping("/")
-    public String PostLogin(@RequestParam("username") String username,
-                            @RequestParam("password") String password,
-                            RedirectAttributes redirectAttributes){
-
-        System.out.println(username);
-        System.out.println(password);
-
-        if (Cognito.Login(username,password)){
-
-            return "redirect:/home";
-
-        }else {
-            return "login";
-        }
-    }
-
-    @GetMapping("/register")
-    public String GetRegister(){
-
-        return "registration";
-    }
-
-    /**
-     *
-     * @param username
-     * @param email
-     * @param password
-     * @param redirectAttributes
-     * @return
-     * It retrieves the username, email, and password from the request parameters.
-     * It calls the Cognito.Register method to register the user in the Cognito user pool.
-     * If the registration is successful, it redirects to the verification page ("/verify") and passes the email and username as redirect attributes.
-     * If the registration fails, it returns the "auth/registration" view to display the registration form again.
-     */
-
-    @PostMapping("/register")
-    public String PostRegister(@RequestParam("username") String username,
-                               @RequestParam("email") String email,
-                               @RequestParam("password") String password,
-                               RedirectAttributes redirectAttributes){
-
-        System.out.println(username);
-        System.out.println(email);
-        System.out.println(password);
-
-        if (Cognito.Register( username,password,email)){
-
-            redirectAttributes.addAttribute("email",email);
-            redirectAttributes.addAttribute("username",username);
-            return "redirect:/verify";
-
-        }else {
-            return "registration";
-        }
-    }
-
-    @GetMapping("/verify")
-    public String GetVerify(@RequestParam("email") String email,
-                            @RequestParam("username") String username,
-                            Model model
-    ){
-
-        model.addAttribute("email",email);
-        model.addAttribute("username",username);
-        return "/verify";
-    }
-
-    @PostMapping("/verify")
-    public String PostVerify(@RequestParam("username") String username,
-                             @RequestParam("confirmationCode") String confirmationCode
-    ){
-
-        if (Cognito.ConfirmUser(username,confirmationCode)){
-
-            return "redirect:/home";
-
-        }else
-            return "redirect:/home";
-
+    public String showUploadPage() {
+        return "upload";
     }
 
 
 
-
-    @PostMapping("/logout")
-    public String PostLogout(){
-        Cognito.Logout();
-        return "redirect:/login";
+    @GetMapping("/upload")
+    public String upload(){
+        return "upload";
     }
-
-
-
-    @GetMapping("/home")
-    public String showHomePage(Model model, HttpServletRequest request) {
-        List<String> uploadedFiles = fileStorageService.getUploadedFileNames();
-        model.addAttribute("uploadedFiles", uploadedFiles);
-        return "index";
-    }
-
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
             redirectAttributes.addFlashAttribute("message", "Please select a file to upload.");
-            return "redirect:/home";
+        } else {
+            try {
+                String fileName = fileStorageService.storeFile(file);
+                redirectAttributes.addFlashAttribute("message", "File uploaded successfully: " + fileName);
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("message", "Failed to upload file: " + file.getOriginalFilename());
+            }
         }
 
-        try {
-            String fileName = fileStorageService.storeFile(file);
-            redirectAttributes.addFlashAttribute("message", "File uploaded successfully: " + fileName);
-            openFileManager();
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Failed to upload file: " + file.getOriginalFilename());
+        return "redirect:/uploaded";
+    }
+
+    @GetMapping("/uploaded")
+    public String showUploadedFiles(Model model, @RequestParam(value = "query", required = false) String query) {
+        List<String> uploadedFiles;
+
+        if (query != null && !query.isEmpty()) {
+            uploadedFiles = fileStorageService.searchUploadedFiles(query);
+            if (uploadedFiles.isEmpty()) {
+                model.addAttribute("message", "No matching files found for the search query: " + query);
+            }
+        } else {
+            uploadedFiles = fileStorageService.getUploadedFileNames();
         }
 
-        return "redirect:/home";
+        model.addAttribute("uploadedFiles", uploadedFiles);
+        return "uploaded";
+    }
+
+    @GetMapping("/search")
+    public String searchUploadedFiles(@RequestParam("query") String query, Model model) {
+        List<String> uploadedFiles = fileStorageService.searchUploadedFiles(query);
+        model.addAttribute("uploadedFiles", uploadedFiles);
+        return "uploaded";
     }
 
     @GetMapping("/download/{fileName}")
@@ -187,8 +111,9 @@ public class FileController {
             redirectAttributes.addFlashAttribute("message", "Failed to delete file: " + fileName);
         }
 
-        return "redirect:/home";
+        return "redirect:/uploaded";
     }
+
 
     private void openFileManager() throws IOException {
         if (Desktop.isDesktopSupported()) {

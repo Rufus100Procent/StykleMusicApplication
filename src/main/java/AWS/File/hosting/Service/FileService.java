@@ -81,6 +81,16 @@ public class FileService {
         return uploadedFiles;
     }
 
+    public List<String> searchUploadedFiles(String query) {
+        List<String> matchedFiles = new ArrayList<>();
+        for (String fileName : uploadedFiles) {
+            if (fileName.toLowerCase().contains(query.toLowerCase())) {
+                matchedFiles.add(fileName);
+            }
+        }
+        return matchedFiles;
+    }
+
     public boolean deleteFile(String fileName) {
         try {
             Path filePath = this.fileStoragePath.resolve(fileName).normalize();
