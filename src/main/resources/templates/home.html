@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Music.App</title>
+</head>
+<body>
+<div class="container">
+  <h1>Welcome to Music.App</h1>
+
+
+  <form action="/search" method="get">
+    <input type="text" name="query" placeholder="Search..." value="">
+    <button type="submit">Search</button>
+  </form>
+
+  <button onclick="location.href='/upload'">Upload</button>
+  <button onclick="location.href='/songs'">Songs</button>
+
+  <ul class="file-list">
+    <li th:each="file : ${uploadedFiles}">
+      <a th:href="@{/download/{fileName}(fileName=${file})}" th:text="${file}" onclick="downloadFile(event)"></a>
+      <a th:href="@{/delete/{fileName}(fileName=${file})}" onclick="deleteFile(event)">Delete</a>
+    </li>
+  </ul>
+
+  <p th:if="${message}" th:text="${message}"></p>
+</div>
+
+<script>
+    function downloadFile(event) {
+      event.preventDefault();
+      var downloadUrl = event.target.getAttribute("href");
+      var fileName = event.target.textContent;
+      var link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = fileName;
+      link.click();
+    }
+
+    function deleteFile(event) {
+      event.preventDefault();
+      var deleteUrl = event.target.getAttribute("href");
+      var fileName = event.target.previousElementSibling.textContent;
+      if (confirm("Are you sure you want to delete the file: " + fileName)) {
+        fetch(deleteUrl, { method: "POST" })
+          .then(function(response) {
+            if (response.ok) {
+              location.reload();
+            } else {
+              alert("Failed to delete the file: " + fileName);
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+            alert("Failed to delete the file: " + fileName);
+          });
+      }
+    }
+</script>
+
+</body>
+</html>

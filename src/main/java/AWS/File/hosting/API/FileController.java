@@ -31,18 +31,16 @@ public class FileController {
     public FileController(FileService fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
-
     @GetMapping("/")
+    public String showHomePage() {
+        return "home";
+    }
+
+    @GetMapping("/upload")
     public String showUploadPage() {
         return "upload";
     }
 
-
-
-    @GetMapping("/upload")
-    public String upload(){
-        return "upload";
-    }
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
@@ -55,11 +53,10 @@ public class FileController {
                 redirectAttributes.addFlashAttribute("message", "Failed to upload file: " + file.getOriginalFilename());
             }
         }
-
-        return "redirect:/uploaded";
+        return "redirect:/songs";
     }
 
-    @GetMapping("/uploaded")
+    @GetMapping("/songs")
     public String showUploadedFiles(Model model, @RequestParam(value = "query", required = false) String query) {
         List<String> uploadedFiles;
 
@@ -73,14 +70,15 @@ public class FileController {
         }
 
         model.addAttribute("uploadedFiles", uploadedFiles);
-        return "uploaded";
+        return "songs";
     }
 
     @GetMapping("/search")
-    public String searchUploadedFiles(@RequestParam("query") String query, Model model) {
+    public String showSearchPage(Model model, @RequestParam("query") String query) {
         List<String> uploadedFiles = fileStorageService.searchUploadedFiles(query);
         model.addAttribute("uploadedFiles", uploadedFiles);
-        return "uploaded";
+        model.addAttribute("query", query);
+        return "home";
     }
 
     @GetMapping("/download/{fileName}")
@@ -111,8 +109,94 @@ public class FileController {
             redirectAttributes.addFlashAttribute("message", "Failed to delete file: " + fileName);
         }
 
-        return "redirect:/uploaded";
+        return "redirect:/songs";
     }
+
+//
+//    @GetMapping("/play")
+//    public ResponseEntity<Resource> playTrack(HttpServletRequest request) {
+//        // Replace with your logic to get the URL of the next track
+//        String nextTrackUrl = getNextTrackUrl();
+//
+//        Resource resource = fileStorageService.loadFileAsResource(nextTrackUrl);
+//
+//        if (resource == null) {
+//            // Handle case when the next track is not found
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        String contentType = "audio/mpeg";
+//        ContentDisposition contentDisposition = ContentDisposition.inline()
+//                .filename(resource.getFilename())
+//                .build();
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+//                .body(resource);
+//    }
+//
+//    @GetMapping("/next")
+//    public ResponseEntity<Resource> getNextTrack(HttpServletRequest request) {
+//        // Replace with your logic to get the URL of the next track
+//        String nextTrackUrl = getNextTrackUrl();
+//
+//        Resource resource = fileStorageService.loadFileAsResource(nextTrackUrl);
+//
+//        if (resource == null) {
+//            // Handle case when the next track is not found
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        String contentType = "audio/mpeg";
+//        ContentDisposition contentDisposition = ContentDisposition.attachment()
+//                .filename(resource.getFilename())
+//                .build();
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+//                .body(resource);
+//    }
+//
+//    @GetMapping("/previous")
+//    public ResponseEntity<Resource> getPreviousTrack(HttpServletRequest request) {
+//        // Replace with your logic to get the URL of the previous track
+//        String previousTrackUrl = getPreviousTrackUrl();
+//
+//        Resource resource = fileStorageService.loadFileAsResource(previousTrackUrl);
+//
+//        if (resource == null) {
+//            // Handle case when the previous track is not found
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        String contentType = "audio/mpeg";
+//        ContentDisposition contentDisposition = ContentDisposition.attachment()
+//                .filename(resource.getFilename())
+//                .build();
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+//                .body(resource);
+//    }
+//
+//    // Helper method to get the URL of the next track
+//    private String getNextTrackUrl() {
+//        // Replace with your logic to get the URL of the next track
+//        // For example, retrieve the next track URL from a playlist or database
+//        String nextTrackUrl = "path_to_next_track.mp3";
+//        return nextTrackUrl;
+//    }
+//
+//    // Helper method to get the URL of the previous track
+//    private String getPreviousTrackUrl() {
+//        // Replace with your logic to get the URL of the previous track
+//        // For example, retrieve the previous track URL from a playlist or database
+//        String previousTrackUrl = "path_to_previous_track.mp3";
+//        return previousTrackUrl;
+//    }
 
 
     private void openFileManager() throws IOException {
@@ -128,4 +212,5 @@ public class FileController {
             }
         }
     }
+
 }
