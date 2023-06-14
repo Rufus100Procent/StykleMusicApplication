@@ -1,48 +1,54 @@
 package AWS.File.hosting.API;
 
-import AWS.File.hosting.Service.MusicPlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import AWS.File.hosting.Model.Song;
+import AWS.File.hosting.Service.SongService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/music")
 public class MusicController {
-    @Autowired
-    private MusicPlayerService musicPlayerService;
 
-    @GetMapping("/")
-    public String soundcontroller(){
-        return "soundcontrol";
+        private SongService songService;
+
+        public void SongController(SongService songService) {
+            this.songService = songService;
+        }
+
+    public MusicController(SongService songService) {
+        this.songService = songService;
     }
 
-    @GetMapping("/play")
-    public String play(Model model) {
-        musicPlayerService.play();
-        model.addAttribute("isPlaying", musicPlayerService.isPlaying());
-        return "music";
-    }
+    @GetMapping
+        public ResponseEntity<List<Song>> getSongs() {
+            List<Song> songs = songService.getSongs();
+            return ResponseEntity.ok(songs);
+        }
 
-    @GetMapping("/pause")
-    public String pause(Model model) {
-        musicPlayerService.pause();
-        model.addAttribute("isPlaying", musicPlayerService.isPlaying());
-        return "music";
-    }
+        @PostMapping
+        public ResponseEntity<Void> uploadSong(@RequestParam String name, @RequestParam String fileName) {
+            songService.uploadSong(name, fileName);
+            return ResponseEntity.ok().build();
+        }
 
-    @GetMapping("/next")
-    public String next(Model model) {
-        musicPlayerService.next();
-        model.addAttribute("isPlaying", musicPlayerService.isPlaying());
-        return "music";
-    }
+        @GetMapping("/play/{index}")
+        public ResponseEntity<Void> playSong(@PathVariable int index) {
+            songService.playSong(index);
+            return ResponseEntity.ok().build();
+        }
 
-    @GetMapping("/previous")
-    public String previous(Model model) {
-        musicPlayerService.previous();
-        model.addAttribute("isPlaying", musicPlayerService.isPlaying());
-        return "music";
+        @GetMapping("/next")
+        public ResponseEntity<Void> playNextSong() {
+            songService.playNextSong();
+            return ResponseEntity.ok().build();
+        }
+
+        @GetMapping("/previous")
+        public ResponseEntity<Void> playPreviousSong() {
+            songService.playPreviousSong();
+            return ResponseEntity.ok().build();
+        }
     }
-}

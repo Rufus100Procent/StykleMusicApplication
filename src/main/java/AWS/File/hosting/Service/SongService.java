@@ -3,6 +3,7 @@ package AWS.File.hosting.Service;
 import AWS.File.hosting.Model.Song;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +45,9 @@ import java.util.List;
         return filteredSongs;
     }
 
-    public void uploadSong(String name, String fileUrl) {
-        Song song = new Song(name, fileUrl);
+    public void uploadSong(String name, String fileName) {
+        String filePath = getFileStoragePath() + File.separator + fileName;
+        Song song = new Song(name, filePath);
         songs.add(song);
     }
 
@@ -53,7 +55,7 @@ import java.util.List;
         if (index == currentSongIndex) {
             // Toggle play/pause
             if (isPaused()) {
-                play(fileUrl);
+                play(songs.get(currentSongIndex).getFilePath());
             } else {
                 pause();
             }
@@ -62,8 +64,8 @@ import java.util.List;
 
         currentSongIndex = index;
         Song song = songs.get(index);
-        String fileUrl = song.getFileUrl();
-        play(fileUrl);
+        String filePath = song.getFilePath();
+        play(filePath);
         updateCurrentSong(song.getName());
     }
 
@@ -74,8 +76,8 @@ import java.util.List;
             currentSongIndex++;
         }
         Song song = songs.get(currentSongIndex);
-        String fileUrl = song.getFileUrl();
-        play(fileUrl);
+        String filePath = song.getFilePath();
+        play(filePath);
         updateCurrentSong(song.getName());
     }
 
@@ -86,14 +88,14 @@ import java.util.List;
             currentSongIndex--;
         }
         Song song = songs.get(currentSongIndex);
-        String fileUrl = song.getFileUrl();
-        play(fileUrl);
+        String filePath = song.getFilePath();
+        play(filePath);
         updateCurrentSong(song.getName());
     }
 
-    private void play(String fileUrl) {
-        // Logic to play the song
-        System.out.println("Playing song: " + songs.get(currentSongIndex).getName());
+    private void play(String filePath) {
+        // Logic to play the song from the provided file path
+        System.out.println("Playing song: " + filePath);
     }
 
     private void pause() {
@@ -108,5 +110,16 @@ import java.util.List;
 
     private void updateCurrentSong(String songName) {
         System.out.println("Now Playing: " + songName);
+    }
+
+    private String getFileStoragePath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            return System.getenv("USERPROFILE") + "\\fileStorage";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+            return System.getProperty("user.home") + "/fileStorage";
+        } else {
+            throw new UnsupportedOperationException("Unsupported operating system: " + os);
+        }
     }
 }

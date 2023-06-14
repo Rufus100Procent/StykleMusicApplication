@@ -2,18 +2,18 @@ package AWS.File.hosting.Model;
 
  public class Song {
      private String name;
-     private String fileUrl;
+     private String filePath;
 
-     public Song(String name, String fileUrl) {
+     public Song(String name, String filePath) {
          this.name = name;
-         this.fileUrl = fileUrl;
+         this.filePath = filePath;
      }
 
      public String getName() {
          return name;
      }
 
-     public String getFileUrl() {
-         return fileUrl;
+     public String getFilePath() {
+         return filePath;
      }
  }
