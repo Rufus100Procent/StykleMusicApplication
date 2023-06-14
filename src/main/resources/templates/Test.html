@@ -3,6 +3,43 @@
 <head>
   <title>Music Application</title>
   <link rel="stylesheet" href="home.css">
+  <style>
+    .song-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .play-button {
+      width: 20px;
+      height: 20px;
+      background-color: #555;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .play-button:hover {
+      background-color: #333;
+    }
+
+    .pause-button {
+      width: 20px;
+      height: 20px;
+      background-color: #f00;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .pause-button:hover {
+      background-color: #c00;
+    }
+
+    .active-song {
+      background-color: #ffcc00;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
@@ -10,6 +47,7 @@
   <div class="buttons">
     <button id="songs-btn">Songs</button>
     <button id="search-btn">Search</button>
+    <input id="upload-input" type="file" accept="audio/*" style="display: none;">
     <button id="upload-btn">Upload</button>
   </div>
   <div id="content"></div>
@@ -19,114 +57,155 @@
     <button id="next-btn">Next</button>
   </div>
   <div id="current-song"></div>
+  <div id="message"></div>
 </div>
 
 <script>
-    let songs = [];
-    let currentSongIndex = 0;
-    let audioPlayer;
+  let songs = [];
+  let currentSongIndex = 0;
+  let audioPlayer;
+  let isPaused = true;
 
-    function displaySongs() {
-      const content = document.getElementById('content');
-      content.innerHTML = '';
+  function displaySongs() {
+    const content = document.getElementById('content');
+    content.innerHTML = '';
 
-      if (songs.length === 0) {
-        content.innerHTML = 'No songs uploaded yet.';
-        return;
-      }
+    if (songs.length === 0) {
+      content.innerHTML = 'No songs uploaded yet.';
+      return;
+    }
 
-      for (let i = 0; i < songs.length; i++) {
-        const song = songs[i];
-        const songItem = document.createElement('div');
-        songItem.innerHTML = `${i + 1}. ${song.name}`;
-        songItem.addEventListener('click', () => {
+    for (let i = 0; i < songs.length; i++) {
+      const song = songs[i];
+      const songItem = document.createElement('div');
+      songItem.classList.add('song-item');
+
+      const playButton = document.createElement('div');
+      playButton.classList.add(isPaused ? 'play-button' : 'pause-button');
+      playButton.addEventListener('click', () => {
+        if (isPaused) {
           playSong(i);
-        });
-        content.appendChild(songItem);
-      }
-    }
-
-    function handleSongsClick() {
-      displaySongs();
-    }
-
-    function handleSearchClick() {
-      const query = prompt('Enter a song name to search:');
-      if (query) {
-        const filteredSongs = songs.filter(song => song.name.toLowerCase().includes(query.toLowerCase()));
-        displaySongs(filteredSongs);
-      }
-    }
-
-    function handleUploadClick() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'audio/*';
-      input.addEventListener('change', handleFileSelect);
-      input.click();
-    }
-
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      songs.push(file);
-      displaySongs();
-    }
-
-    function playSong(index) {
-      if (index === currentSongIndex) {
-        if (audioPlayer.paused) {
-          audioPlayer.play();
         } else {
-          audioPlayer.pause();
+          pauseSong();
         }
-        return;
-      }
+      });
 
-      currentSongIndex = index;
-      audioPlayer.src = URL.createObjectURL(songs[index]);
-      audioPlayer.play();
-      updateCurrentSong(songs[index].name);
+      const songName = document.createElement('div');
+      songName.textContent = `${i + 1}. ${song.name}`;
+
+      songItem.appendChild(playButton);
+      songItem.appendChild(songName);
+      content.appendChild(songItem);
+    }
+  }
+
+  function handleSongsClick() {
+    displaySongs();
+  }
+
+  function handleSearchClick() {
+    const query = prompt('Enter a song name to search:');
+    if (query) {
+      const filteredSongs = songs.filter(song => song.name.toLowerCase().includes(query.toLowerCase()));
+      displaySongs(filteredSongs);
+    }
+  }
+
+  function handleUploadClick() {
+    const uploadInput = document.getElementById('upload-input');
+    uploadInput.addEventListener('change', handleFileSelect);
+    uploadInput.click();
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const duplicateSong = songs.find(song => song.name === file.name);
+
+    if (duplicateSong) {
+      showMessage("The song is already uploaded.");
+      return;
     }
 
-    function playNextSong() {
-      if (currentSongIndex === songs.length - 1) {
-        currentSongIndex = 0;
-      } else {
-        currentSongIndex++;
-      }
-      audioPlayer.src = URL.createObjectURL(songs[currentSongIndex]);
-      audioPlayer.play();
-      updateCurrentSong(songs[currentSongIndex].name);
+    songs.push(file);
+    displaySongs();
+    showMessage("Song uploaded successfully.");
+  }
+
+  function playSong(index) {
+    currentSongIndex = index;
+    audioPlayer.src = URL.createObjectURL(songs[index]);
+    audioPlayer.play();
+    updateCurrentSong(songs[index].name);
+    isPaused = false;
+    displaySongs();
+    highlightCurrentSong();
+  }
+
+  function pauseSong() {
+    audioPlayer.pause();
+    isPaused = true;
+    displaySongs();
+    highlightCurrentSong();
+  }
+
+  function playNextSong() {
+    if (currentSongIndex === songs.length - 1) {
+      currentSongIndex = 0;
+    } else {
+      currentSongIndex++;
     }
+    audioPlayer.src = URL.createObjectURL(songs[currentSongIndex]);
+    audioPlayer.play();
+    updateCurrentSong(songs[currentSongIndex].name);
+    isPaused = false;
+    displaySongs();
+    highlightCurrentSong();
+  }
 
-    function playPreviousSong() {
-      if (currentSongIndex === 0) {
-        currentSongIndex = songs.length - 1;
-      } else {
-        currentSongIndex--;
-      }
-      audioPlayer.src = URL.createObjectURL(songs[currentSongIndex]);
-      audioPlayer.play();
-      updateCurrentSong(songs[currentSongIndex].name);
+  function playPreviousSong() {
+    if (currentSongIndex === 0) {
+      currentSongIndex = songs.length - 1;
+    } else {
+      currentSongIndex--;
     }
+    audioPlayer.src = URL.createObjectURL(songs[currentSongIndex]);
+    audioPlayer.play();
+    updateCurrentSong(songs[currentSongIndex].name);
+    isPaused = false;
+    displaySongs();
+    highlightCurrentSong();
+  }
 
-    function updateCurrentSong(songName) {
-      const currentSongElement = document.getElementById('current-song');
-      currentSongElement.textContent = `Now Playing: ${songName}`;
+  function updateCurrentSong(songName) {
+    const currentSongElement = document.getElementById('current-song');
+    currentSongElement.textContent = `Now Playing: ${songName}`;
+  }
+
+  function showMessage(message) {
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = message;
+  }
+
+  function highlightCurrentSong() {
+    const songItems = document.getElementsByClassName('song-item');
+    for (let i = 0; i < songItems.length; i++) {
+      songItems[i].classList.remove('active-song');
     }
+    songItems[currentSongIndex].classList.add('active-song');
+  }
 
-    // Add event listeners to the buttons
-    document.getElementById('songs-btn').addEventListener('click', handleSongsClick);
-    document.getElementById('search-btn').addEventListener('click', handleSearchClick);
-    document.getElementById('upload-btn').addEventListener('click', handleUploadClick);
-    document.getElementById('prev-btn').addEventListener('click', playPreviousSong);
-    document.getElementById('next-btn').addEventListener('click', playNextSong);
+  // Add event listeners to the buttons
+  document.getElementById('songs-btn').addEventListener('click', handleSongsClick);
+  document.getElementById('search-btn').addEventListener('click', handleSearchClick);
+  document.getElementById('upload-btn').addEventListener('click', handleUploadClick);
+  document.getElementById('prev-btn').addEventListener('click', playPreviousSong);
+  document.getElementById('next-btn').addEventListener('click', playNextSong);
 
-    // Add event listener to handle the end of the song
-    document.getElementById('audio-player').addEventListener('ended', playNextSong);
+  // Add event listener to handle the end of the song
+  document.getElementById('audio-player').addEventListener('ended', playNextSong);
 
-    // Initialize the audio player
-    audioPlayer = document.getElementById('audio-player');
-  </script>
+  // Initialize the audio player
+  audioPlayer = document.getElementById('audio-player');
+</script>
 </body>
 </html>
