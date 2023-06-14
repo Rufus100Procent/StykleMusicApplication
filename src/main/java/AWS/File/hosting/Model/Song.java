@@ -1,9 +1,19 @@
 package AWS.File.hosting.Model;
 
-public class Song {
-    private int songId;
-    private String songName;
-    private Artist artist;
-    private Album album;
-    private int songYear;
-}
+ public class Song {
+     private String name;
+     private String fileUrl;
+
+     public Song(String name, String fileUrl) {
+         this.name = name;
+         this.fileUrl = fileUrl;
+     }
+
+     public String getName() {
+         return name;
+     }
+
+     public String getFileUrl() {
+         return fileUrl;
+     }
+ }

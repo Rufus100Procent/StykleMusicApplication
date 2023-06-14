@@ -24,16 +24,16 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-public class FileController {
+public class MusicApi {
     @Autowired
     private final FileService fileStorageService;
 
-    public FileController(FileService fileStorageService) {
+    public MusicApi(FileService fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
     @GetMapping("/")
     public String showHomePage() {
-        return "home";
+        return "Test";
     }
 
     @GetMapping("/upload")
