@@ -33,7 +33,7 @@ public class MusicApi {
     }
     @GetMapping("/")
     public String showHomePage() {
-        return "Test";
+        return "mediaPlayer";
     }
 
     @GetMapping("/upload")
@@ -70,7 +70,7 @@ public class MusicApi {
         }
 
         model.addAttribute("uploadedFiles", uploadedFiles);
-        return "songs";
+        return "mediaPlayer";
     }
 
     @GetMapping("/search")

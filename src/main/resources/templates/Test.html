@@ -47,7 +47,7 @@
   <div class="buttons">
     <button id="songs-btn">Songs</button>
     <button id="search-btn">Search</button>
-    <input id="upload-input" type="file" accept="audio/*" style="display: none;">
+    <input id="upload-input" type="file" accept="audio/*" style="display: none;" multiple>
     <button id="upload-btn">Upload</button>
   </div>
   <div id="content"></div>
@@ -118,17 +118,20 @@
   }
 
   function handleFileSelect(event) {
-    const file = event.target.files[0];
-    const duplicateSong = songs.find(song => song.name === file.name);
+    const files = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const duplicateSong = songs.find(song => song.name === file.name);
 
-    if (duplicateSong) {
-      showMessage("The song is already uploaded.");
-      return;
+      if (duplicateSong) {
+        showMessage(`The song "${file.name}" is already uploaded.`);
+        continue;
+      }
+
+      songs.push(file);
+      showMessage(`Song "${file.name}" uploaded successfully.`);
     }
-
-    songs.push(file);
     displaySongs();
-    showMessage("Song uploaded successfully.");
   }
 
   function playSong(index) {
