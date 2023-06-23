@@ -1,7 +1,7 @@
 # MusicApplicationBetaTesting
 
 Upload
--   upload -mp3 songs
+-   upload -mp3 songs from File Manager (windows or linux)
 
 Search
 -   search from all songs added by name
