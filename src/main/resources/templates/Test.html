@@ -2,7 +2,134 @@
 <html>
 <head>
   <title>Music Application</title>
+  <style>
 
+    body{
+
+      margin: 0;
+      font-family: System-ui,serif;
+
+    }
+    .container {
+      background-color: #0d284f;
+      background-image: url("../images/vinly-medium.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-blend-mode: multiply;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      color: white;
+      font-size: 21px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .buttons button {
+      margin: 0 5px;
+    }
+
+    #upload-input {
+      display: none;
+    }
+
+    .player-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    #prev-btn,
+    #next-btn {
+      margin: 0 10px;
+    }
+
+    #current-song {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #playlist-section {
+      margin-bottom: 20px;
+    }
+
+    #playlist-name {
+      margin-right: 10px;
+    }
+
+    .song-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      color: #87ceeb; /* Light Blue */    }
+
+    .song-name {
+      cursor: pointer;
+      color: blue;
+    }
+
+    .active-song {
+      background-color: lightblue;
+    }
+
+    .playlist-name {
+      position: fixed;
+      top: 0px;
+      cursor: pointer;
+      text-decoration: underline;
+      color: blue;
+    }
+
+    .play-button,
+    .pause-button {
+      width: 20px;
+      height: 20px;
+      background-color: #555;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .play-button:hover,
+    .pause-button:hover {
+      background-color: #333;
+    }
+
+    .pause-button {
+      background-color: #228804;
+    }
+
+    .active-song {
+      background-color: #066cde;
+    }
+
+    #delete-btn {
+      margin-top: 10px;
+    }
+
+    .playlist-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      color: #ffffff; /* White */
+    }
+
+    audio {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
@@ -15,14 +142,6 @@
     <button id="upload-btn">Upload</button>
     <button id="delete-btn" disabled>Delete Selected</button>
   </div>
-  <div id="content"></div>
-  <div class="player-container">
-    <button id="prev-btn">Previous</button>
-    <audio id="audio-player" controls></audio>
-    <button id="next-btn">Next</button>
-  </div>
-  <div id="current-song"></div>
-  <div id="message"></div>
   <div id="playlist-section">
     <h2>Playlists</h2>
     <div id="playlist-content"></div>
@@ -31,6 +150,14 @@
       <button id="create-playlist">Create</button>
     </div>
   </div>
+  <div id="content"></div>
+  <div class="player-container">
+    <button id="prev-btn">Previous</button>
+    <audio id="audio-player" controls></audio>
+    <button id="next-btn">Next</button>
+  </div>
+  <div id="current-song"></div>
+  <div id="message"></div>
 </div>
 
 <script>
@@ -101,6 +228,8 @@
 
       const playlistName = document.createElement('div');
       playlistName.textContent = `${i + 1}. ${playlist.name}`;
+      playlistName.classList.add('playlist-name');
+      playlistName.addEventListener('click', () => handlePlaylistClick(i));
 
       const addButton = document.createElement('button');
       addButton.textContent = 'Add Song';
@@ -118,6 +247,36 @@
       playlistContent.appendChild(playlistItem);
     }
   }
+  function displayPlaylistSongs(playlistIndex) {
+    const playlist = playlists[playlistIndex];
+    const content = document.getElementById('content');
+    content.innerHTML = '';
+
+    if (playlist.songs.length === 0) {
+      content.innerHTML = 'No songs in this playlist yet.';
+      return;
+    }
+
+    for (let i = 0; i < playlist.songs.length; i++) {
+      const song = playlist.songs[i];
+      const songItem = document.createElement('div');
+      songItem.classList.add('song-item');
+
+      const songName = document.createElement('div');
+      songName.textContent = `${i + 1}. ${song.name}`;
+      songName.classList.add('song-name');
+      songName.addEventListener('click', () => playSong(i, playlist.songs));
+
+      songItem.appendChild(songName);
+      content.appendChild(songItem);
+    }
+  }
+
+
+  function handlePlaylistClick(playlistIndex) {
+    displayPlaylistSongs(playlistIndex);
+  }
+
 
   function getSongsFromCheckboxes() {
     const checkboxes = document.getElementsByName('song-checkbox');
@@ -242,16 +401,17 @@
     displayPlaylists();
   }
 
-  function playSong(index) {
+  function playSong(index, songList) {
     currentSongIndex = index;
-    audioPlayer.src = URL.createObjectURL(songs[index]);
+    audioPlayer.src = URL.createObjectURL(songList[index]);
     audioPlayer.play();
-    updateCurrentSong(songs[index].name);
+    updateCurrentSong(songList[index].name);
     isPaused = false;
     displaySongs();
     displayPlaylists();
     highlightCurrentSong();
   }
+
 
   function pauseSong() {
     audioPlayer.pause();

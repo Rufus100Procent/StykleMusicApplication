@@ -1,0 +1,113 @@
+
+
+.container {
+    max-width: 10000px;
+    margin: 0 auto;
+    padding: 200px;
+    background-image: url("https://images.unsplash.com/photo-1526270100824-f033a2377d62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1550&q=80");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+h1 {
+    text-align: center;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.buttons button {
+    margin: 0 5px;
+}
+
+#upload-input {
+    display: none;
+}
+
+.player-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#prev-btn,
+#next-btn {
+    margin: 0 10px;
+}
+
+#current-song {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#playlist-section {
+    margin-bottom: 20px;
+}
+
+#playlist-name {
+    margin-right: 10px;
+}
+
+.song-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.song-name {
+    cursor: pointer;
+    color: blue;
+}
+
+.active-song {
+    background-color: lightblue;
+}
+
+.playlist-name {
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+}
+
+.play-button,
+.pause-button {
+    width: 20px;
+    height: 20px;
+    background-color: #555;
+    border-radius: 50%;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.play-button:hover,
+.pause-button:hover {
+    background-color: #333;
+}
+
+.pause-button {
+    background-color: #f00;
+}
+
+.active-song {
+    background-color: #ffcc00;
+}
+
+#delete-btn {
+    margin-top: 10px;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+audio {
+    width: 100%;
+}
+
