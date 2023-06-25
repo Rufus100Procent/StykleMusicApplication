@@ -33,7 +33,8 @@ public class MusicApi {
     }
     @GetMapping("/")
     public String showHomePage() {
-        return "mediaPlayer";
+        return "Test";
+//        return "mediaPlayer";
     }
 
     @GetMapping("/upload")

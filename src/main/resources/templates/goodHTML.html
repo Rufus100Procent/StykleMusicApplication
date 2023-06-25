@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Music Application</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .buttons {
+      margin-bottom: 20px;
+    }
+
+    .song-item {
+      margin-bottom: 10px;
+    }
+
+    .active-song {
+      background-color: #f0f0f0;
+    }
+
+    .mediaplayer {
+      margin-top: 20px;
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+    }
+
+    .control-button {
+      background-color: #f0f0f0;
+      border: none;
+      margin-right: 5px;
+    }
+
+    .play-button {
+      padding: 5px;
+    }
+
+    .pause-button {
+      padding: 5px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 5px;
+      background-color: #f0f0f0;
+      position: relative;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #000;
+    }
+
+    .progress-bar-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #000;
+      position: absolute;
+      top: -3px;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .volume-container {
+      display: flex;
+      align-items: center;
+      margin-left: 5px;
+    }
+
+    .volume-slider {
+      margin-left: 5px;
+      width: 60px;
+    }
+
+    #message {
+      margin-top: 10px;
+    }
+
+    #playlist-section {
+      margin-top: 20px;
+    }
+
+    .playlist-item {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Music Application</h1>
+  <div class="buttons">
+    <button id="songs-btn">Songs</button>
+    <button id="search-btn">Search</button>
+    <button id="recent-btn">Recently Played Songs</button>
+    <input id="upload-input" type="file" accept="audio/*" style="display: none;" multiple>
+    <button id="upload-btn">Upload</button>
+    <button id="delete-btn" disabled>Delete Selected</button>
+  </div>
+
+  <div id="content"></div>
+
+  <div id="current-song"></div>
+  <div id="message"></div>
+  <div id="playlist-section">
+    <h2>Playlists</h2>
+    <div id="playlist-content"></div>
+    <div>
+      <label for="playlist-name">Playlist Name:</label><input type="text" id="playlist-name" placeholder="Enter playlist name">
+      <button id="create-playlist">Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="mediaplayer">
+  <div class="player">
+    <button id="prev-btn" class="control-button"><i class="fas fa-backward"></i></button>
+    <button id="play-btn" class="control-button play-button"><i class="fas fa-play"></i></button>
+    <div class="progress-bar">
+      <div class="progress-bar-fill"></div>
+      <div class="progress-bar-thumb"></div>
+    </div>
+    <button id="next-btn" class="control-button"><i class="fas fa-forward"></i></button>
+    <div class="volume-container">
+      <i class="fas fa-volume-down"></i>
+      <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
+    </div>
+  </div>
+</div>
+
+<script>
+  const songs = [
+    { name: 'Song 1', file: 'song1.mp3' },
+    { name: 'Song 2', file: 'song2.mp3' },
+    { name: 'Song 3', file: 'song3.mp3' }
+  ];
+
+  const audioPlayer = new Audio();
+  const content = document.getElementById('content');
+  const playlistContent = document.getElementById('playlist-content');
+  const uploadInput = document.getElementById('upload-input');
+  const uploadBtn = document.getElementById('upload-btn');
+  const deleteBtn = document.getElementById('delete-btn');
+  const playBtn = document.getElementById('play-btn');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const progressBar = document.querySelector('.progress-bar');
+  const progressBarFill = document.querySelector('.progress-bar-fill');
+  const progressBarThumb = document.querySelector('.progress-bar-thumb');
+  const volumeSlider = document.querySelector('.volume-slider');
+  const message = document.getElementById('message');
+
+  let currentSongIndex = 0;
+  let currentPlaylist = songs;
+
+  function displaySongs(filteredSongs) {
+    let html = '';
+
+    const displayList = filteredSongs || songs;
+
+    displayList.forEach((song, index) => {
+      html += `<div class="song-item" data-index="${index}">${song.name}</div>`;
+    });
+
+    content.innerHTML = html;
+
+    const songItems = document.getElementsByClassName('song-item');
+    for (const item of songItems) {
+      item.addEventListener('click', () => {
+        const index = parseInt(item.getAttribute('data-index'));
+        playSong(index);
+      });
+    }
+  }
+
+  function displayPlaylists() {
+    let html = '';
+
+    html += `<div class="playlist-item" data-index="0">All Songs</div>`;
+
+    playlists.forEach((playlist, index) => {
+      html += `<div class="playlist-item" data-index="${index + 1}">${playlist.name}</div>`;
+    });
+
+    playlistContent.innerHTML = html;
+
+    const playlistItems = document.getElementsByClassName('playlist-item');
+    for (const item of playlistItems) {
+      item.addEventListener('click', () => {
+        const index = parseInt(item.getAttribute('data-index'));
+        if (index === 0) {
+          currentPlaylist = songs;
+        } else {
+          currentPlaylist = playlists[index - 1].songs;
+        }
+        displaySongs(currentPlaylist);
+      });
+    }
+  }
+
+  function playSong(index) {
+    if (index >= 0 && index < currentPlaylist.length) {
+      currentSongIndex = index;
+      audioPlayer.src = URL.createObjectURL(currentPlaylist[index].file);
+      audioPlayer.play();
+      highlightCurrentSong();
+    }
+  }
+
+  function highlightCurrentSong() {
+    const songItems = document.getElementsByClassName('song-item');
+    for (const item of songItems) {
+      item.classList.remove('active-song');
+    }
+    songItems[currentSongIndex].classList.add('active-song');
+  }
+
+  function updateProgressBar(event) {
+    const { duration, currentTime } = event.target;
+    const percentage = (currentTime / duration) * 100;
+    progressBarFill.style.width = `${percentage}%`;
+    progressBarThumb.style.left = `${percentage}%`;
+  }
+
+  function updateVolume() {
+    audioPlayer.volume = volumeSlider.value;
+  }
+
+  audioPlayer.addEventListener('timeupdate', updateProgressBar);
+  volumeSlider.addEventListener('input', updateVolume);
+
+  playBtn.addEventListener('click', () => {
+    if (audioPlayer.paused) {
+      audioPlayer.play();
+      playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    } else {
+      audioPlayer.pause();
+      playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    const prevIndex = currentSongIndex === 0 ? currentPlaylist.length - 1 : currentSongIndex - 1;
+    playSong(prevIndex);
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const nextIndex = currentSongIndex === currentPlaylist.length - 1 ? 0 : currentSongIndex + 1;
+    playSong(nextIndex);
+  });
+
+  progressBar.addEventListener('click', (event) => {
+    const { offsetX, target } = event;
+    const width = target.clientWidth;
+    const clickPercentage = (offsetX / width);
+    const time = audioPlayer.duration * clickPercentage;
+    audioPlayer.currentTime = time;
+  });
+
+  uploadBtn.addEventListener('click', () => {
+    uploadInput.click();
+  });
+
+  uploadInput.addEventListener('change', (event) => {
+    const files = event.target.files;
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const audioFile = e.target.result;
+        const fileName = file.name;
+        const newSong = { name: fileName, file: audioFile };
+        songs.push(newSong);
+      };
+      reader.readAsDataURL(file);
+    }
+    displaySongs();
+  });
+
+  displaySongs();
+</script>
+</body>
+</html>

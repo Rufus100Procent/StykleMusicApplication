@@ -2,44 +2,7 @@
 <html>
 <head>
   <title>Music Application</title>
-  <link rel="stylesheet" href="home.css">
-  <style>
-    .song-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
 
-    .play-button {
-      width: 20px;
-      height: 20px;
-      background-color: #555;
-      border-radius: 50%;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-
-    .play-button:hover {
-      background-color: #333;
-    }
-
-    .pause-button {
-      width: 20px;
-      height: 20px;
-      background-color: #f00;
-      border-radius: 50%;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-
-    .pause-button:hover {
-      background-color: #c00;
-    }
-
-    .active-song {
-      background-color: #ffcc00;
-    }
-  </style>
 </head>
 <body>
 <div class="container">
@@ -47,8 +10,10 @@
   <div class="buttons">
     <button id="songs-btn">Songs</button>
     <button id="search-btn">Search</button>
+    <button id="recent-btn">Recently Played Songs</button>
     <input id="upload-input" type="file" accept="audio/*" style="display: none;" multiple>
     <button id="upload-btn">Upload</button>
+    <button id="delete-btn" disabled>Delete Selected</button>
   </div>
   <div id="content"></div>
   <div class="player-container">
@@ -58,15 +23,24 @@
   </div>
   <div id="current-song"></div>
   <div id="message"></div>
+  <div id="playlist-section">
+    <h2>Playlists</h2>
+    <div id="playlist-content"></div>
+    <div>
+      <input type="text" id="playlist-name" placeholder="Enter playlist name">
+      <button id="create-playlist">Create</button>
+    </div>
+  </div>
 </div>
 
 <script>
   let songs = [];
+  let playlists = [];
   let currentSongIndex = 0;
   let audioPlayer;
   let isPaused = true;
 
-  function displaySongs() {
+  function displaySongs(filteredSongs) {
     const content = document.getElementById('content');
     content.innerHTML = '';
 
@@ -75,10 +49,21 @@
       return;
     }
 
-    for (let i = 0; i < songs.length; i++) {
-      const song = songs[i];
+    const deleteButton = document.getElementById('delete-btn');
+    deleteButton.disabled = true;
+
+    const displayList = filteredSongs || songs;
+
+    for (let i = 0; i < displayList.length; i++) {
+      const song = displayList[i];
       const songItem = document.createElement('div');
       songItem.classList.add('song-item');
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.name = 'song-checkbox';
+      checkbox.value = i;
+      checkbox.addEventListener('change', handleCheckboxChange);
 
       const playButton = document.createElement('div');
       playButton.classList.add(isPaused ? 'play-button' : 'pause-button');
@@ -93,7 +78,128 @@
       const songName = document.createElement('div');
       songName.textContent = `${i + 1}. ${song.name}`;
 
+      songItem.appendChild(checkbox);
       songItem.appendChild(playButton);
+      songItem.appendChild(songName);
+      content.appendChild(songItem);
+    }
+  }
+
+  function displayPlaylists() {
+    const playlistContent = document.getElementById('playlist-content');
+    playlistContent.innerHTML = '';
+
+    if (playlists.length === 0) {
+      playlistContent.innerHTML = 'No playlists created yet.';
+      return;
+    }
+
+    for (let i = 0; i < playlists.length; i++) {
+      const playlist = playlists[i];
+      const playlistItem = document.createElement('div');
+      playlistItem.classList.add('playlist-item');
+
+      const playlistName = document.createElement('div');
+      playlistName.textContent = `${i + 1}. ${playlist.name}`;
+
+      const addButton = document.createElement('button');
+      addButton.textContent = 'Add Song';
+      addButton.addEventListener('click', () => {
+        const selectedSongs = getSongsFromCheckboxes();
+        if (selectedSongs.length === 0) {
+          showMessage('Please select at least one song.');
+        } else {
+          addSongsToPlaylist(playlist, selectedSongs);
+        }
+      });
+
+      playlistItem.appendChild(playlistName);
+      playlistItem.appendChild(addButton);
+      playlistContent.appendChild(playlistItem);
+    }
+  }
+
+  function getSongsFromCheckboxes() {
+    const checkboxes = document.getElementsByName('song-checkbox');
+    const selectedSongs = [];
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        selectedSongs.push(songs[i]);
+      }
+    }
+
+    return selectedSongs;
+  }
+
+  function addSongsToPlaylist(playlist, songsToAdd) {
+    const existingSongs = playlist.songs;
+    let duplicateCount = 0;
+
+    for (let i = 0; i < songsToAdd.length; i++) {
+      const songToAdd = songsToAdd[i];
+      const duplicateSong = existingSongs.find(song => song.name === songToAdd.name);
+
+      if (duplicateSong) {
+        duplicateCount++;
+        continue;
+      }
+
+      existingSongs.push(songToAdd);
+    }
+
+    if (duplicateCount > 0) {
+      showMessage(`${duplicateCount} song(s) already exist in the playlist and were skipped.`);
+    } else {
+      showMessage('Songs added to the playlist successfully.');
+    }
+  }
+
+  function createPlaylist() {
+    const playlistNameInput = document.getElementById('playlist-name');
+    const playlistName = playlistNameInput.value.trim();
+
+    if (playlistName === '') {
+      showMessage('Please enter a valid playlist name.');
+      return;
+    }
+
+    const duplicatePlaylist = playlists.find(playlist => playlist.name === playlistName);
+
+    if (duplicatePlaylist) {
+      showMessage('A playlist with the same name already exists.');
+      return;
+    }
+
+    const playlist = {
+      name: playlistName,
+      songs: []
+    };
+
+    playlists.push(playlist);
+    playlistNameInput.value = '';
+    displayPlaylists();
+    showMessage('Playlist created successfully.');
+  }
+
+  function displayRecentlyPlayedSongs() {
+    const content = document.getElementById('content');
+    content.innerHTML = '';
+
+    if (songs.length === 0) {
+      content.innerHTML = 'No songs uploaded yet.';
+      return;
+    }
+
+    const recentSongs = songs.slice(0, 3);
+    for (let i = 0; i < recentSongs.length; i++) {
+      const song = recentSongs[i];
+      const songItem = document.createElement('div');
+      songItem.classList.add('song-item');
+
+      const songName = document.createElement('div');
+      songName.textContent = `Recently Played: ${song.name}`;
+
       songItem.appendChild(songName);
       content.appendChild(songItem);
     }
@@ -101,6 +207,7 @@
 
   function handleSongsClick() {
     displaySongs();
+    displayPlaylists();
   }
 
   function handleSearchClick() {
@@ -132,6 +239,7 @@
       showMessage(`Song "${file.name}" uploaded successfully.`);
     }
     displaySongs();
+    displayPlaylists();
   }
 
   function playSong(index) {
@@ -141,6 +249,7 @@
     updateCurrentSong(songs[index].name);
     isPaused = false;
     displaySongs();
+    displayPlaylists();
     highlightCurrentSong();
   }
 
@@ -148,6 +257,7 @@
     audioPlayer.pause();
     isPaused = true;
     displaySongs();
+    displayPlaylists();
     highlightCurrentSong();
   }
 
@@ -162,6 +272,7 @@
     updateCurrentSong(songs[currentSongIndex].name);
     isPaused = false;
     displaySongs();
+    displayPlaylists();
     highlightCurrentSong();
   }
 
@@ -176,6 +287,7 @@
     updateCurrentSong(songs[currentSongIndex].name);
     isPaused = false;
     displaySongs();
+    displayPlaylists();
     highlightCurrentSong();
   }
 
@@ -197,18 +309,70 @@
     songItems[currentSongIndex].classList.add('active-song');
   }
 
-  // Add event listeners to the buttons
+  function handleCheckboxChange() {
+    const checkboxes = document.getElementsByName('song-checkbox');
+    const deleteButton = document.getElementById('delete-btn');
+    let anyCheckboxChecked = false;
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        anyCheckboxChecked = true;
+        break;
+      }
+    }
+
+    deleteButton.disabled = !anyCheckboxChecked;
+  }
+
+  function handleDeleteClick() {
+    const checkboxes = document.getElementsByName('song-checkbox');
+    const songsToDelete = [];
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked) {
+        songsToDelete.push(songs[i]);
+      }
+    }
+
+    if (songsToDelete.length === 0) {
+      showMessage('Please select at least one song to delete.');
+    } else {
+      for (let i = 0; i < songsToDelete.length; i++) {
+        const songToDelete = songsToDelete[i];
+        const songIndex = songs.findIndex(song => song.name === songToDelete.name);
+        if (songIndex !== -1) {
+          songs.splice(songIndex, 1);
+          if (songIndex === currentSongIndex) {
+            audioPlayer.pause();
+            isPaused = true;
+            currentSongIndex = 0;
+          } else if (songIndex < currentSongIndex) {
+            currentSongIndex--;
+          }
+        }
+      }
+      displaySongs();
+      displayPlaylists();
+      showMessage('Songs deleted successfully.');
+    }
+  }
+
   document.getElementById('songs-btn').addEventListener('click', handleSongsClick);
   document.getElementById('search-btn').addEventListener('click', handleSearchClick);
   document.getElementById('upload-btn').addEventListener('click', handleUploadClick);
+  document.getElementById('delete-btn').addEventListener('click', handleDeleteClick);
   document.getElementById('prev-btn').addEventListener('click', playPreviousSong);
   document.getElementById('next-btn').addEventListener('click', playNextSong);
+  document.getElementById('create-playlist').addEventListener('click', createPlaylist);
+  document.getElementById('recent-btn').addEventListener('click', displayRecentlyPlayedSongs);
 
-  // Add event listener to handle the end of the song
-  document.getElementById('audio-player').addEventListener('ended', playNextSong);
-
-  // Initialize the audio player
   audioPlayer = document.getElementById('audio-player');
+  audioPlayer.addEventListener('ended', playNextSong);
+
+  displaySongs();
+  displayPlaylists();
+  displayRecentlyPlayedSongs();
+
 </script>
 </body>
 </html>
