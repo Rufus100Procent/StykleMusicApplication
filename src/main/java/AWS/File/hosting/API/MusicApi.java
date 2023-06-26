@@ -31,9 +31,9 @@ public class MusicApi {
     public MusicApi(FileService fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
-    @GetMapping("/")
+    @GetMapping("/ss")
     public String showHomePage() {
-        return "Test";
+        return "playlist";
 //        return "mediaPlayer";
     }
 

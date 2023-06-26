@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Playlist Page</title>
+    <style>
+        /* CSS styles removed for brevity */
+    </style>
+</head>
+<body>
+<button onclick="openPopup()">Playlist</button>
+
+<div id="popup" class="popup">
+    <form action="/create" method="post">
+        <input type="text" id="playlistName" name="playlistName" placeholder="Enter playlist name">
+        <button type="submit">Create</button>
+        <p class="error-message" th:text="${errorMessage}" style="display: none;"></p>
+    </form>
+</div>
+
+<div class="playlist-container">
+    <div th:each="playlist : ${playlists}" class="playlist-item">
+        <label th:text="${playlist}"></label>
+    </div>
+</div>
+
+<div>
+    <form th:action="@{/delete}" method="post">
+        <button id="deleteButton" class="delete-button" type="submit">Delete</button>
+        <div id="displayPopup" class="display-popup"></div>
+        <div th:each="playlist : ${playlists}" class="playlist-item">
+            <input type="checkbox" name="selectedPlaylists" th:value="${playlist}">
+        </div>
+    </form>
+</div>
+
+<script>
+    function openPopup() {
+        var popup = document.getElementById("popup");
+        popup.style.display = "block";
+        resetErrorMessage();
+    }
+
+    function resetErrorMessage() {
+        var errorMessage = document.getElementsByClassName("error-message")[0];
+        errorMessage.style.display = "none";
+        errorMessage.innerHTML = "";
+    }
+</script>
+</body>
+</html>
