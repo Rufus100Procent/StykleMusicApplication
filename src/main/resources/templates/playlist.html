@@ -4,44 +4,77 @@
     <title>Playlist Page</title>
     <style>
         /* CSS styles removed for brevity */
+        .error {
+            color: red;
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
-<button onclick="openPopup()">Playlist</button>
+<button onclick="togglePlaylist()">Playlist</button>
 
-<div id="popup" class="popup">
+<div id="playlistForm" style="display: none;">
     <form action="/create" method="post">
-        <input type="text" id="playlistName" name="playlistName" placeholder="Enter playlist name">
-        <button type="submit">Create</button>
-        <p class="error-message" th:text="${errorMessage}" style="display: none;"></p>
+        <input type="text" id="playlistName" name="playlistName" placeholder="Enter playlist name" oninput="checkExistingName()" required>
+        <button id="createButton" type="submit" disabled>Create</button>
+        <p class="error-message" id="errorMessage" style="display: none;"></p>
     </form>
-</div>
-
-<div class="playlist-container">
-    <div th:each="playlist : ${playlists}" class="playlist-item">
-        <label th:text="${playlist}"></label>
-    </div>
 </div>
 
 <div>
     <form th:action="@{/delete}" method="post">
-        <button id="deleteButton" class="delete-button" type="submit">Delete</button>
-        <div id="displayPopup" class="display-popup"></div>
         <div th:each="playlist : ${playlists}" class="playlist-item">
             <input type="checkbox" name="selectedPlaylists" th:value="${playlist}">
+            <label th:text="${playlist}"></label>
         </div>
+        <button id="deleteButton" class="delete-button" type="submit">Delete</button>
     </form>
 </div>
 
 <script>
-    function openPopup() {
-        var popup = document.getElementById("popup");
-        popup.style.display = "block";
+    function togglePlaylist() {
+        var playlistForm = document.getElementById("playlistForm");
+        playlistForm.style.display = playlistForm.style.display === "none" ? "block" : "none";
         resetErrorMessage();
     }
 
+    function checkExistingName() {
+        var playlistNameInput = document.getElementById("playlistName");
+        var createButton = document.getElementById("createButton");
+        var errorMessage = document.getElementById("errorMessage");
+
+        if (playlistNameInput.value.trim() === "") {
+            createButton.disabled = true;
+            errorMessage.style.display = "none";
+        } else {
+            var existingNames = Array.from(document.querySelectorAll(".playlist-item label")).map(function(label) {
+                return label.textContent;
+            });
+
+            if (existingNames.includes(playlistNameInput.value.trim())) {
+                createButton.disabled = true;
+                errorMessage.textContent = playlistNameInput.value.trim() + " already exists. Please choose a different name.";
+                errorMessage.style.display = "block";
+                playlistNameInput.classList.add("shake");
+            } else {
+                createButton.disabled = false;
+                errorMessage.style.display = "none";
+                playlistNameInput.classList.remove("shake");
+            }
+        }
+    }
+
     function resetErrorMessage() {
-        var errorMessage = document.getElementsByClassName("error-message")[0];
+        var errorMessage = document.getElementById("errorMessage");
         errorMessage.style.display = "none";
         errorMessage.innerHTML = "";
     }

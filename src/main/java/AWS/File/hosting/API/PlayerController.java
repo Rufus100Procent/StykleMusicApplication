@@ -1,10 +1,12 @@
 package AWS.File.hosting.API;
- import org.springframework.stereotype.Controller;
+
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
- import java.util.ArrayList;
- import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class PlayerController {
     private List<String> playlists = new ArrayList<>();
@@ -17,10 +19,10 @@ public class PlayerController {
 
     @PostMapping("/create")
     public String createPlaylist(@RequestParam("playlistName") String playlistName, Model model) {
-        if (playlists.contains(playlistName)) {
+        if (playlists.stream().anyMatch(p -> p.equalsIgnoreCase(playlistName.trim()))) {
             model.addAttribute("errorMessage", playlistName + " already exists. Please choose a different name.");
         } else {
-            playlists.add(playlistName);
+            playlists.add(playlistName.trim());
         }
         model.addAttribute("playlists", playlists);
         return "playlist";
@@ -34,5 +36,4 @@ public class PlayerController {
         model.addAttribute("playlists", playlists);
         return "playlist";
     }
-
 }
