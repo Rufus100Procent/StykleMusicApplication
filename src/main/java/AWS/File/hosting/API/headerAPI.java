@@ -16,6 +16,10 @@ public class headerAPI {
         return "dashboard"; // Replace with the actual HTML file for the Dashboard
     }
 
+    @GetMapping("logout")
+    public String saaa(){
+        return "auth/login";
+    }
     @GetMapping("/playlist")
     public String playlist() {
         // Logic for handling the "Playlist" page
@@ -28,15 +32,16 @@ public class headerAPI {
         return "feedback"; // Replace with the actual HTML file for the Feedback
     }
 
+
     @GetMapping("/search")
     public String search() {
         // Logic for handling the "Search" page
         return "search"; // Replace with the actual HTML file for the Search
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/home")
     public String profile() {
         // Logic for handling the "Profile" page
-        return "profile"; // Replace with the actual HTML file for the Profile
+        return "/"; // Replace with the actual HTML file for the Profile
     }
 }

@@ -4,7 +4,6 @@
   <title>Navigation Bar</title>
   <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
   <style>
-
     *{
       margin: 0;
       padding: 0;
@@ -99,7 +98,7 @@
 <body>
 <div class="wrapper">
   <div class="sidebar">
-    <h2>Rift <span>Radio</span><i class="fa-solid fa-radio"></i></h2>
+    <h2>Rift <span>Radio</span> <i class="fa-solid fa-radio"></i> </h2>
     <ul>
       <li>
         <a href="#"><i class="fa-solid fa-user"></i>  Profile  <i class="fa-solid fa-caret-down"></i ></a>
@@ -120,9 +119,64 @@
     </ul>
   </div>
   <div class="main_content">
-    <div class="header">Welcame to Stykle Rift Radio, A place where you listen you own music</div>
+    <div class="header">Welcome to Style Rift Radio, a place where you can listen to your own music</div>
+    <div class="music-player">
+      <button id="previousBtn"><i class="fa-solid fa-backward"></i></button>
+      <button id="playBtn"><i class="fa-solid fa-circle-play"></i></button>
+      <button id="pauseBtn"><i class="fa-solid fa-circle-pause"></i></button>
+      <button id="nextBtn"><i class="fa-solid fa-forward"></i></button>
+      <label for="volumeSlider"></label><input type="range" id="volumeSlider" min="0" max="100" step="1">
+    </div>
   </div>
 </div>
+
+<script>
+  const audio = new Audio(); // Create an Audio object
+
+  const playBtn = document.getElementById('playBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const previousBtn = document.getElementById('previousBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const volumeSlider = document.getElementById('volumeSlider');
+
+  // Define your playlist
+  const playlist = [
+    'song1.mp3',
+    'song2.mp3',
+    'song3.mp3'
+  ];
+
+  let currentSongIndex = 0;
+
+  function playSong() {
+    audio.src = playlist[currentSongIndex];
+    audio.play();
+  }
+
+  function pauseSong() {
+    audio.pause();
+  }
+
+  function nextSong() {
+    currentSongIndex = (currentSongIndex + 1) % playlist.length;
+    playSong();
+  }
+
+  function previousSong() {
+    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+    playSong();
+  }
+
+  function changeVolume() {
+    audio.volume = volumeSlider.value / 100;
+  }
+
+  playBtn.addEventListener('click', playSong);
+  pauseBtn.addEventListener('click', pauseSong);
+  nextBtn.addEventListener('click', nextSong);
+  previousBtn.addEventListener('click', previousSong);
+  volumeSlider.addEventListener('input', changeVolume);
+</script>
 
 </body>
 </html>

@@ -37,12 +37,12 @@ public class MusicApi {
 //        return "mediaPlayer";
     }
 
-    @GetMapping("/upload")
+    @GetMapping("/uploads")
     public String showUploadPage() {
         return "header";
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/uploads")
     public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
             redirectAttributes.addFlashAttribute("message", "Please select a file to upload.");
