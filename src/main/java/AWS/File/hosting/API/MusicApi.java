@@ -74,7 +74,7 @@ public class MusicApi {
         return "mediaPlayer";
     }
 
-    @GetMapping("/search")
+    @GetMapping("/searchh")
     public String showSearchPage(Model model, @RequestParam("query") String query) {
         List<String> uploadedFiles = fileStorageService.searchUploadedFiles(query);
         model.addAttribute("uploadedFiles", uploadedFiles);

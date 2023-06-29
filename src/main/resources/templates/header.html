@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Navigation Bar</title>
+  <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
+  <style>
+
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      font-family: 'Poppins' , sans-serif;
+    }
+    body{
+      background-color: #f3f5f9;
+    }
+    .wrapper{
+      display: flex;
+      position: relative;
+    }
+    .wrapper .sidebar{
+      position: fixed;
+      width: 200px;
+      height: 100%;
+      background-color: #4b4276;
+      padding: 30px 0;
+    }
+    .wrapper .sidebar h2{
+      color: #161c12;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .wrapper .sidebar span{
+      font-weight: 1000;
+      color: #838f32;
+    }
+    .wrapper .sidebar ul li{
+      padding: 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.5 );
+      border-top: 1px solid rgba(255, 255, 255, 0.5 );
+    }
+    .wrapper .sidebar ul li a {
+      color: #bdb;
+      display: block;
+    }
+    .wrapper .sidebar ul li a .fas {
+      width: 25px;
+    }
+    .wrapper .sidebar ul li:hover{
+      background-color: #594f8d;
+    }
+    .wrapper .sidebar lu li:hover a {
+      color: #fff;
+    }
+    .wrapper .main_content{
+      width: 100%;
+      margin-left: 200px;
+    }
+    .wrapper .main_content .header{
+      padding: 20px;
+      background-color: #f6eeee;
+      color: #1c0d0d;
+      border-bottom:  1px solid #e5ecf1;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="sidebar">
+    <h2>Rift <span>Radio</span></h2>
+    <ul>
+      <li><a href="#"><i class="fa-solid fa-house"></i>Home</a></li>
+      <li><a href="#"><i class="fa-solid fa-headphones"></i>Songs</a></li>
+      <li><a href="#"><i class="fa-solid fa-guitar"></i>New Playlist</a></li>
+      <li><a href="#"><i class="fa-solid fa-user"></i>Profile</a></li>
+      <!--      <li><a href="#"></a></li>-->
+
+    </ul>
+  </div>
+  <div class="main_content">
+    <div class="header">Welcame to Stykle Rift Radio, A place where you listen you own music</div>
+<!--    <div class="info">-->
+
+<!--    </div>-->
+  </div>
+</div>
+
+</body>
+</html>

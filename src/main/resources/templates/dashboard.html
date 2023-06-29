@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Page</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 50vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Container for the images */
+    .image-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* Individual image */
+    .image {
+      width: 100px;
+      height: 100px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    /* Label or text below the image */
+    .image-label {
+      font-size: 14px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .image-label:hover {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<div id="header"></div>
+<div class="image-container">
+  <div>
+    <div class="image" style="background-image: url('../images/play.png')"></div>
+    <a href="/static" class="image-label">Image 1</a>
+  </div>
+
+  <!-- Add space between the images -->
+  <div style="margin-right: 50px;"></div>
+
+  <div>
+    <div class="image" style="background-image: url('../images/vinly-small.jpg')"></div>
+    <a href="/static" class="image-label">Image 2</a>
+  </div>
+
+  <!-- Add space between the images -->
+  <div style="margin-right: 50px;"></div>
+
+  <div>
+    <div class="image" style="background-image: url('../images/background.jpg')"></div>
+    <a href="/static" class="image-label">Image 3</a>
+  </div>
+</div>
+</body>
+</html>

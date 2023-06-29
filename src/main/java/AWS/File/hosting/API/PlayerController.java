@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -16,12 +15,12 @@ public class PlayerController {
         this.playlistService = playlistService;
     }
 
-    @GetMapping("/")
-    public String showPlaylistPage(Model model) {
-        List<String> playlists = playlistService.getAllPlaylists();
-        model.addAttribute("playlists", playlists);
-        return "playlist";
-    }
+//    @GetMapping("/sfsd")
+//    public String showPlaylistPage(Model model) {
+//        List<String> playlists = playlistService.getAllPlaylists();
+//        model.addAttribute("playlists", playlists);
+//        return "navigationbar/navigationbar";
+//    }
 
     @PostMapping("/create")
     public String createPlaylist(@RequestParam("playlistName") String playlistName, Model model) {
