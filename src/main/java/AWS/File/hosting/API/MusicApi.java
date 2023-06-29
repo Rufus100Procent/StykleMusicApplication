@@ -39,7 +39,7 @@ public class MusicApi {
 
     @GetMapping("/upload")
     public String showUploadPage() {
-        return "upload";
+        return "header";
     }
 
     @PostMapping("/upload")

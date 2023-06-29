@@ -65,27 +65,62 @@
       color: #1c0d0d;
       border-bottom:  1px solid #e5ecf1;
     }
+    ul li ul.dropdown-playlist li{
+      display: block;
+    }
+    ul li ul.dropdown-profile li{
+      display: block;
+    }
+    ul li ul.dropdown-playlist{
+      width: 100%;
+      background-color: #228804;
+      position: absolute;
+      z-index: 999;
+      display: none;
+    }
+    ul li ul.dropdown-profile{
+      width: 100%;
+      background-color: #228804;
+      position: absolute;
+      z-index: 999;
+      display: none;
+    }
+    ul li ul a:hover{
+      background-color: #1c0d0d;
+    }
+    ul li:hover ul.dropdown-playlist{
+      display: block;
+    }
+    ul li:hover ul.dropdown-profile{
+      display: block;
+    }
   </style>
 </head>
 <body>
 <div class="wrapper">
   <div class="sidebar">
-    <h2>Rift <span>Radio</span></h2>
+    <h2>Rift <span>Radio</span><i class="fa-solid fa-radio"></i></h2>
     <ul>
-      <li><a href="#"><i class="fa-solid fa-user"></i> Profile</a></li>
+      <li>
+        <a href="#"><i class="fa-solid fa-user"></i>  Profile  <i class="fa-solid fa-caret-down"></i ></a>
+        <ul class="dropdown-profile">
+          <a href="#"><i class="fa-solid fa-lock"> Logout</i></a>
+        </ul>
+      </li>
       <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
-      <li><a href="#"><i class="fa-solid fa-upload"></i> Upload</a></li>
+      <li><a href="/upload"><i class="fa-solid fa-upload"></i> Upload</a></li>
       <li><a href="#"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-      <li><a href="#"><i class="fa-solid fa-caret-down"></i > New Playlist</a></li>
-      <!--      <li><a href="#"></a></li>-->
-
+      <li>
+        <a href="#"><i class="fa-solid fa-caret-down"></i > New Playlist</a>
+        <ul class="dropdown-playlist">
+          <a href="#" ><i class="fa-solid fa-plus"></i> Create New Playlist </a>
+          <a href="/searchh" ><i class="fa-solid fa-magnifying-glass"></i> search </a>
+        </ul>
+      </li>
     </ul>
   </div>
   <div class="main_content">
     <div class="header">Welcame to Stykle Rift Radio, A place where you listen you own music</div>
-<!--    <div class="info">-->
-
-<!--    </div>-->
   </div>
 </div>
 
