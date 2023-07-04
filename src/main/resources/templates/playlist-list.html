@@ -3,13 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>Playlist Manager</title>
+  <style>
+    .error {
+      color: red;
+    }
+    .hidden {
+      display: none;
+    }
+    .shake {
+      animation: shake 0.5s;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    .delete-button {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 20px;
+      cursor: pointer;
+      outline: none;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-<h1>Playlist Manager</h1>
+<button onclick="togglePlaylist()">New Playlist</button>
 
-<form action="/playlists" method="post">
-  <input type="text" name="playlistName" placeholder="Enter playlist name">
-  <button type="submit">Create Playlist</button>
+<form id="playlistForm" class="hidden" action="/playlists" method="post" onsubmit="return validatePlaylistName()">
+  <input type="text" name="playlistName" id="playlistName" placeholder="Enter playlist name" oninput="enableCreateButton()" required>
+  <button type="submit" id="createButton" disabled>Create </button>
+  <p class="error" id="errorMessage"></p>
 </form>
 
 <h2>All Playlists</h2>
@@ -19,9 +47,75 @@
     <form th:action="@{/playlists/delete}" method="post" style="display: inline;">
       <input type="hidden" name="_method" value="DELETE">
       <input type="hidden" name="playlistName" th:value="${playlist.playlistName}">
-      <button type="submit">Delete</button>
+      <button type="submit" class="delete-button"><i class="fas fa-trash-alt"></i></button>
     </form>
   </li>
 </ul>
+
+<script>
+  function togglePlaylist() {
+    var playlistForm = document.getElementById("playlistForm");
+    playlistForm.classList.toggle("hidden");
+    resetErrorMessage();
+  }
+
+  function enableCreateButton() {
+    var playlistNameInput = document.getElementById("playlistName");
+    var createButton = document.getElementById("createButton");
+    var errorMessage = document.getElementById("errorMessage");
+
+    if (playlistNameInput.value.trim() === "") {
+      createButton.disabled = true;
+      errorMessage.style.display = "none";
+    } else {
+      var existingNames = Array.from(document.querySelectorAll("ul li span")).map(function(element) {
+        return element.innerText.toLowerCase();
+      });
+
+      if (existingNames.includes(playlistNameInput.value.trim().toLowerCase())) {
+        createButton.disabled = true;
+        errorMessage.innerText = playlistNameInput.value.trim() + " already exists. Please choose a different name.";
+        errorMessage.style.display = "block";
+        playlistNameInput.classList.add("shake");
+      } else {
+        createButton.disabled = false;
+        errorMessage.style.display = "none";
+        playlistNameInput.classList.remove("shake");
+      }
+    }
+  }
+
+  function validatePlaylistName() {
+    var playlistNameInput = document.getElementById("playlistName");
+    var errorMessage = document.getElementById("errorMessage");
+
+    var existingNames = Array.from(document.querySelectorAll("ul li span")).map(function(element) {
+      return element.innerText.toLowerCase();
+    });
+
+    var playlistName = playlistNameInput.value.trim().toLowerCase();
+
+    if (existingNames.includes(playlistName)) {
+      errorMessage.innerText = "Playlist name already exists. Please choose a different name.";
+      errorMessage.style.display = "block";
+      return false;
+    }
+
+    return true;
+  }
+
+  function resetErrorMessage() {
+    var errorMessage = document.getElementById("errorMessage");
+    var playlistNameInput = document.getElementById("playlistName");
+    var createButton = document.getElementById("createButton");
+
+    errorMessage.innerText = "";
+    errorMessage.style.display = "none";
+    playlistNameInput.value = "";
+    playlistNameInput.classList.remove("shake");
+    createButton.disabled = true;
+  }
+</script>
+
 </body>
 </html>
