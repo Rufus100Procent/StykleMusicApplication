@@ -1,5 +1,7 @@
 package AWS.File.hosting.Service;
 
+import AWS.File.hosting.Model.Artist;
+import AWS.File.hosting.Repo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -20,6 +22,15 @@ import java.util.List;
 
 @Service
 public class FileService {
+
+    @Autowired
+    private Repo userRepository;
+
+    public void createUser() {
+        Artist user = new Artist("hon");
+        userRepository.save(user);
+    }
+
     private static Path fileStoragePath = null;
     private final List<String> uploadedFiles = new ArrayList<>();
 

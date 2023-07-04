@@ -121,62 +121,54 @@
   <div class="main_content">
     <div class="header">Welcome to Style Rift Radio, a place where you can listen to your own music</div>
     <div class="music-player">
-      <button id="previousBtn"><i class="fa-solid fa-backward"></i></button>
-      <button id="playBtn"><i class="fa-solid fa-circle-play"></i></button>
-      <button id="pauseBtn"><i class="fa-solid fa-circle-pause"></i></button>
+      <button id="playPauseBtn"><i class="fa-solid fa-circle-play"></i></button>
       <button id="nextBtn"><i class="fa-solid fa-forward"></i></button>
       <label for="volumeSlider"></label><input type="range" id="volumeSlider" min="0" max="100" step="1">
     </div>
   </div>
-</div>
 
-<script>
-  const audio = new Audio(); // Create an Audio object
+  <script>
+    const audio = new Audio(); // Create an Audio object
 
-  const playBtn = document.getElementById('playBtn');
-  const pauseBtn = document.getElementById('pauseBtn');
-  const previousBtn = document.getElementById('previousBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const volumeSlider = document.getElementById('volumeSlider');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
 
-  // Define your playlist
-  const playlist = [
-    'song1.mp3',
-    'song2.mp3',
-    'song3.mp3'
-  ];
+    // Define your playlist
+    const playlist = [
+      'song1.mp3',
+      'song2.mp3',
+      'song3.mp3'
+    ];
 
-  let currentSongIndex = 0;
+    let currentSongIndex = 0;
+    let isPlaying = false;
 
-  function playSong() {
-    audio.src = playlist[currentSongIndex];
-    audio.play();
-  }
+    function togglePlayPause() {
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+      } else {
+        audio.src = playlist[currentSongIndex];
+        audio.play();
+        isPlaying = true;
+        playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
+      }
+    }
 
-  function pauseSong() {
-    audio.pause();
-  }
+    function nextSong() {
+      currentSongIndex = (currentSongIndex + 1) % playlist.length;
+      togglePlayPause();
+    }
 
-  function nextSong() {
-    currentSongIndex = (currentSongIndex + 1) % playlist.length;
-    playSong();
-  }
+    function changeVolume() {
+      audio.volume = volumeSlider.value / 100;
+    }
 
-  function previousSong() {
-    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
-    playSong();
-  }
-
-  function changeVolume() {
-    audio.volume = volumeSlider.value / 100;
-  }
-
-  playBtn.addEventListener('click', playSong);
-  pauseBtn.addEventListener('click', pauseSong);
-  nextBtn.addEventListener('click', nextSong);
-  previousBtn.addEventListener('click', previousSong);
-  volumeSlider.addEventListener('input', changeVolume);
-</script>
-
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    nextBtn.addEventListener('click', nextSong);
+    volumeSlider.addEventListener('input', changeVolume);
+  </script>
 </body>
 </html>

@@ -46,9 +46,9 @@
 <div>
     <form th:action="@{/delete}" method="post">
         <div th:each="playlist : ${playlists}" class="playlist-item">
-            <input type="checkbox" name="selectedPlaylists" th:value="${playlist}">
-            <a th:href="@{'/playlist/' + ${playlist}}">
-                <label th:text="${playlist}"></label>
+            <input type="checkbox" name="selectedPlaylists" th:value="${playlist.id}">
+            <a th:href="@{'/playlist/' + ${playlist.id}}">
+                <label th:text="${playlist.playlist_name}"></label>
             </a>
         </div>
         <button id="deleteButton" class="delete-button" type="submit">Delete</button>
@@ -56,7 +56,7 @@
 </div>
 
 <div id="playlistList" class="playlist-list">
-    <div th:each="playlist : ${playlists}" class="playlist-list-item" onclick="addPlaylist(this.innerText)"><span th:text="${playlist}"></span></div>
+    <div th:each="playlist : ${playlists}" class="playlist-list-item" onclick="addPlaylist(this.innerText)"><span th:text="${playlist.playlist_name}"></span></div>
     <p th:if="${playlists.size() == 0}">No playlists have been created.</p>
 </div>
 

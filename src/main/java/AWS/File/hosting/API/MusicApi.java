@@ -31,11 +31,11 @@ public class MusicApi {
     public MusicApi(FileService fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
-    @GetMapping("/ss")
-    public String showHomePage() {
-        return "playlist";
-//        return "mediaPlayer";
-    }
+//    @GetMapping("/asd")
+//    public String showHomePage() {
+//        return "playlist";
+////        return "mediaPlayer";
+//    }
 
     @GetMapping("/uploads")
     public String showUploadPage() {

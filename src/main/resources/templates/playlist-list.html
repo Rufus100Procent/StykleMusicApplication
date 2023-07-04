@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Playlist Manager</title>
+</head>
+<body>
+<h1>Playlist Manager</h1>
+
+<form action="/playlists" method="post">
+  <input type="text" name="playlistName" placeholder="Enter playlist name">
+  <button type="submit">Create Playlist</button>
+</form>
+
+<h2>All Playlists</h2>
+<ul>
+  <li th:each="playlist : ${playlists}">
+    <span th:text="${playlist.playlistName}"></span>
+    <form th:action="@{/playlists/delete}" method="post" style="display: inline;">
+      <input type="hidden" name="_method" value="DELETE">
+      <input type="hidden" name="playlistName" th:value="${playlist.playlistName}">
+      <button type="submit">Delete</button>
+    </form>
+  </li>
+</ul>
+</body>
+</html>

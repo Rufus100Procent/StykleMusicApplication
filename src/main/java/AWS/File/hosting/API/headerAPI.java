@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class headerAPI {
 
-    @GetMapping("/")
+    @GetMapping("/a")
     public String bar(){
-        return "header";
+        return "playlist";
     }
     @GetMapping("/dashboard")
     public String dashboard() {

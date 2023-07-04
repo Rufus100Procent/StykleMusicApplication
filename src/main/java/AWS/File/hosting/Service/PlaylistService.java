@@ -1,30 +1,39 @@
 package AWS.File.hosting.Service;
 
+import AWS.File.hosting.Model.Playlist;
+import AWS.File.hosting.Repository.PlaylistRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaylistService {
-    private final List<String> playlists = new ArrayList<>();
+    private final PlaylistRepository playlistRepository;
 
-    public List<String> getAllPlaylists() {
-        return playlists;
+    @Autowired
+    public PlaylistService(PlaylistRepository playlistRepository) {
+        this.playlistRepository = playlistRepository;
     }
 
-    public boolean createPlaylist(String playlistName) {
-        if (playlists.stream().anyMatch(p -> p.equalsIgnoreCase(playlistName.trim()))) {
-            return false;
-        } else {
-            playlists.add(playlistName.trim());
-            return true;
-        }
+    public Playlist createPlaylist(String playlistName) {
+        Playlist playlist = new Playlist();
+        playlist.setPlaylistName(playlistName);
+        return playlistRepository.save(playlist);
     }
 
-    public void deletePlaylists(List<String> selectedPlaylists) {
-        if (selectedPlaylists != null) {
-            playlists.removeAll(selectedPlaylists);
-        }
+    public List<Playlist> getAllPlaylists() {
+        return playlistRepository.findAll();
+    }
+
+    public void deletePlaylistByName(String playlistName) {
+        Optional<Playlist> playlistOptional = playlistRepository.findByPlaylistName(playlistName);
+        playlistOptional.ifPresent(playlistRepository::delete);
+    }
+
+    public void deletePlaylistById(Long id) {
+        playlistRepository.deleteById(id);
     }
 }
