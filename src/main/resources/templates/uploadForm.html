@@ -2,20 +2,87 @@
 <html>
 <head>
   <title>Song Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 100px;
+    }
+
+    h1 {
+      text-align: inherit;
+    }
+
+    form {
+      margin-bottom: 10px;
+    }
+
+    form input[type="file"],
+    form input[type="text"],
+    form input[type="submit"] {
+      display: block;
+      margin-bottom: 2px;
+      width: 20%;
+      padding: 1px;
+      margin: 1px;
+
+    }
+    form input[type="file"]{
+      display: block;
+      margin-bottom: 1px;
+      width: 50%;
+      padding: 5px;
+    }
+    /*Create button*/
+    form input[type="submit"] {
+      display: block;
+      margin-bottom: 10px;
+      width: 10%;
+      padding: 3px;
+      background-color: #18a620;
+      color: #f5f2f2;
+      cursor: pointer;
+    }
+    #errorMessage {
+      color: red;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      height: 10px;
+    }
+
+    table td {
+      border: 0.01px solid #52934f;
+      padding: 1px;
+      text-align: center;
+    }
+
+    table th {
+      background-color: #6796ee;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
 <h1>Song Upload</h1>
 
-<form method="post" action="/upload" enctype="multipart/form-data">
-  <input type="file" name="file" required><br><br>
-  <input type="text" name="songName" placeholder="Song Name" required><br><br>
-  <input type="text" name="artist" placeholder="Artist" required><br><br>
-  <input type="text" name="releaseYear" placeholder="Release Year" required><br><br>
-  <input type="text" name="album" placeholder="Album"><br><br>
+<form method="post" action="/upload" enctype="multipart/form-data" onsubmit="return validateForm()">
+  <input type="file" name="file" required><br>
+  <input type="text" name="songName" placeholder="Song Name" required><br>
+  <input type="text" name="artist" placeholder="Artist" required><br>
+  <input type="text" name="releaseYear" id="releaseYear" placeholder="Release Year" required><br>
+  <input type="text" name="album" placeholder="Album"><br>
   <input type="submit" value="Create">
 </form>
 
-<p th:text="${message}"></p>
+<p id="errorMessage"></p>
 
 <table>
   <thead>
@@ -46,8 +113,7 @@
             <td>${song.releaseYear}</td>
             <td>${song.album ? song.album : '-'}</td>
             <td>
-            <button onclick="playSong(${song.id}, '${song.filePath}')">Play</button>
-
+              <button onclick="playSong(${song.id}, '${song.filePath}')">Play</button>
             </td>
           `;
               songList.appendChild(row);
@@ -58,8 +124,42 @@
   // Function to play the selected song
   function playSong(id, filePath) {
     const audioPlayer = document.getElementById('audioPlayer');
-    audioPlayer.src = `/songs/${id}/file`;
-    audioPlayer.play();
+    const url = `/songs/${id}/file`;
+
+    fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to fetch song.');
+              }
+              return response.arrayBuffer();
+            })
+            .then(buffer => {
+              const audioContext = new AudioContext();
+              return audioContext.decodeAudioData(buffer);
+            })
+            .then(audioBuffer => {
+              const source = audioContext.createBufferSource();
+              source.buffer = audioBuffer;
+              source.connect(audioContext.destination);
+              source.start();
+            })
+            .catch(error => {
+              console.error(error);
+            });
+  }
+
+  // Function to validate the release year
+  function validateForm() {
+    const releaseYearInput = document.getElementById('releaseYear');
+    const releaseYear = releaseYearInput.value.trim();
+
+    if (releaseYear.length !== 4 || isNaN(releaseYear)) {
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = 'Please enter a valid 4-digit release year.';
+      return false; // Prevent form submission
+    }
+
+    return true; // Allow form submission
   }
 </script>
 </body>

@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,22 +49,28 @@ public class MusicController {
         return songRepository.findAll();
     }
     @GetMapping("/songs/{id}/file")
-    public ResponseEntity<Resource> downloadSong(@PathVariable("id") Long id) throws IOException {
+    public ResponseEntity<byte[]> downloadSong(@PathVariable("id") Long id) throws IOException {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         Song song = songOptional.get();
         String filePath = song.getFilePath();
-        File file = new File(filePath);
-        Resource resource = new UrlResource(file.toURI());
+        Path file = Path.of(filePath);
+
+        if (!Files.exists(file) || !Files.isReadable(file)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] fileBytes = Files.readAllBytes(file);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(org.springframework.http.MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM));
-        headers.setContentDisposition(ContentDisposition.attachment().filename(file.getName()).build());
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(resource);
+        headers.setContentDisposition(ContentDisposition.attachment().filename(song.getTitle()).build());
+
+        return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
+
     @PostMapping("/upload")
     public String uploadSong(@RequestParam("file") MultipartFile file,
                              @RequestParam("songName") String songName,
