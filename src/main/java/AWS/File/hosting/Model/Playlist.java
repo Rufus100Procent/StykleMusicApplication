@@ -37,6 +37,11 @@ public class Playlist {
     )
     private String playlistName;
 
+    //consutructor for the test class
+    public Playlist(String s) {
+
+    }
+
     @Override
     public String toString() {
         return "Playlist{" +

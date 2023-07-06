@@ -1,0 +1,89 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Poppins' , sans-serif;
+}
+body{
+    background-color: #f3f5f9;
+}
+.wrapper{
+    display: flex;
+    position: relative;
+}
+.wrapper .sidebar{
+    position: fixed;
+    width: 200px;
+    height: 100%;
+    background-color: #4b4276;
+    padding: 30px 0;
+}
+.wrapper .sidebar h2{
+    color: #161c12;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.wrapper .sidebar span{
+    font-weight: 1000;
+    color: #838f32;
+}
+.wrapper .sidebar ul li{
+    padding: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5 );
+    border-top: 1px solid rgba(255, 255, 255, 0.5 );
+}
+.wrapper .sidebar ul li a {
+    color: #bdb;
+    display: block;
+}
+.wrapper .sidebar ul li a .fas {
+    width: 25px;
+}
+.wrapper .sidebar ul li:hover{
+    background-color: #594f8d;
+}
+.wrapper .sidebar lu li:hover a {
+    color: #fff;
+}
+.wrapper .main_content{
+    width: 100%;
+    margin-left: 200px;
+}
+.wrapper .main_content .header{
+    padding: 20px;
+    background-color: #f6eeee;
+    color: #1c0d0d;
+    border-bottom:  1px solid #e5ecf1;
+}
+ul li ul.dropdown-playlist li{
+    display: block;
+}
+ul li ul.dropdown-profile li{
+    display: block;
+}
+ul li ul.dropdown-playlist{
+    width: 100%;
+    background-color: #228804;
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+ul li ul.dropdown-profile{
+    width: 100%;
+    background-color: #228804;
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+ul li ul a:hover{
+    background-color: #1c0d0d;
+}
+ul li:hover ul.dropdown-playlist{
+    display: block;
+}
+ul li:hover ul.dropdown-profile{
+    display: block;
+}

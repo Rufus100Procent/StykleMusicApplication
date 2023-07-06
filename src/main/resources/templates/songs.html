@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Songs</title>
+</head>
+<body>
+<h1>List of Songs</h1>
+<ul>
+    <li th:each="artist : ${artists}">
+        <a th:href="@{/songs-by-artist(artistId=${artist.artistId})}">
+            <span th:text="${artist.artistName}"></span>
+        </a>
+    </li>
+</ul>
+</body>
+</html>

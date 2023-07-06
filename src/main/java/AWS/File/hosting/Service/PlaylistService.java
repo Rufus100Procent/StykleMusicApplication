@@ -1,7 +1,9 @@
 package AWS.File.hosting.Service;
 
+import AWS.File.hosting.Model.Artist;
 import AWS.File.hosting.Model.Playlist;
 import AWS.File.hosting.Repository.PlaylistRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,6 @@ public class PlaylistService {
         playlist.setPlaylistName(playlistName);
         return playlistRepository.save(playlist);
     }
-
     public List<Playlist> getAllPlaylists() {
         return playlistRepository.findAll();
     }

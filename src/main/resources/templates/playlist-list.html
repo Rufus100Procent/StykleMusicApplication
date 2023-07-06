@@ -3,42 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Playlist Manager</title>
-  <style>
-    .error {
-      color: red;
-    }
-    .hidden {
-      display: none;
-    }
-    .shake {
-      animation: shake 0.5s;
-    }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-      100% { transform: translateX(0); }
-    }
-    .delete-button {
-      background: none;
-      border: none;
-      color: red;
-      font-size: 20px;
-      cursor: pointer;
-      outline: none;
-    }
-  </style>
+  <link rel="stylesheet" href="playlist-manager.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
-<button onclick="togglePlaylist()">New Playlist</button>
 
-<form id="playlistForm" class="hidden" action="/playlists" method="post" onsubmit="return validatePlaylistName()">
-  <input type="text" name="playlistName" id="playlistName" placeholder="Enter playlist name" oninput="enableCreateButton()" required>
-  <button type="submit" id="createButton" disabled>Create </button>
-  <p class="error" id="errorMessage"></p>
-</form>
+<body>
+<script type="module" src="header.html">  </script>
+
+<div class="wrapper">
+    <button onclick="togglePlaylist()">New Playlist</button>
+    <form id="playlistForm" class="hidden" action="/playlists" method="post" onsubmit="return validatePlaylistName()">
+         <input type="text" name="playlistName" id="playlistName" placeholder="Enter playlist name" oninput="enableCreateButton()" required>
+         <button type="submit" id="createButton" disabled>Create </button>
+         <p class="error" id="errorMessage"></p>
+  </form>
 
 <h2>All Playlists</h2>
 <ul>
@@ -51,8 +29,9 @@
     </form>
   </li>
 </ul>
-
+</div>
 <script>
+    // Load the header sidebar using JavaScript
   function togglePlaylist() {
     var playlistForm = document.getElementById("playlistForm");
     playlistForm.classList.toggle("hidden");
