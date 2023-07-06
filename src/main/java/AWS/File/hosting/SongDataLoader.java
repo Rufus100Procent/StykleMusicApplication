@@ -13,7 +13,7 @@ public class SongDataLoader {
 
     public static void main(String[] args) {
         String[] songNames = {
-                "AC DC - Fire Your Guns (Official Audio).mp3",
+                "AC-DC - Fire-Your-Guns.mp3",
                 "AC DC - Shoot To Thrill.mp3",
                 // Add other song names here
         };

@@ -16,71 +16,35 @@
 <h1>Song List</h1>
 
 <audio id="music-player" controls>
-  <source id="music-source" src="" type="audio/mpeg">
+  <source id="music-source" src="../static/songs/AC%20DC%20-%20Shoot%20To%20Thrill.mp3" type="audio/mpeg">
 </audio>
 
 <table>
   <tr>
     <th>Play</th>
     <th>Song Name</th>
-    <th>Release Year</th>
     <th>Artist</th>
+    <th>Release Year</th>
   </tr>
   <tr th:each="song, stat: ${songs}">
     <td>
-      <div class="play-button" onclick="playSong('${song.name}', '${stat.index}')"></div>
+      <div class="play-button" onclick="playSong('${song.file}')"></div>
     </td>
     <td th:text="${song.name}">Song Name</td>
-    <td th:text="${song.releaseYear}">Release Year</td>
     <td th:text="${song.artist.artistName}">Artist</td>
+    <td th:text="${song.releaseYear}">Release Year</td>
   </tr>
 </table>
 
 <script>
   var musicPlayer = document.getElementById('music-player');
   var musicSource = document.getElementById('music-source');
-  var currentSongIndex = 0;
 
-  var songs = [
-    { name: "Song 1", file: "../static/songs/AC DC - Fire Your Guns (Official Audio).mp3" },
-    { name: "Song 2", file: "path/to/song2.mp3" },
-    { name: "Song 3", file: "path/to/song3.mp3" }
-    /* Add more songs as needed */
-  ];
-
-  function playSong(songName, songIndex) {
-    if (songIndex !== currentSongIndex) {
-      currentSongIndex = songIndex;
-      var song = songs[songIndex];
-      musicSource.src = song.file;
-      musicPlayer.load();
-    }
-    musicPlayer.play();
-    console.log("Playing song: " + songName);
-  }
-
-  function pauseSong() {
-    musicPlayer.pause();
-  }
-
-  function nextTrack() {
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
-    var song = songs[currentSongIndex];
-    musicSource.src = song.file;
+  function playSong(songFile) {
+    musicSource.src = "../static/songs/" + songFile;
     musicPlayer.load();
     musicPlayer.play();
-  }
-
-  function previousTrack() {
-    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    var song = songs[currentSongIndex];
-    musicSource.src = song.file;
-    musicPlayer.load();
-    musicPlayer.play();
-  }
-
-  function setVolume(volume) {
-    musicPlayer.volume = volume;
+    console.log("Playing song: " + songFile);
   }
 </script>
 
