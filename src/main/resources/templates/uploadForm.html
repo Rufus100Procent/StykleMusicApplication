@@ -17,6 +17,50 @@
 
 <p th:text="${message}"></p>
 
+<table>
+  <thead>
+  <tr>
+    <th>Song Name</th>
+    <th>Artist</th>
+    <th>Release Year</th>
+    <th>Album</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="songList"></tbody>
+</table>
 
+<audio controls id="audioPlayer"></audio>
+
+<script>
+  // Fetch songs from the backend and display them in the table
+  fetch('/songs')
+          .then(response => response.json())
+          .then(data => {
+            const songList = document.getElementById('songList');
+            data.forEach(song => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+            <td>${song.title}</td>
+            <td>${song.artist}</td>
+            <td>${song.releaseYear}</td>
+            <td>${song.album ? song.album : '-'}</td>
+            <td>
+            <button onclick="playSong(${song.id}, '${song.filePath}')">Play</button>
+
+            </td>
+          `;
+              songList.appendChild(row);
+            });
+          })
+          .catch(error => console.error(error));
+
+  // Function to play the selected song
+  function playSong(id, filePath) {
+    const audioPlayer = document.getElementById('audioPlayer');
+    audioPlayer.src = `/songs/${id}/file`;
+    audioPlayer.play();
+  }
+</script>
 </body>
 </html>
