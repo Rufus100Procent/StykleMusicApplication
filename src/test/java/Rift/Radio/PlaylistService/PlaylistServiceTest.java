@@ -1,8 +1,8 @@
-package AWS.File.hosting.PlaylistService;
+package Rift.Radio.PlaylistService;
 
-import AWS.File.hosting.Model.Playlist;
-import AWS.File.hosting.Repository.PlaylistRepository;
-import AWS.File.hosting.Service.PlaylistService;
+import Rift.Radio.Model.Playlist;
+import Rift.Radio.Repository.PlaylistRepository;
+import Rift.Radio.Service.PlaylistService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

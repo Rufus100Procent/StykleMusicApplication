@@ -1,7 +1,7 @@
-package AWS.File.hosting.API;
+package Rift.Radio.API;
 
-import AWS.File.hosting.Model.Song;
-import AWS.File.hosting.Service.MusicService;
+import Rift.Radio.Model.Song;
+import Rift.Radio.Service.MusicService;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

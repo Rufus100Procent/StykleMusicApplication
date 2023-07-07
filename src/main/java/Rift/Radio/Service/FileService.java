@@ -1,4 +1,4 @@
-package AWS.File.hosting.Service;
+package Rift.Radio.Service;
 
 
 import org.springframework.core.io.Resource;

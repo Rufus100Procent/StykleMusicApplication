@@ -1,6 +1,6 @@
-package AWS.File.hosting.Repository;
+package Rift.Radio.Repository;
 
-import AWS.File.hosting.Model.Song;
+import Rift.Radio.Model.Song;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

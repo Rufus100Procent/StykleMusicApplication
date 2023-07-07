@@ -1,13 +1,10 @@
-package AWS.File.hosting.Service;
+package Rift.Radio.Service;
 
-import AWS.File.hosting.Model.Artist;
-import AWS.File.hosting.Model.Playlist;
-import AWS.File.hosting.Repository.PlaylistRepository;
-import jakarta.persistence.EntityManager;
+import Rift.Radio.Model.Playlist;
+import Rift.Radio.Repository.PlaylistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

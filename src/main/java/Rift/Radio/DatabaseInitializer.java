@@ -1,9 +1,9 @@
 //package AWS.File.hosting;
 //
-//import AWS.File.hosting.Model.Artist;
-//import AWS.File.hosting.Model.Song;
+//import Model.Rift.Radio.Artist;
+//import Model.Rift.Radio.Song;
 //import AWS.File.hosting.Repository.ArtistRepository;
-//import AWS.File.hosting.Repository.SongRepository;
+//import Repository.Rift.Radio.SongRepository;
 //import jakarta.persistence.EntityManager;
 //import jakarta.persistence.PersistenceContext;
 //import jakarta.transaction.Transactional;

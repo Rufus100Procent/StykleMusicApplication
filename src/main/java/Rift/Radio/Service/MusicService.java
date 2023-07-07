@@ -1,11 +1,11 @@
-package AWS.File.hosting.Service;
+package Rift.Radio.Service;
 
+import Rift.Radio.Repository.SongRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
-import AWS.File.hosting.Model.Song;
-import AWS.File.hosting.Repository.SongRepository;
+import Rift.Radio.Model.Song;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;

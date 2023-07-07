@@ -1,4 +1,4 @@
-package AWS.File.hosting;
+package Rift.Radio;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

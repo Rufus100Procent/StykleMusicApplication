@@ -1,14 +1,13 @@
-package AWS.File.hosting.PlayerController;
+package Rift.Radio.PlayerController;
 
-import AWS.File.hosting.API.PlayerController;
-import AWS.File.hosting.Model.Playlist;
-import AWS.File.hosting.Service.PlaylistService;
+import Rift.Radio.API.PlayerController;
+import Rift.Radio.Model.Playlist;
+import Rift.Radio.Service.PlaylistService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;

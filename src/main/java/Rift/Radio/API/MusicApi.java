@@ -1,6 +1,6 @@
-package AWS.File.hosting.API;
+package Rift.Radio.API;
 
-import AWS.File.hosting.Service.FileService;
+import Rift.Radio.Service.FileService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

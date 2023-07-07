@@ -1,4 +1,4 @@
-package AWS.File.hosting.Model;
+package Rift.Radio.Model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
