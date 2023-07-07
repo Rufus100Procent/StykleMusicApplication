@@ -1,56 +1,44 @@
 package AWS.File.hosting.API;
 
-import AWS.File.hosting.Model.Artist;
 import AWS.File.hosting.Model.Song;
-import AWS.File.hosting.Repository.ArtistRepository;
-import AWS.File.hosting.Repository.SongRepository;
 import AWS.File.hosting.Service.MusicService;
-import jakarta.ws.rs.core.MediaType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+
 @Controller
+@RequestMapping("/")
 public class MusicController {
+    private final MusicService musicService;
 
-    @Autowired
-    private SongRepository songRepository;
+    public MusicController(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
-    @Autowired
-    private ArtistRepository artistRepository;
-
-    @Autowired
-    private MusicService songService;
-
-    @GetMapping("/")
+    @GetMapping
     public String uploadForm() {
         return "uploadForm";
     }
+
+
     @GetMapping("/songs")
     @ResponseBody
-    public List<Song> getAllSongs() {
-        return songRepository.findAll();
+    public ResponseEntity<List<Song>> getAllSongs() {
+        List<Song> songs = musicService.getAllSongs();
+        return ResponseEntity.ok(songs);
     }
+
     @GetMapping("/songs/{id}/file")
     public ResponseEntity<byte[]> downloadSong(@PathVariable("id") Long id) throws IOException {
-        Optional<Song> songOptional = songRepository.findById(id);
+        Optional<Song> songOptional = musicService.getSongById(id);
         if (songOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -65,8 +53,8 @@ public class MusicController {
         byte[] fileBytes = Files.readAllBytes(file);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(org.springframework.http.MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM));
-        headers.setContentDisposition(ContentDisposition.attachment().filename(song.getTitle()).build());
+        headers.setContentType((MediaType.APPLICATION_OCTET_STREAM));
+        headers.setContentDisposition(ContentDisposition.attachment().filename(song.getSongName()).build());
 
         return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
@@ -79,7 +67,7 @@ public class MusicController {
                              @RequestParam(value = "album", required = false) String album,
                              Model model) {
         try {
-            String filePath = songService.uploadSong(file, songName, artist, releaseYear, album);
+            String filePath = musicService.uploadSong(file, songName, artist, releaseYear, album);
             model.addAttribute("message", "Song uploaded successfully!");
             model.addAttribute("songName", songName);
             model.addAttribute("artist", artist);

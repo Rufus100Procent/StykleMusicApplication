@@ -2,32 +2,23 @@ package AWS.File.hosting.Model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Arrays;
 
 @Entity
 public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
+    private String songName;
     private String artist;
     private String album; // Optional field for album name
-    private int releaseYear; // Optional field for release year
+    private int releaseYear;
     private String filePath; // Added field to store the file path
-
-    // Constructors, getters, and setters
-
-    // ...
 
     public Song() {
     }
 
-    public Song(String title, String artist, String album, int releaseYear, String filePath) {
-        this.title = title;
+    public Song(String songName, String artist, String album, int releaseYear, String filePath) {
+        this.songName = songName;
         this.artist = artist;
         this.album = album;
         this.releaseYear = releaseYear;
@@ -36,9 +27,6 @@ public class Song {
 
     // ...
 
-    public String getAlbum() {
-        return album;
-    }
 
     public void setAlbum(String album) {
         this.album = album;
@@ -60,17 +48,15 @@ public class Song {
         this.filePath = filePath;
     }
 
-    public String getTitle() {
-        return title;
+    public String getSongName() {
+        return songName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSongName(String title) {
+        this.songName = title;
     }
 
-    public String getArtist() {
-        return artist;
-    }
+
 
     public void setArtist(String artist) {
         this.artist = artist;
