@@ -2,33 +2,143 @@
 <html>
 <head>
   <title>Song Upload</title>
+  <style>
+    #songTable {
+      margin: 0 auto;
+      width: 80%;
+      border-collapse: collapse;
+    }
+
+    #songTable th,
+    #songTable td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .playing {
+      background-color: green;
+    }
+  </style>
 </head>
 <body>
-<form id="uploadForm" enctype="multipart/form-data">
-  <input type="text" name="songName" id="songName" placeholder="Song Name" required>
-  <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required>
-  <input type="text" name="album" id="album" placeholder="Album">
-  <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
-  <input type="file" name="file" id="fileInput" required>
-  <button type="submit">Upload</button>
-</form>
+<div style="text-align: center;">
+  <button id="addSongButton" onclick="toggleForm()">Add Song</button>
+</div>
+
+<div id="songForm" style="display: none; text-align: center;">
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="text" name="songName" id="songName" placeholder="Song Name" required><br>
+    <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required><br>
+    <input type="text" name="album" id="album" placeholder="Album"><br>
+    <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required><br>
+    <input type="file" name="file" id="fileInput" required><br>
+    <button type="submit">Upload</button>
+  </form>
+</div>
 
 <table id="songTable">
   <thead>
   <tr>
+    <th>Actions</th>
     <th>Song Name</th>
     <th>Artist</th>
     <th>Album</th>
     <th>Year</th>
-    <th>Actions</th>
   </tr>
   </thead>
   <tbody id="songList"></tbody>
 </table>
 
-<audio id="audioPlayer" controls></audio>
+<div style="text-align: center;">
+  <button id="prevButton" onclick="playPreviousSong()">Previous</button>
+  <audio id="audioPlayer" controls></audio>
+  <button id="nextButton" onclick="playNextSong()">Next</button>
+</div>
 
 <script>
+  var songs = [];  // Array to store the songs
+  var currentSongIndex = 0;  // Index of the currently playing song
+
+  // Function to toggle the display of the song form
+  function toggleForm() {
+    var songForm = document.getElementById('songForm');
+    var addSongButton = document.getElementById('addSongButton');
+
+    if (songForm.style.display === 'none') {
+      songForm.style.display = 'block';
+      addSongButton.textContent = 'Cancel';
+    } else {
+      songForm.style.display = 'none';
+      addSongButton.textContent = 'Add Song';
+    }
+  }
+
+  // Function to play the previous song
+  function playPreviousSong() {
+    currentSongIndex--;
+    if (currentSongIndex < 0) {
+      currentSongIndex = songs.length - 1;
+    }
+    playSongByIndex(currentSongIndex);
+  }
+
+  // Function to play the next song
+  function playNextSong() {
+    currentSongIndex++;
+    if (currentSongIndex >= songs.length) {
+      currentSongIndex = 0;
+    }
+    playSongByIndex(currentSongIndex);
+  }
+
+  // Function to play a song by index
+  function playSongByIndex(index) {
+    currentSongIndex = index;
+    var song = songs[index];
+
+    fetch('/songs/' + song.id + '/file')
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error('Failed to retrieve the song file');
+              }
+              return response.blob();
+            })
+            .then(function (blob) {
+              var fileUrl = URL.createObjectURL(blob);
+              var audioPlayer = document.getElementById('audioPlayer');
+              audioPlayer.src = fileUrl;
+              audioPlayer.play();
+              updateButtonStates();
+              highlightCurrentSong();
+            })
+            .catch(function (error) {
+              console.error('Error:', error);
+            });
+  }
+
+  // Function to update the states of the previous and next buttons
+  function updateButtonStates() {
+    var prevButton = document.getElementById('prevButton');
+    var nextButton = document.getElementById('nextButton');
+
+    prevButton.disabled = false;
+    nextButton.disabled = false;
+  }
+
+  // Function to highlight the currently playing song
+  function highlightCurrentSong() {
+    var rows = document.querySelectorAll('#songList tr');
+
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].classList.remove('playing');
+    }
+
+    var currentRow = document.getElementById('songRow' + currentSongIndex);
+    currentRow.classList.add('playing');
+  }
+
+  // Submit the form data and handle the response
   document.getElementById('uploadForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var fileInput = document.getElementById('fileInput');
@@ -49,39 +159,24 @@
               return response.json();
             })
             .then(function (song) {
+              songs.push(song);
+
               var songList = document.getElementById('songList');
 
               var row = document.createElement('tr');
+              row.id = 'songRow' + (songs.length - 1);
               row.innerHTML = `
+          <td>
+            <button class="playButton" onclick="playSongByIndex(${songs.length - 1})">Play</button>
+          </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>
           <td>${song.album || ''}</td>
           <td>${song.releaseYear}</td>
-          <td>
-            <button class="playButton">Play</button>
-          </td>
         `;
 
-              row.querySelector('.playButton').addEventListener('click', function () {
-                fetch('/songs/' + song.id + '/file')
-                        .then(function (response) {
-                          if (!response.ok) {
-                            throw new Error('Failed to retrieve the song file');
-                          }
-                          return response.blob();
-                        })
-                        .then(function (blob) {
-                          var fileUrl = URL.createObjectURL(blob);
-                          var audioPlayer = document.getElementById('audioPlayer');
-                          audioPlayer.src = fileUrl;
-                          audioPlayer.play();
-                        })
-                        .catch(function (error) {
-                          console.error('Error:', error);
-                        });
-              });
-
               songList.appendChild(row);
+              updateButtonStates();
             })
             .catch(function (error) {
               console.error('Error:', error);
