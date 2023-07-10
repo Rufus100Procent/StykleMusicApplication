@@ -5,13 +5,26 @@
 </head>
 <body>
 <form id="uploadForm" enctype="multipart/form-data">
-  <input type="file" name="file" id="fileInput">
+  <input type="text" name="songName" id="songName" placeholder="Song Name" required>
+  <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required>
+  <input type="text" name="album" id="album" placeholder="Album">
+  <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
+  <input type="file" name="file" id="fileInput" required>
   <button type="submit">Upload</button>
 </form>
 
-<div id="songList"></div>
-
-<button id="playButton">Play</button>
+<table id="songTable">
+  <thead>
+  <tr>
+    <th>Song Name</th>
+    <th>Artist</th>
+    <th>Album</th>
+    <th>Year</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="songList"></tbody>
+</table>
 
 <audio id="audioPlayer" controls></audio>
 
@@ -23,6 +36,10 @@
 
     var formData = new FormData();
     formData.append('file', file);
+    formData.append('songName', document.getElementById('songName').value);
+    formData.append('artistName', document.getElementById('artistName').value);
+    formData.append('album', document.getElementById('album').value || '');
+    formData.append('releaseYear', document.getElementById('releaseYear').value);
 
     fetch('/songs/upload', {
       method: 'POST',
@@ -33,14 +50,19 @@
             })
             .then(function (song) {
               var songList = document.getElementById('songList');
-              var songContainer = document.createElement('div');
-              var songName = document.createElement('span');
-              var playButton = document.createElement('button');
 
-              songName.textContent = song.name;
-              playButton.textContent = 'Play';
+              var row = document.createElement('tr');
+              row.innerHTML = `
+          <td>${song.songName}</td>
+          <td>${song.artistName}</td>
+          <td>${song.album || ''}</td>
+          <td>${song.releaseYear}</td>
+          <td>
+            <button class="playButton">Play</button>
+          </td>
+        `;
 
-              playButton.addEventListener('click', function () {
+              row.querySelector('.playButton').addEventListener('click', function () {
                 fetch('/songs/' + song.id + '/file')
                         .then(function (response) {
                           if (!response.ok) {
@@ -59,9 +81,7 @@
                         });
               });
 
-              songContainer.appendChild(songName);
-              songContainer.appendChild(playButton);
-              songList.appendChild(songContainer);
+              songList.appendChild(row);
             })
             .catch(function (error) {
               console.error('Error:', error);

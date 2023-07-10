@@ -19,8 +19,12 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/songs")
 public class SongController {
+    private final SongRepository songRepository;
+
     @Autowired
-    private SongRepository songRepository;
+    public SongController(SongRepository songRepository) {
+        this.songRepository = songRepository;
+    }
 
     @GetMapping("/upload")
     public String upload() {
@@ -29,17 +33,24 @@ public class SongController {
 
     @PostMapping("/upload")
     @ResponseBody
-    public Song uploadFile(@RequestParam("file") MultipartFile file) {
+    public Song uploadFile(@RequestParam("file") MultipartFile file,
+                           @RequestParam("songName") String songName,
+                           @RequestParam("artistName") String artistName,
+                           @RequestParam("album") String album,
+                           @RequestParam("releaseYear") int releaseYear) {
         try {
             // Save the file to local storage
             String fileName = file.getOriginalFilename();
             String filePath = "/home/stykle/Documents/MusicApplicationBetaTesting/sample/" + fileName;
             file.transferTo(new File(filePath));
 
-            // Save the song path to the database
+            // Save the song details to the database
             Song song = new Song();
-            song.setName(fileName);
-            song.setPath(filePath);
+            song.setSongName(songName);
+            song.setArtistName(artistName);
+            song.setAlbum(album);
+            song.setReleaseYear(releaseYear);
+            song.setFilePath(filePath);
             songRepository.save(song);
 
             return song;
@@ -54,7 +65,7 @@ public class SongController {
     public String getSongPath(@PathVariable Long id) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
-            return songOptional.get().getPath();
+            return songOptional.get().getFilePath();
         } else {
             throw new NotFoundException("Song not found");
         }
@@ -66,7 +77,7 @@ public class SongController {
         if (songOptional.isPresent()) {
             Song song = songOptional.get();
             try {
-                File file = new File(song.getPath());
+                File file = new File(song.getFilePath());
                 Resource resource = new UrlResource(file.toURI());
 
                 if (resource.exists()) {
@@ -83,7 +94,6 @@ public class SongController {
             throw new NotFoundException("Song not found");
         }
     }
-
 
     // Other controller methods for retrieving songs from the database
 }

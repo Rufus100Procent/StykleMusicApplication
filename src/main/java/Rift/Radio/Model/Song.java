@@ -8,8 +8,12 @@ public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String path;
+
+    private String songName;
+    private String artistName;
+    private String album;
+    private int releaseYear;
+    private String filePath;
 
     public Song() {
     }
@@ -22,19 +26,43 @@ public class Song {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getSongName() {
+        return songName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSongName(String songName) {
+        this.songName = songName;
     }
 
-    public String getPath() {
-        return path;
+    public String getArtistName() {
+        return artistName;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
