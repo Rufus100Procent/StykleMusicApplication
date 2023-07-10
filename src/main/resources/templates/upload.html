@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Song Upload</title>
+</head>
+<body>
+<form id="uploadForm" enctype="multipart/form-data">
+  <input type="file" name="file" id="fileInput">
+  <button type="submit">Upload</button>
+</form>
+
+<div id="songList"></div>
+
+<button id="playButton">Play</button>
+
+<audio id="audioPlayer" controls></audio>
+
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0];
+
+    var formData = new FormData();
+    formData.append('file', file);
+
+    fetch('/songs/upload', {
+      method: 'POST',
+      body: formData
+    })
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (song) {
+              var songList = document.getElementById('songList');
+              var songContainer = document.createElement('div');
+              var songName = document.createElement('span');
+              var playButton = document.createElement('button');
+
+              songName.textContent = song.name;
+              playButton.textContent = 'Play';
+
+              playButton.addEventListener('click', function () {
+                fetch('/songs/' + song.id + '/file')
+                        .then(function (response) {
+                          if (!response.ok) {
+                            throw new Error('Failed to retrieve the song file');
+                          }
+                          return response.blob();
+                        })
+                        .then(function (blob) {
+                          var fileUrl = URL.createObjectURL(blob);
+                          var audioPlayer = document.getElementById('audioPlayer');
+                          audioPlayer.src = fileUrl;
+                          audioPlayer.play();
+                        })
+                        .catch(function (error) {
+                          console.error('Error:', error);
+                        });
+              });
+
+              songContainer.appendChild(songName);
+              songContainer.appendChild(playButton);
+              songList.appendChild(songContainer);
+            })
+            .catch(function (error) {
+              console.error('Error:', error);
+            });
+  });
+</script>
+</body>
+</html>

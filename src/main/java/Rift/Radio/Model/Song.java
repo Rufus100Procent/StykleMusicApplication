@@ -8,57 +8,33 @@ public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String songName;
-    private String artist;
-    private String album; // Optional field for album name
-    private int releaseYear;
-    private String filePath; // Added field to store the file path
+    private String name;
+    private String path;
 
     public Song() {
     }
 
-    public Song(String songName, String artist, String album, int releaseYear, String filePath) {
-        this.songName = songName;
-        this.artist = artist;
-        this.album = album;
-        this.releaseYear = releaseYear;
-        this.filePath = filePath;
+    public Long getId() {
+        return id;
     }
 
-    // ...
-
-
-    public void setAlbum(String album) {
-        this.album = album;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public int getReleaseYear() {
-        return releaseYear;
+    public String getName() {
+        return name;
     }
 
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getPath() {
+        return path;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public String getSongName() {
-        return songName;
-    }
-
-    public void setSongName(String title) {
-        this.songName = title;
-    }
-
-
-
-    public void setArtist(String artist) {
-        this.artist = artist;
+    public void setPath(String path) {
+        this.path = path;
     }
 }
