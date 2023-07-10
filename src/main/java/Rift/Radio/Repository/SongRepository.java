@@ -10,10 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, Long> {
-
-//    Optional<Song> findBySongName(String songName);
-//
-//    @Query("SELECT s.songName, a.artistName, al.albumName, s.releaseYear FROM Song s JOIN s.artist a JOIN s.album al")
-//    List<Object[]> findAllWithDetails();
+    boolean existsBySongName(String songName);
+    boolean existsByFilePath(String filePath);
 }
 

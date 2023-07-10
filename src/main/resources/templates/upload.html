@@ -19,6 +19,10 @@
     .playing {
       background-color: green;
     }
+
+    .errorMessage {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -55,6 +59,11 @@
   <audio id="audioPlayer" controls></audio>
   <button id="nextButton" onclick="playNextSong()">Next</button>
 </div>
+
+<!-- Error message elements -->
+<p id="songNameErrorMessage" class="errorMessage"></p>
+<p id="mp3ErrorMessage" class="errorMessage"></p>
+<p id="duplicateErrorMessage" class="errorMessage"></p>
 
 <script>
   var songs = [];  // Array to store the songs
@@ -138,11 +147,43 @@
     currentRow.classList.add('playing');
   }
 
+  // Function to display song name error message
+  function displaySongNameErrorMessage(message) {
+    var errorMessage = document.getElementById('songNameErrorMessage');
+    errorMessage.textContent = message;
+  }
+
+  // Function to display MP3 file error message
+  function displayMP3ErrorMessage(message) {
+    var errorMessage = document.getElementById('mp3ErrorMessage');
+    errorMessage.textContent = message;
+  }
+
+  // Function to display duplicate error message
+  function displayDuplicateErrorMessage(message) {
+    var errorMessage = document.getElementById('duplicateErrorMessage');
+    errorMessage.textContent = message;
+  }
+
   // Submit the form data and handle the response
   document.getElementById('uploadForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var fileInput = document.getElementById('fileInput');
     var file = fileInput.files[0];
+
+    var fileName = file.name;
+    var fileExtension = fileName.split('.').pop().toLowerCase();
+    if (fileExtension !== 'mp3') {
+      displayErrorMessage('Invalid file format. Only MP3 files are allowed.');
+      return;
+    }
+
+    // Validate file MIME type
+    var fileMimeType = file.type;
+    if (fileMimeType !== 'audio/mpeg') {
+      displayErrorMessage('Invalid file format. Only MP3 files are allowed.');
+      return;
+    }
 
     var formData = new FormData();
     formData.append('file', file);
@@ -156,6 +197,9 @@
       body: formData
     })
             .then(function (response) {
+              if (!response.ok) {
+                throw new Error('Failed to upload the song');
+              }
               return response.json();
             })
             .then(function (song) {
@@ -166,20 +210,46 @@
               var row = document.createElement('tr');
               row.id = 'songRow' + (songs.length - 1);
               row.innerHTML = `
-          <td>
-            <button class="playButton" onclick="playSongByIndex(${songs.length - 1})">Play</button>
-          </td>
-          <td>${song.songName}</td>
-          <td>${song.artistName}</td>
-          <td>${song.album || ''}</td>
-          <td>${song.releaseYear}</td>
-        `;
+        <td>
+          <button class="playButton" onclick="playSongByIndex(${songs.length - 1})">Play</button>
+        </td>
+        <td>${song.songName}</td>
+        <td>${song.artistName}</td>
+        <td>${song.album || ''}</td>
+        <td>${song.releaseYear}</td>
+      `;
 
               songList.appendChild(row);
               updateButtonStates();
             })
             .catch(function (error) {
               console.error('Error:', error);
+              // Handle specific errors for duplicate song names and duplicate MP3 uploads
+              if (error.message === 'Song name already exists') {
+                // Display an error message for duplicate song names
+                displaySongNameErrorMessage('The song name already exists.');
+                // Clear other error messages
+                displayMP3ErrorMessage('');
+                displayDuplicateErrorMessage('');
+              } else if (error.message === 'MP3 file already uploaded') {
+                // Display an error message for duplicate MP3 uploads
+                displayMP3ErrorMessage('The MP3 file has already been uploaded.');
+                // Clear other error messages
+                displaySongNameErrorMessage('');
+                displayDuplicateErrorMessage('');
+              } else if (error.message === 'Both song name and MP3 file already exist') {
+                // Display an error message for duplicate song names and MP3 uploads
+                displayDuplicateErrorMessage('You cannot upload duplicates of both the song name and MP3 file.');
+                // Clear other error messages
+                displaySongNameErrorMessage('');
+                displayMP3ErrorMessage('');
+              } else {
+                // Display a generic error message for other errors
+                displaySongNameErrorMessage('Failed to upload the song.');
+                // Clear other error messages
+                displayMP3ErrorMessage('');
+                displayDuplicateErrorMessage('');
+              }
             });
   });
 </script>
