@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Song Download</title>
+</head>
+<body>
+<h2>Song Download</h2>
+<form action="/download" method="POST">
+  <label for="songName">Song Name:</label>
+  <input type="text" id="songName" name="songName" required><br><br>
+
+  <input type="submit" value="Download Song">
+</form>
+<br>
+<audio controls>
+  <source th:if="${song != null}" th:src="@{'data:audio/mpeg;base64,' + ${#strings.encodeBase64(song.data)}}" type="audio/mpeg">
+</audio>
+<span style="color: red">${error}</span>
+</body>
+</html>
