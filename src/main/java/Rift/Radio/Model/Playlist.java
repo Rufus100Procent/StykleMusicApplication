@@ -37,6 +37,8 @@ public class Playlist {
     )
     private String playlistName;
 
+    private int song_Id;
+
     //consutructor for the test class
     public Playlist(String s) {
 
