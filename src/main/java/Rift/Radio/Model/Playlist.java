@@ -1,54 +1,51 @@
 package Rift.Radio.Model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity(name = "Playlist")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 public class Playlist {
-
     @Id
-    @SequenceGenerator(
-            name = "playlist_sequence",
-            sequenceName = "playlist_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "playlist_sequence"
-    )
-    @Column(
-            name = "Id",
-            updatable = false
-    )
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long playlist_Id;
 
-    @Column(
-            name = "playlist_name",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
     private String playlistName;
 
-    private int song_Id;
+    private String image;
 
-    //consutructor for the test class
-    public Playlist(String s) {
+//    @ManyToMany
+//    private int song_Id;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "playlist_song",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "song_id"))
+    private List<Song> songs = new ArrayList<>();
+
+
+    public String getPlaylistName() {
+        return playlistName;
     }
 
-    @Override
-    public String toString() {
-        return "Playlist{" +
-                "id=" + id +
-                ", playlistName='" + playlistName + '\'' +
-                '}';
+    public void setPlaylistName(String playlistName) {
+        this.playlistName = playlistName;
+    }
+
+    public List<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
+    }
+
+    public void addSong(Song song) {
+        songs.add(song);
+    }
+
+    public void removeSong(Song song) {
+        songs.remove(song);
     }
 }

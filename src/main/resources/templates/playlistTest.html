@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Playlist Creation</title>
+  <style>
+    /* CSS styles here */
+
+    /* Style for the playlist box */
+    .playlist-box {
+      display: inline-block;
+      width: 200px;
+      height: 200px;
+      text-align: center;
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    /* Style for the playlist image */
+    .playlist-image {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    /* Style for the playlist name */
+    .playlist-name {
+      margin-top: 10px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+<!-- Button to add a new playlist -->
+<button id="addPlaylistButton" onclick="toggleForm()">Add New Playlist</button>
+
+<!-- Playlist creation form -->
+<div id="playlistForm" style="display: none; text-align: center;">
+  <form id="createPlaylistForm" action="/playlists/create" method="post" enctype="multipart/form-data">
+    <input type="file" name="playlistImage" id="playlistImage" accept="image/*" required><br>
+    <input type="text" name="playlistName" id="playlistName" placeholder="Playlist Name" required><br>
+    <button type="submit">Create</button>
+  </form>
+</div>
+
+<!-- Container to display playlists -->
+<div id="playlistContainer">
+  <!-- Playlist boxes will be dynamically added here -->
+</div>
+
+<script>
+  // DOM references
+  const addPlaylistButton = document.getElementById('addPlaylistButton');
+  const playlistForm = document.getElementById('playlistForm');
+  const playlistImageInput = document.getElementById('playlistImage');
+  const playlistNameInput = document.getElementById('playlistName');
+  const playlistContainer = document.getElementById('playlistContainer');
+
+  // Function to toggle the display of the playlist creation form
+  const toggleForm = () => {
+    playlistForm.style.display = playlistForm.style.display === 'none' ? 'block' : 'none';
+    addPlaylistButton.textContent = playlistForm.style.display === 'none' ? 'Add New Playlist' : 'Cancel';
+  };
+
+  // Function to create a new playlist box
+  const createPlaylistBox = (imageSrc, playlistName) => {
+    const playlistBox = document.createElement('div');
+    playlistBox.classList.add('playlist-box');
+
+    const playlistImage = document.createElement('img');
+    playlistImage.src = imageSrc;
+    playlistImage.alt = playlistName;
+    playlistImage.classList.add('playlist-image');
+    playlistBox.appendChild(playlistImage);
+
+    const playlistNameElement = document.createElement('a'); // Use <a> element for clickable playlist name
+    playlistNameElement.textContent = playlistName;
+    playlistNameElement.href = '/playlists/{playlistId}'; // Replace {playlistId} with the actual playlist ID
+    playlistNameElement.classList.add('playlist-name');
+    playlistBox.appendChild(playlistNameElement);
+
+    // Add click event to the playlist box
+    playlistBox.addEventListener('click', () => {
+      // Perform some action when the playlist box is clicked
+      console.log(`Playlist ${playlistName} clicked`);
+    });
+
+    playlistContainer.appendChild(playlistBox);
+  }
+
+  // Submit the playlist creation form and handle the response
+  document.getElementById('createPlaylistForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const playlistImage = playlistImageInput.files[0];
+    const playlistName = playlistNameInput.value;
+
+    // Perform any necessary validation on the form data
+
+    // Perform AJAX request or submit form data to the server
+    // In this example, we're directly creating the playlist box on the client-side
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imageSrc = e.target.result;
+      createPlaylistBox(imageSrc, playlistName);
+    };
+    reader.readAsDataURL(playlistImage);
+
+    // Reset the form
+    playlistImageInput.value = '';
+    playlistNameInput.value = '';
+
+    // Hide the playlist creation form
+    toggleForm();
+  });
+</script>
+</body>
+</html>

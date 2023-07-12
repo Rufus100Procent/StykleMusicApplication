@@ -9,6 +9,7 @@ import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +46,17 @@ public class SongController {
         return songRepository.findAll(PageRequest.of(page, pageSize)).getContent();
     }
 
+
     @GetMapping("/upload")
     public String upload() {
         return "upload";
     }
 
+//    @GetMapping("/search")
+//    @ResponseBody
+//    public List<Song> searchSongs(@RequestParam("keyword") String keyword) {
+//        return songRepository.searchSongs(keyword);
+//    }
     @PostMapping("/upload")
     @ResponseBody
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,

@@ -3,7 +3,78 @@
 <head>
   <title>Navigation Bar</title>
   <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="header.css">
+<!--  <link rel="stylesheet" href="header.css">-->
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+    }
+    body{
+      background-color: #f3f5f9;
+    }
+    .wrapper{
+      display: flex;
+      position: relative;
+    }
+    .wrapper .sidebar{
+      position: fixed;
+      width: 200px;
+      height: 100%;
+      background-color: #4b4276;
+      padding: 30px 0;
+    }
+    .wrapper .sidebar h2{
+      color: #161c12;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .wrapper .sidebar span{
+      font-weight: 1000;
+      color: #838f32;
+    }
+    .wrapper .sidebar ul li{
+      padding: 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.5 );
+      border-top: 1px solid rgba(255, 255, 255, 0.5 );
+    }
+    .wrapper .sidebar ul li a {
+      color: #bdb;
+      display: block;
+    }
+    .wrapper .sidebar ul li a .fas {
+      width: 25px;
+    }
+    .wrapper .sidebar ul li:hover{
+      background-color: #594f8d;
+    }
+    .wrapper .sidebar lu li:hover a {
+      color: #fff;
+    }
+    .wrapper .main_content{
+      width: 100%;
+      margin-left: 200px;
+    }
+    .wrapper .main_content .header{
+      padding: 20px;
+      background-color: #f6eeee;
+      color: #1c0d0d;
+      border-bottom:  1px solid #e5ecf1;
+    }
+    ul li ul.dropdown-playlist li{
+      display: block;
+    }
+    ul li ul.dropdown-profile li{
+      display: block;
+    }
+    ul li ul a:hover{
+      background-color: #1c0d0d;
+    }
+  </style>
 </head>
 <body>
 
@@ -11,75 +82,16 @@
   <div class="sidebar">
     <h2>Rift <span>Radio</span> <i class="fa-solid fa-radio"></i> </h2>
     <ul>
-      <li>
-        <a href="#"><i class="fa-solid fa-user"></i>  Profile  <i class="fa-solid fa-caret-down"></i ></a>
-        <ul class="dropdown-profile">
-          <a href="#"><i class="fa-solid fa-lock"> Logout</i></a>
-        </ul>
-      </li>
+      <li><a href="#"><i class="fa-solid fa-user"></i>  Profile  <i class="fa-solid fa-caret-down"></i ></a></li>
       <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
-      <li><a href="/upload"><i class="fa-solid fa-upload"></i> Upload</a></li>
-      <li><a href="#"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-      <li>
-        <a href="#"><i class="fa-solid fa-caret-down"></i > New Playlist</a>
-        <ul class="dropdown-playlist">
-          <a href="#" ><i class="fa-solid fa-plus"></i> Create New Playlist </a>
-          <a href="/searchh" ><i class="fa-solid fa-magnifying-glass"></i> search </a>
-        </ul>
-      </li>
+      <li><a href="#"><i class="fa-solid fa-upload"></i> Upload</a></li>
+      <li><a href="#"><i class="fa-solid fa-magnifying-glass"></i>  Search</a></li>
+      <li><a href="#"><i class="fa-solid fa-caret-down"></i > New Playlist</a></li>
     </ul>
   </div>
-  <div class="main_content">
-    <div class="header">Welcome to Style Rift Radio, a place where you can listen to your own music</div>
-    <div class="music-player">
-      <button id="playPauseBtn"><i class="fa-solid fa-circle-play"></i></button>
-      <button id="nextBtn"><i class="fa-solid fa-forward"></i></button>
-      <label for="volumeSlider"></label><input type="range" id="volumeSlider" min="0" max="100" step="1">
-    </div>
   </div>
-
-  <script>
-    const audio = new Audio(); // Create an Audio object
-
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
-
-    // Define your playlist
-    const playlist = [
-      'song1.mp3',
-      'song2.mp3',
-      'song3.mp3'
-    ];
-
-    let currentSongIndex = 0;
-    let isPlaying = false;
-
-    function togglePlayPause() {
-      if (isPlaying) {
-        audio.pause();
-        isPlaying = false;
-        playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
-      } else {
-        audio.src = playlist[currentSongIndex];
-        audio.play();
-        isPlaying = true;
-        playPauseBtn.innerHTML = '<i class="fa-solid fa-circle-pause"></i>';
-      }
-    }
-
-    function nextSong() {
-      currentSongIndex = (currentSongIndex + 1) % playlist.length;
-      togglePlayPause();
-    }
-
-    function changeVolume() {
-      audio.volume = volumeSlider.value / 100;
-    }
-
-    playPauseBtn.addEventListener('click', togglePlayPause);
-    nextBtn.addEventListener('click', nextSong);
-    volumeSlider.addEventListener('input', changeVolume);
-  </script>
+  <div class="main_content">
+    <div class="header">Welcome to Style Rift Radio, a place where you upload/listen to your own music (filetype must be MP3)</div>
+  </div>
 </body>
 </html>

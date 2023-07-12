@@ -1,7 +1,8 @@
 package Rift.Radio.Model;
 
-
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Song {
@@ -14,6 +15,9 @@ public class Song {
     private String album;
     private int releaseYear;
     private String filePath;
+
+    @ManyToMany(mappedBy = "songs")
+    private List<Playlist> playlists = new ArrayList<>();
 
     public Song() {
     }
@@ -64,5 +68,13 @@ public class Song {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
     }
 }
