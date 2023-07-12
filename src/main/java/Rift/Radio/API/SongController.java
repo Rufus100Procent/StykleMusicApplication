@@ -11,7 +11,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -81,6 +80,38 @@ public class SongController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<?> deleteSong(@PathVariable Long id) {
+        try {
+            songService.deleteSong(id);
+            return ResponseEntity.ok().build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}/edit")
+    @ResponseBody
+    public ResponseEntity<?> editSong(
+            @PathVariable Long id,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam("songName") @NotBlank String songName,
+            @RequestParam("artistName") @NotBlank String artistName,
+            @RequestParam("album") String album,
+            @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear) {
+        try {
+            Song updatedSong = songService.editSong(id, file, songName, artistName, album, releaseYear);
+            return ResponseEntity.ok(updatedSong);
+        } catch (SongNameExistsException e) {
+            return ResponseEntity.badRequest().body("Song name already exists");
+        } catch (MP3FileExistsException e) {
+            return ResponseEntity.badRequest().body("MP3 file already uploaded");
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }

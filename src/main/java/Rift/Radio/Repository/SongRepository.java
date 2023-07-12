@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface SongRepository extends JpaRepository<Song, Long> {
     boolean existsBySongName(String songName);
     boolean existsByFilePath(String filePath);
+
+    boolean existsBySongNameAndIdNot(String songName, Long id);
 }
 
