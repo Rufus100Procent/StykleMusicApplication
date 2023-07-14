@@ -1,15 +1,16 @@
 package Rift.Radio.API;
 
 import Rift.Radio.MP3FileExistsException;
+import Rift.Radio.Model.Playlist;
 import Rift.Radio.Model.Song;
+import Rift.Radio.Repository.PlaylistRepository;
 import Rift.Radio.Repository.SongRepository;
+import Rift.Radio.Service.PlaylistService;
 import Rift.Radio.Service.SongService;
 import Rift.Radio.SongNameExistsException;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -32,11 +32,14 @@ import java.util.List;
 public class SongController {
     private final SongService songService;
     private final SongRepository songRepository;
+    private final PlaylistRepository playlistRepository;
+
 
     @Autowired
-    public SongController(SongService songService, SongRepository songRepository) {
+    public SongController(SongService songService, SongRepository songRepository, PlaylistService playlistService, PlaylistRepository playlistRepository) {
         this.songService = songService;
         this.songRepository = songRepository;
+        this.playlistRepository = playlistRepository;
     }
 
     @GetMapping("/all")
@@ -52,11 +55,6 @@ public class SongController {
         return "upload";
     }
 
-//    @GetMapping("/search")
-//    @ResponseBody
-//    public List<Song> searchSongs(@RequestParam("keyword") String keyword) {
-//        return songRepository.searchSongs(keyword);
-//    }
     @PostMapping("/upload")
     @ResponseBody
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
@@ -120,6 +118,44 @@ public class SongController {
         } catch (MP3FileExistsException e) {
             return ResponseEntity.badRequest().body("MP3 file already uploaded");
         } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PostMapping("/playlists")
+    @ResponseBody
+    public ResponseEntity<?> createPlaylist(@RequestBody @Valid Playlist playlist) {
+        try {
+            Playlist createdPlaylist = playlistRepository.save(playlist);
+            return ResponseEntity.ok(createdPlaylist);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to create the playlist");
+        }
+    }
+
+    @GetMapping("/playlists")
+    @ResponseBody
+    public List<Playlist> getAllPlaylists() {
+        return playlistRepository.findAll();
+    }
+
+    @GetMapping("/playlists/{playlistId}")
+    @ResponseBody
+    public ResponseEntity<?> getPlaylist(@PathVariable Long playlistId) {
+        Playlist playlist = playlistRepository.findById(playlistId).orElse(null);
+        if (playlist != null) {
+            return ResponseEntity.ok(playlist);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/playlists/{playlistId}")
+    @ResponseBody
+    public ResponseEntity<?> deletePlaylist(@PathVariable Long playlistId) {
+        try {
+            playlistRepository.deleteById(playlistId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }

@@ -5,25 +5,28 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 @Entity
+@Table(name = "playlists")
 public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long playlist_Id;
+    private Long playlistId;
 
     private String playlistName;
 
-    private String image;
+    private Long songId;
 
-//    @ManyToMany
-//    private int song_Id;
+    // Constructors, getters, and setters
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "playlist_song",
-            joinColumns = @JoinColumn(name = "playlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "song_id"))
-    private List<Song> songs = new ArrayList<>();
+    public Long getPlaylistId() {
+        return playlistId;
+    }
 
+    public void setPlaylistId(Long playlistId) {
+        this.playlistId = playlistId;
+    }
 
     public String getPlaylistName() {
         return playlistName;
@@ -33,19 +36,19 @@ public class Playlist {
         this.playlistName = playlistName;
     }
 
-    public List<Song> getSongs() {
-        return songs;
+    public Long getSongId() {
+        return songId;
     }
 
-    public void setSongs(List<Song> songs) {
-        this.songs = songs;
+    public void setSongId(Long songId) {
+        this.songId = songId;
     }
 
-    public void addSong(Song song) {
-        songs.add(song);
+    public String getImagePath() {
+                    return null;
     }
 
-    public void removeSong(Song song) {
-        songs.remove(song);
+    public void setImagePath(String imagePath) {
+
     }
 }

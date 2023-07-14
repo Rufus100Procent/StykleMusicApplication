@@ -16,8 +16,8 @@ public class Song {
     private int releaseYear;
     private String filePath;
 
-    @ManyToMany(mappedBy = "songs")
-    private List<Playlist> playlists = new ArrayList<>();
+//    @ManyToMany(mappedBy = "songs")
+//    private List<Playlist> playlists;
 
     public Song() {
     }
@@ -70,11 +70,11 @@ public class Song {
         this.filePath = filePath;
     }
 
-    public List<Playlist> getPlaylists() {
-        return playlists;
-    }
-
-    public void setPlaylists(List<Playlist> playlists) {
-        this.playlists = playlists;
-    }
+//    public List<Playlist> getPlaylists() {
+//        return playlists;
+//    }
+//
+//    public void setPlaylists(List<Playlist> playlists) {
+//        this.playlists = playlists;
+//    }
 }

@@ -16,7 +16,6 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-
       background-color: #f3f5f9;
     }
 
@@ -62,11 +61,11 @@
     }
 
     .wrapper .sidebar ul li:hover {
-      background-color: #594f8d;
+      background-color: #914b8d;
     }
 
     .wrapper .sidebar lu li:hover a {
-      color: #fff;
+      color: #914b8d;
     }
 
     .wrapper .main_content {
@@ -152,6 +151,94 @@
       background-color: #ddd;
       color: #333;
     }
+    .main_content .header a {
+      display: inline-block;
+      color: #594f8d;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main_content .header a:hover {
+      color: #914b8d;
+    }
+
+    .search_container {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+      margin-right: 50px;
+      width: 90%;
+    }
+
+    .search_container input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+
+    .search_container button {
+      padding: 8px 16px;
+      background-color: #4b4276;
+      color: #eeeded;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    .search_container button:hover {
+      background-color: #914b8d;
+    }
+    .audio-player {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 300px;
+    }
+
+    .audio-player button {
+      background-color: #4b4276;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 20px;
+      font-size: 24px;
+      margin: 0 10px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .audio-player button:hover {
+      background-color: #594f8d;
+    }
+
+    .audio-player audio {
+      width: 400px;
+      height: 60px;
+      appearance: none;
+      background-color: transparent;
+      outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .audio-player audio::-webkit-slider-thumb {
+      appearance: none;
+      width: 10px;
+      height: 30px;
+      background-color: #4b4276;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .audio-player audio::-moz-range-thumb {
+      appearance: none;
+      width: 10px;
+      height: 30px;
+      background-color: #4b4276;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -159,15 +246,23 @@
   <div class="sidebar">
     <h2>Rift <span>Radio</span> <i class="fa-solid fa-radio"></i></h2>
     <ul>
-      <li><a href="#"><i class="fa-solid fa-user"></i> Profile <i class="fa-solid fa-caret-down"></i></a></li>
-      <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="/">About</a></li>
       <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
-      <li><a href="#"><i class="fa-solid fa-magnifying-glass"></i> Search</a></li>
-      <li><a href="#"><i class="fa-solid fa-caret-down"></i> New Playlist</a></li>
+      <li><a href="/songs/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
     </ul>
   </div>
   <div class="main_content">
-    <div class="header">Welcome to Style Rift Radio, a place where you upload/listen to your own music (filetype must be MP3)</div>
+<!--    <div class="header">Welcome to Style Rift Radio, a place where you upload/listen to your own music (filetype must be MP3)-->
+<!--      <a href="/">About</a>-->
+<!--    </div>-->
+
+    <div class="search_container">
+      <label for="searchQuery">
+        <input type="text" id="searchQuery" placeholder="Search by song name, artist, album, or year">
+      </label>
+      <button onclick="searchSongs()"><i class="fa-solid fa-search"></i></button>
+    </div>
+
 
     <table id="songTable">
       <thead>
@@ -182,10 +277,10 @@
       <tbody id="songList"></tbody>
     </table>
 
-    <div style="text-align: center;">
-      <button id="prevButton" onclick="playPreviousSong()">Previous</button>
+    <div class="audio-player">
+      <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
       <audio id="audioPlayer" controls></audio>
-      <button id="nextButton" onclick="playNextSong()">Next</button>
+      <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
     </div>
 
     <!-- Error message elements -->
@@ -228,7 +323,6 @@
     uploadFormContainer.classList.remove('show');
   };
 
-
   let songs = []; // Array to store the songs
   let currentSongIndex = 0; // Index of the currently playing song
 
@@ -248,6 +342,23 @@
   const playNextSong = () => {
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     playSongByIndex(currentSongIndex);
+  };
+  const searchSongs = () => {
+    const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+
+    songs.forEach((song, index) => {
+      const row = document.getElementById(`songRow${index}`);
+
+      // Check if any of the song properties match the search query
+      const isMatch =
+              song.songName.toLowerCase().includes(searchQuery) ||
+              song.artistName.toLowerCase().includes(searchQuery) ||
+              (song.album && song.album.toLowerCase().includes(searchQuery)) ||
+              song.releaseYear.toString().includes(searchQuery);
+
+      // Show or hide the row based on the search result
+      row.style.display = isMatch ? 'table-row' : 'none';
+    });
   };
 
   // Function to play a song by index
@@ -276,8 +387,6 @@
 
   // Function to update the states of the previous and next buttons
   const updateButtonStates = () => {
-    prevButton.disabled = false;
-    nextButton.disabled = false;
   };
 
   // Function to highlight the currently playing song
@@ -505,6 +614,16 @@
             console.error('Error:', error);
             displayErrorMessages({ listError: 'Failed to retrieve the song list.' });
           });
+
+  // Function to automatically play the next song when the current song ends
+  audioPlayer.addEventListener('ended', () => {
+    // Restart from the beginning if it's the last song in the list
+    if (currentSongIndex === songs.length - 1) {
+      playSongByIndex(0);
+    } else {
+      playNextSong();
+    }
+  });
 </script>
 </body>
 </html>

@@ -52,6 +52,23 @@
   <!-- Playlist boxes will be dynamically added here -->
 </div>
 
+<!-- Song table -->
+<div id="songTable" style="display: none;">
+  <h2>Playlist Details</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Actions</th>
+      <th>Song Name</th>
+      <th>Artist</th>
+      <th>Album</th>
+      <th>Year</th>
+    </tr>
+    </thead>
+    <!-- Song data will be dynamically added here -->
+  </table>
+</div>
+
 <script>
   // DOM references
   const addPlaylistButton = document.getElementById('addPlaylistButton');
@@ -59,6 +76,7 @@
   const playlistImageInput = document.getElementById('playlistImage');
   const playlistNameInput = document.getElementById('playlistName');
   const playlistContainer = document.getElementById('playlistContainer');
+  const songTable = document.getElementById('songTable');
 
   // Function to toggle the display of the playlist creation form
   const toggleForm = () => {
@@ -79,14 +97,16 @@
 
     const playlistNameElement = document.createElement('a'); // Use <a> element for clickable playlist name
     playlistNameElement.textContent = playlistName;
-    playlistNameElement.href = '/playlists/{playlistId}'; // Replace {playlistId} with the actual playlist ID
+    playlistNameElement.href = 'javascript:void(0)';
     playlistNameElement.classList.add('playlist-name');
     playlistBox.appendChild(playlistNameElement);
 
     // Add click event to the playlist box
-    playlistBox.addEventListener('click', () => {
-      // Perform some action when the playlist box is clicked
+    playlistNameElement.addEventListener('click', () => {
+      // Perform some action when the playlist name is clicked
       console.log(`Playlist ${playlistName} clicked`);
+      // Display the song table
+      songTable.style.display = 'block';
     });
 
     playlistContainer.appendChild(playlistBox);

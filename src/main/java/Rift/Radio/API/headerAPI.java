@@ -8,12 +8,12 @@ public class headerAPI {
 
     @GetMapping("/")
     public String bar(){
-        return "playlistTest";
+        return "About";
     }
-    @GetMapping("/dashboard")
+    @GetMapping("/test")
     public String dashboard() {
         // Logic for handling the "Dashboard" page
-        return "dashboard"; // Replace with the actual HTML file for the Dashboard
+        return "Search"; // Replace with the actual HTML file for the Dashboard
     }
 
     @GetMapping("logout")
