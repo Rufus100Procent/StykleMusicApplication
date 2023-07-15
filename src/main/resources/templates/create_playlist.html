@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Create Playlist</title>
+  <style>
+    /* CSS styles here */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup-form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .popup-form input[type="text"],
+    .popup-form input[type="file"] {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>Create Playlist</h1>
+
+<!-- Add New Playlist Button -->
+<button id="addPlaylistButton">Add New Playlist</button>
+
+<!-- Popup Form -->
+<div id="popupOverlay" class="popup-overlay">
+  <div class="popup-form">
+    <form id="createPlaylistForm" enctype="multipart/form-data">
+      <input type="text" id="playlistNameInput" placeholder="Playlist Name" required><br>
+      <input type="file" id="imageFileInput" accept="image/*" required><br>
+      <button type="button" id="createButton">Create</button>
+    </form>
+    <button id="cancelButton">Cancel</button>
+  </div>
+</div>
+
+<hr>
+
+<h2>All Playlists</h2>
+
+<div th:if="${playlists.empty}">
+  <p>No playlists found.</p>
+</div>
+<div th:each="playlist : ${playlists}">
+  <div class="playlist-box">
+    <img th:src="${playlist.imagePath}" class="playlist-image" alt="Playlist Image">
+    <p class="playlist-name" th:text="${playlist.playlistName}"></p>
+    <form th:action="@{/playlists/{playlistId}/delete(playlistId=${playlist.id})}" method="post">
+      <button type="submit">Delete</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // DOM references
+  const addPlaylistButton = document.getElementById('addPlaylistButton');
+  const popupOverlay = document.getElementById('popupOverlay');
+  const cancelButton = document.getElementById('cancelButton');
+  const createPlaylistForm = document.getElementById('createPlaylistForm');
+  const playlistNameInput = document.getElementById('playlistNameInput');
+  const imageFileInput = document.getElementById('imageFileInput');
+  const createButton = document.getElementById('createButton');
+
+  // Function to toggle the display of the popup form
+  const togglePopupForm = () => {
+    popupOverlay.style.display = popupOverlay.style.display === 'none' ? 'flex' : 'none';
+  };
+
+  // Event listeners
+  addPlaylistButton.addEventListener('click', () => {
+    togglePopupForm();
+  });
+
+  cancelButton.addEventListener('click', () => {
+    togglePopupForm();
+  });
+
+  createButton.addEventListener('click', () => {
+    const playlistName = playlistNameInput.value;
+    const imageFile = imageFileInput.files[0];
+
+    if (!playlistName || !imageFile) {
+      // Handle the case when either the playlist name or image file is missing
+      console.error('Please provide a playlist name and select an image file.');
+      return;
+    }
+
+    // Create a new FormData object
+    const formData = new FormData();
+    formData.append('playlistName', playlistName);
+    formData.append('imageFile', imageFile);
+
+    // Send a POST request to the backend endpoint
+    fetch('/playlists/create', {
+      method: 'POST',
+      body: formData
+    })
+            .then(response => {
+              if (response.ok) {
+                // Refresh the page after successful submission
+                window.location.reload();
+              } else {
+                // Handle the case when the submission fails
+                // You can show an error message or perform any other necessary action
+                console.error('Failed to create playlist.');
+              }
+            })
+            .catch(error => {
+              // Handle any network or other errors
+              console.error('An error occurred:', error);
+            });
+  });
+</script>
+
+</body>
+</html>

@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class headerAPI {
 
-    @GetMapping("/a")
+    @GetMapping("/")
     public String bar(){
-        return "playlist";
+        return "About";
     }
-    @GetMapping("/dashboard")
+    @GetMapping("/test")
     public String dashboard() {
         // Logic for handling the "Dashboard" page
-        return "dashboard"; // Replace with the actual HTML file for the Dashboard
+        return "Search"; // Replace with the actual HTML file for the Dashboard
     }
 
     @GetMapping("logout")

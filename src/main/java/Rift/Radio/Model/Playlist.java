@@ -1,52 +1,54 @@
 package Rift.Radio.Model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity(name = "Playlist")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+@Entity
+@Table(name = "playlists")
 public class Playlist {
-
     @Id
-    @SequenceGenerator(
-            name = "playlist_sequence",
-            sequenceName = "playlist_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "playlist_sequence"
-    )
-    @Column(
-            name = "Id",
-            updatable = false
-    )
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long playlistId;
 
-    @Column(
-            name = "playlist_name",
-            nullable = false,
-            columnDefinition = "TEXT"
-    )
     private String playlistName;
 
-    //consutructor for the test class
-    public Playlist(String s) {
+    private Long songId;
 
+    // Constructors, getters, and setters
+
+    public Long getPlaylistId() {
+        return playlistId;
     }
 
-    @Override
-    public String toString() {
-        return "Playlist{" +
-                "id=" + id +
-                ", playlistName='" + playlistName + '\'' +
-                '}';
+    public void setPlaylistId(Long playlistId) {
+        this.playlistId = playlistId;
+    }
+
+    public String getPlaylistName() {
+        return playlistName;
+    }
+
+    public void setPlaylistName(String playlistName) {
+        this.playlistName = playlistName;
+    }
+
+    public Long getSongId() {
+        return songId;
+    }
+
+    public void setSongId(Long songId) {
+        this.songId = songId;
+    }
+
+    public String getImagePath() {
+                    return null;
+    }
+
+    public void setImagePath(String imagePath) {
+
     }
 }

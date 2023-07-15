@@ -1,22 +1,26 @@
 package Rift.Radio.Service;
 
-
+import Rift.Radio.MP3FileExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
+import Rift.Radio.SongNameExistsException;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
+
 @Service
 public class SongService {
     private final SongRepository songRepository;
@@ -29,27 +33,18 @@ public class SongService {
     public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear) {
         // Check if song name already exists
         if (songRepository.existsBySongName(songName)) {
-            throw new RuntimeException("Song name already exists");
+            throw new SongNameExistsException("Song name already exists");
         }
 
         try {
-            String fileName = file.getOriginalFilename();
+            validateFile(file);
+
+            String fileName = StringUtils.cleanPath(StringUtils.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : "untitled.mp3");
             String storagePath = "/home/stykle/Documents/MusicApplicationBetaTesting/sample/";
             String filePath = storagePath + fileName;
-
             // Check if MP3 file already exists
             if (songRepository.existsByFilePath(filePath)) {
-                throw new RuntimeException("MP3 file already uploaded");
-            }
-
-            // Validate file extension
-            String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-            if (!fileExtension.equalsIgnoreCase("mp3")) {
-                throw new RuntimeException("Invalid file format. Only MP3 files are allowed.");
-            }
-            String fileMimeType = file.getContentType();
-            if (!fileMimeType.equalsIgnoreCase("audio/mpeg")) {
-                throw new RuntimeException("Invalid file format. Only MP3 files are allowed.");
+                throw new MP3FileExistsException("MP3 file already uploaded");
             }
 
             file.transferTo(new File(filePath));
@@ -64,6 +59,28 @@ public class SongService {
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to upload the song");
+        }
+    }
+
+    private void validateFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new RuntimeException("File is empty");
+        }
+
+        // 100 MB
+        long MAX_FILE_SIZE = 104857600;
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new RuntimeException("File size exceeds the limit");
+        }
+
+        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (!"mp3".equalsIgnoreCase(fileExtension)) {
+            throw new RuntimeException("Invalid file format. Only MP3 files are allowed.");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !MediaType.valueOf(contentType).equals(MediaType.valueOf("audio/mpeg"))) {
+            throw new RuntimeException("Invalid file format. Only MP3 files are allowed.");
         }
     }
 
@@ -93,4 +110,77 @@ public class SongService {
             throw new NotFoundException("Song not found");
         }
     }
+
+    public List<Song> getAllSongs(int page, int pageSize) {
+        return songRepository.findAll(PageRequest.of(page, pageSize)).getContent();
+    }
+
+    public void deleteSong(Long id) {
+        Optional<Song> songOptional = songRepository.findById(id);
+        if (songOptional.isPresent()) {
+            Song song = songOptional.get();
+            String filePath = song.getFilePath();
+
+            // Delete the song from the repository
+            songRepository.delete(song);
+
+            // Delete the MP3 file from local storage
+            File mp3File = new File(filePath);
+            if (mp3File.exists()) {
+                mp3File.delete();
+            }
+        } else {
+            throw new NotFoundException("Song not found");
+        }
+    }
+
+    public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear) {
+        Optional<Song> songOptional = songRepository.findById(id);
+        if (songOptional.isPresent()) {
+            Song song = songOptional.get();
+            String currentFilePath = song.getFilePath();
+
+            // Check if song name already exists
+            if (songRepository.existsBySongNameAndIdNot(songName, id)) {
+                throw new SongNameExistsException("Song name already exists");
+            }
+
+            // Delete the current MP3 file if a new one is uploaded
+            if (file != null && !file.isEmpty()) {
+                File currentFile = new File(currentFilePath);
+                if (currentFile.exists()) {
+                    currentFile.delete();
+                }
+
+                validateFile(file);
+
+                String fileName = StringUtils.cleanPath(StringUtils.hasText(file.getOriginalFilename()) ?
+                        file.getOriginalFilename() : "untitled.mp3");
+                String storagePath = "/home/stykle/Documents/MusicApplicationBetaTesting/sample/";
+                String filePath = storagePath + fileName;
+
+                // Check if MP3 file already exists
+                if (songRepository.existsByFilePath(filePath)) {
+                    throw new MP3FileExistsException("MP3 file already uploaded");
+                }
+
+                try {
+                    file.transferTo(new File(filePath));
+                    song.setFilePath(filePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Failed to upload the song");
+                }
+            }
+            song.setSongName(songName);
+            song.setArtistName(artistName);
+            song.setAlbum(album);
+            song.setReleaseYear(releaseYear);
+
+            return songRepository.save(song);
+        } else {
+            throw new NotFoundException("Song not found");
+        }
+    }
+
 }
