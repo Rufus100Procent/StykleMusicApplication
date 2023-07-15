@@ -8,6 +8,7 @@ import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -67,7 +68,7 @@ public class SongService {
         }
 
         // 100 MB
-        long MAX_FILE_SIZE = 15728640;
+        long MAX_FILE_SIZE = 104857600;
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new RuntimeException("File size exceeds the limit");
         }
@@ -110,8 +111,8 @@ public class SongService {
         }
     }
 
-    public List<Song> getAllSongs() {
-        return songRepository.findAll();
+    public List<Song> getAllSongs(int page, int pageSize) {
+        return songRepository.findAll(PageRequest.of(page, pageSize)).getContent();
     }
 
     public void deleteSong(Long id) {
@@ -171,7 +172,6 @@ public class SongService {
                     throw new RuntimeException("Failed to upload the song");
                 }
             }
-
             song.setSongName(songName);
             song.setArtistName(artistName);
             song.setAlbum(album);

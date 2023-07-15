@@ -253,13 +253,9 @@
       <li><a href="/">About</a></li>
       <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
       <li><a href="/songs/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-    </ul>
+      <li><a href="#" onclick="showRecentlyPlayed()">Recently Played</a></li>    </ul>
   </div>
   <div class="main_content">
-<!--    <div class="header">Welcome to Style Rift Radio, a place where you upload/listen to your own music (filetype must be MP3)-->
-<!--      <a href="/">About</a>-->
-<!--    </div>-->
-
     <div class="search_container">
       <label for="searchQuery">
         <input type="text" id="searchQuery" placeholder="Search by song name, artist, album, or year">
@@ -329,6 +325,7 @@
 
   let songs = []; // Array to store the songs
   let currentSongIndex = 0; // Index of the currently playing song
+  let recentlyPlayed = [];
 
   // Function to toggle the display of the song form
   const toggleForm = () => {
@@ -347,28 +344,38 @@
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     playSongByIndex(currentSongIndex);
   };
+
+
+  // Perform search when the page loads
   const searchSongs = () => {
     const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+    const songRows = document.querySelectorAll('#songList tr');
 
-    songs.forEach((song, index) => {
-      const row = document.getElementById(`songRow${index}`);
+    songRows.forEach(row => {
+      const songName = row.children[1].textContent.toLowerCase();
+      const artist = row.children[2].textContent.toLowerCase();
+      const album = row.children[3].textContent.toLowerCase();
+      const year = row.children[4].textContent.toLowerCase();
 
-      // Check if any of the song properties match the search query
-      const isMatch =
-              song.songName.toLowerCase().includes(searchQuery) ||
-              song.artistName.toLowerCase().includes(searchQuery) ||
-              (song.album && song.album.toLowerCase().includes(searchQuery)) ||
-              song.releaseYear.toString().includes(searchQuery);
+      const matches = songName.includes(searchQuery) || artist.includes(searchQuery) ||
+              album.includes(searchQuery) || year.includes(searchQuery);
 
-      // Show or hide the row based on the search result
-      row.style.display = isMatch ? 'table-row' : 'none';
+      row.style.display = matches ? 'table-row' : 'none';
     });
   };
+
+  document.getElementById('searchQuery').addEventListener('input', searchSongs);
+
+  document.getElementById('searchQuery').addEventListener('input', searchSongs);
 
   // Function to play a song by index
   const playSongByIndex = (index) => {
     currentSongIndex = index;
     const song = songs[index];
+    recentlyPlayed.unshift(song);
+    if (recentlyPlayed.length > 3) {
+      recentlyPlayed.pop();
+    }
 
     fetch(`/songs/${song.id}/file`)
             .then((response) => {
@@ -579,7 +586,25 @@
               });
     }
   };
+  const showRecentlyPlayed = () => {
+    // Clear the songList table
+    songList.innerHTML = '';
 
+    // Iterate over the recentlyPlayed array and create rows for the top 3 songs
+    recentlyPlayed.slice(0, 3).forEach((song, index) => {
+      const row = document.createElement('tr');
+      row.id = `recentlyPlayedRow${index}`;
+      row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${song.songName}</td>
+      <td>${song.artistName}</td>
+      <td>${song.album || ''}</td>
+      <td>${song.releaseYear}</td>
+    `;
+
+      songList.appendChild(row);
+    });
+  };
   // Load the initial song list
   fetch('/songs/all')
           .then((response) => {
