@@ -151,6 +151,7 @@
       background-color: #ddd;
       color: #333;
     }
+
     .main_content .header a {
       display: inline-block;
       color: #594f8d;
@@ -185,9 +186,11 @@
       border-radius: 0 4px 4px 0;
       cursor: pointer;
     }
+
     .search_container button:hover {
       background-color: #914b8d;
     }
+
     .audio-player {
       display: flex;
       align-items: center;
@@ -243,30 +246,37 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .playButton{
+
+    .playButton {
       font-size: 25px;
       color: #250c2a;
     }
-    .editButton{
+
+    .editButton {
       font-size: 20px;
       color: #2a082c;
     }
+
     .deleteButton {
-      font-size: 20px; /* Increase the font size to make it bigger */
+      font-size: 20px;
       color: #4b4276;
     }
-    .playButton:hover{
+
+    .playButton:hover {
       font-size: 30px;
       color: #4b4276;
     }
-    .editButton:hover{
+
+    .editButton:hover {
       font-size: 25px;
       color: #4b4276;
     }
+
     .deleteButton:hover {
-      font-size: 25px; /* Increase the font size to make it bigger */
+      font-size: 25px;
       color: #4b4276;
     }
+
     .custom-prompt {
       display: none;
       flex-direction: column;
@@ -324,7 +334,8 @@
       <li><a href="/">About</a></li>
       <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
       <li><a href="/songs/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-      <li><a href="#" onclick="showRecentlyPlayed()">Recently Played</a></li>    </ul>
+      <li><a href="#" onclick="showRecentlyPlayed()">Recently Played</a></li>
+    </ul>
   </div>
   <div class="main_content">
     <div class="search_container">
@@ -333,7 +344,6 @@
       </label>
       <button onclick="searchSongs()"><i class="fa-solid fa-search"></i></button>
     </div>
-
 
     <table id="songTable">
       <thead>
@@ -464,6 +474,7 @@
       row.style.display = matches ? 'table-row' : 'none';
     });
   };
+  document.getElementById('searchQuery').addEventListener('input', searchSongs);
 
   document.getElementById('searchQuery').addEventListener('input', searchSongs);
 
