@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Custom Prompt Example</title>
+  <style>
+    /* CSS for the modal */
+    .modal {
+      display: none; /* Hide the modal by default */
+      position: fixed; /* Position it on top of other elements */
+      z-index: 1; /* Set a high z-index value to make it visible */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto; /* Enable scrolling if needed */
+      background-color: rgba(0, 0, 0, 0.4); /* Black background with transparency */
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto; /* 15% from the top and centered horizontally */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 300px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    /* CSS for the button */
+    .btn {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* CSS for the output */
+    #output {
+      margin-top: 10px;
+    }
+  </style>
+  <script>
+    const songs = [
+      { songName: "Song 1", artistName: "Artist 1", album: "Album 1", releaseYear: 2021 },
+      { songName: "Song 2", artistName: "Artist 2", album: "Album 2", releaseYear: 2022 },
+      { songName: "Song 3", artistName: "Artist 3", album: "Album 3", releaseYear: 2023 }
+    ];
+
+    function editSong(songId, rowIndex) {
+      const song = songs[rowIndex];
+
+      // Show the custom modal prompt for each input
+      showCustomPromptWithValues(song.songName, "Enter a new song name:", function(newSongName) {
+        showCustomPromptWithValues(song.artistName, "Enter a new artist name:", function(newArtistName) {
+          showCustomPromptWithValues(song.album, "Enter a new album:", function(newAlbum) {
+            showCustomPromptWithValues(song.releaseYear, "Enter a new release year:", function(newReleaseYear) {
+              if (newSongName && newArtistName && newReleaseYear) {
+                const formData = new FormData();
+                formData.append('songName', newSongName);
+                formData.append('artistName', newArtistName);
+                formData.append('album', newAlbum || '');
+                formData.append('releaseYear', newReleaseYear);
+
+                // Simulating the fetch request
+                setTimeout(function() {
+                  // Update the song object in the songs array
+                  songs[rowIndex].songName = newSongName;
+                  songs[rowIndex].artistName = newArtistName;
+                  songs[rowIndex].album = newAlbum;
+                  songs[rowIndex].releaseYear = newReleaseYear;
+
+                  // Update the song row in the table
+                  const row = document.getElementById(`songRow${rowIndex}`);
+                  row.innerHTML = `
+                                        <td>
+                                            <button class="playButton" onclick="playSongByIndex(${rowIndex})"><i class="fa-solid fa-play"></i></button>
+                                            <button class="deleteButton" onclick="deleteSong(${songId}, ${rowIndex})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+                                            <button class="editButton" onclick="editSong(${songId}, ${rowIndex})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+                                        </td>
+                                        <td>${newSongName}</td>
+                                        <td>${newArtistName}</td>
+                                        <td>${newAlbum || ''}</td>
+                                        <td>${newReleaseYear}</td>
+                                    `;
+
+                  // Highlight the current song
+                  highlightCurrentSong();
+                }, 500); // Simulating a delay to imitate a server response
+              }
+            });
+          });
+        });
+      });
+    }
+
+    function showCustomPromptWithValues(defaultValue, promptText, callback) {
+      var modal = document.getElementById("customModal");
+      var closeBtn = document.getElementById("closeBtn");
+      var submitBtn = document.getElementById("submitBtn");
+      var promptInput = document.getElementById("promptInput");
+
+      modal.style.display = "block";
+      promptInput.value = defaultValue;
+      promptInput.focus();
+
+      submitBtn.onclick = function() {
+        var value = promptInput.value;
+        modal.style.display = "none";
+        callback(value);
+      }
+
+      closeBtn.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+<h1>Custom Prompt Example</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th></th>
+    <th>Song Name</th>
+    <th>Artist Name</th>
+    <th>Album</th>
+    <th>Release Year</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr id="songRow0">
+    <td>
+      <button class="playButton" onclick="playSongByIndex(0)"><i class="fa-solid fa-play"></i></button>
+      <button class="deleteButton" onclick="deleteSong(0, 0)"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+      <button class="editButton" onclick="editSong(0, 0)"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+    </td>
+    <td>Song 1</td>
+    <td>Artist 1</td>
+    <td>Album 1</td>
+    <td>2021</td>
+  </tr>
+  <tr id="songRow1">
+    <td>
+      <button class="playButton" onclick="playSongByIndex(1)"><i class="fa-solid fa-play"></i></button>
+      <button class="deleteButton" onclick="deleteSong(1, 1)"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+      <button class="editButton" onclick="editSong(1, 1)"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+    </td>
+    <td>Song 2</td>
+    <td>Artist 2</td>
+    <td>Album 2</td>
+    <td>2022</td>
+  </tr>
+  <tr id="songRow2">
+    <td>
+      <button class="playButton" onclick="playSongByIndex(2)"><i class="fa-solid fa-play"></i></button>
+      <button class="deleteButton" onclick="deleteSong(2, 2)"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+      <button class="editButton" onclick="editSong(2, 2)"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+    </td>
+    <td>Song 3</td>
+    <td>Artist 3</td>
+    <td>Album 3</td>
+    <td>2023</td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- The Modal -->
+<div id="customModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span id="closeBtn" class="close">&times;</span>
+    <label for="promptInput">Enter a value:</label>
+    <input type="text" id="promptInput">
+    <button id="submitBtn">Submit</button>
+  </div>
+</div>
+
+<div id="output"></div>
+</body>
+</html>

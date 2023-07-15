@@ -13,7 +13,7 @@ public class headerAPI {
     @GetMapping("/test")
     public String dashboard() {
         // Logic for handling the "Dashboard" page
-        return "Search"; // Replace with the actual HTML file for the Dashboard
+        return "XP"; // Replace with the actual HTML file for the Dashboard
     }
 
     @GetMapping("logout")
