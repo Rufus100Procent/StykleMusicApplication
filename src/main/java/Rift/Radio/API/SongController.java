@@ -51,9 +51,10 @@
                                             @RequestParam("songName") @NotBlank String songName,
                                             @RequestParam("artistName") @NotBlank String artistName,
                                             @RequestParam("album") String album,
-                                            @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear) {
+                                            @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear,
+                                            @RequestParam("genre") String genre) {
             try {
-                Song song = songService.uploadSong(file, songName, artistName, album, releaseYear);
+                Song song = songService.uploadSong(file, songName, artistName, album, releaseYear, genre);
                 return ResponseEntity.ok(song);
             } catch (SongNameExistsException e) {
                 return ResponseEntity.badRequest().body("Song name already exists");
@@ -99,9 +100,10 @@
                 @RequestParam("songName") @NotBlank String songName,
                 @RequestParam("artistName") @NotBlank String artistName,
                 @RequestParam("album") String album,
-                @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear) {
+                @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear,
+                @RequestParam("genre") String genre) {
             try {
-                Song updatedSong = songService.editSong(id, file, songName, artistName, album, releaseYear);
+                Song updatedSong = songService.editSong(id, file, songName, artistName, album, releaseYear, genre);
                 return ResponseEntity.ok(updatedSong);
             } catch (SongNameExistsException e) {
                 return ResponseEntity.badRequest().body("Song name already exists");

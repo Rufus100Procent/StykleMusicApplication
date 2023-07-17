@@ -10,14 +10,17 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String songName;
+    @Column(nullable = false)
     private String artistName;
-    private String album;
-    private int releaseYear;
-    private String filePath;
 
-//    @ManyToMany(mappedBy = "songs")
-//    private List<Playlist> playlists;
+    private String album;
+    private String genre;
+    @Column(nullable = false)
+    private int releaseYear;
+    @Column(nullable = false)
+    private String filePath;
 
     public Song() {
     }
@@ -54,6 +57,14 @@ public class Song {
         this.album = album;
     }
 
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
     public int getReleaseYear() {
         return releaseYear;
     }
@@ -69,12 +80,4 @@ public class Song {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
-
-//    public List<Playlist> getPlaylists() {
-//        return playlists;
-//    }
-//
-//    public void setPlaylists(List<Playlist> playlists) {
-//        this.playlists = playlists;
-//    }
 }

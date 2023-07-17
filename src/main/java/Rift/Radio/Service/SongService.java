@@ -30,7 +30,7 @@ public class SongService {
         this.songRepository = songRepository;
     }
 
-    public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear) {
+    public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         // Check if song name already exists
         if (songRepository.existsBySongName(songName)) {
             throw new SongNameExistsException("Song name already exists");
@@ -54,6 +54,7 @@ public class SongService {
             song.setArtistName(artistName);
             song.setAlbum(album);
             song.setReleaseYear(releaseYear);
+            song.setGenre(genre); // Set the genre
             song.setFilePath(filePath);
             return songRepository.save(song);
         } catch (IOException e) {
@@ -134,7 +135,7 @@ public class SongService {
         }
     }
 
-    public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear) {
+    public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
             Song song = songOptional.get();
@@ -176,6 +177,7 @@ public class SongService {
             song.setArtistName(artistName);
             song.setAlbum(album);
             song.setReleaseYear(releaseYear);
+            song.setGenre(genre); // Set the genre
 
             return songRepository.save(song);
         } else {

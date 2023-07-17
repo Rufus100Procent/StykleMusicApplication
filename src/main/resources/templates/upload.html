@@ -353,6 +353,7 @@
         <th>Song Name</th>
         <th>Artist</th>
         <th>Album</th>
+        <th>Genre</th> <!-- Add the Genre column -->
         <th>Year</th>
       </tr>
       </thead>
@@ -375,6 +376,7 @@
     <input type="text" name="songName" id="songName" placeholder="Song Name" required>
     <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required>
     <input type="text" name="album" id="album" placeholder="Album">
+    <input type="text" name="genre" id="genre" placeholder="Genre" required>
     <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
     <input type="file" name="file" id="fileInput" required multiple>
     <button type="submit">Upload</button>
@@ -402,9 +404,8 @@
   const nextButton = document.getElementById('nextButton');
   const audioPlayer = document.getElementById('audioPlayer');
   const errorContainer = document.getElementById('errorContainer');
-  const uploadLink = document.getElementById('uploadLink');
   const uploadFormContainer = document.getElementById('uploadFormContainer');
-
+  const genreInput = document.getElementById('genre');
   const showCustomPrompt = (labelText, defaultValue, callback) => {
     const customPromptContainer = document.getElementById('customPromptContainer');
     const customPromptContent = document.getElementById('customPromptContent');
@@ -467,7 +468,8 @@
       const songName = row.children[1].textContent.toLowerCase();
       const artist = row.children[2].textContent.toLowerCase();
       const album = row.children[3].textContent.toLowerCase();
-      const year = row.children[4].textContent.toLowerCase();
+      const genre = row.children[4].textContent.toLowerCase();
+      const year = row.children[5].textContent.toLowerCase();
 
       const matches = songName.includes(searchQuery) || artist.includes(searchQuery) ||
               album.includes(searchQuery) || year.includes(searchQuery);
@@ -541,7 +543,7 @@
     }, 3000);
   };
   // Function to validate form data
-  const validateFormData = (file, songName, artistName, releaseYear) => {
+  const validateFormData = (file, songName, artistName, genre, releaseYear) => {
     const fileName = file.name;
     const fileExtension = fileName.split('.').pop().toLowerCase();
 
@@ -550,15 +552,22 @@
       return false;
     }
 
-    if (songName.trim() === '' || artistName.trim() === '') {
-      displayErrorMessages({ songName: 'Song name and artist name cannot be empty.' });
+    if (songName.trim() === '' || artistName.trim() === '' || genre.trim() === '') {
+      displayErrorMessages({ songName: 'Song name, artist name, and genre cannot be empty.' });
       return false;
     }
 
-    if (!/^\d{4}$/.test(releaseYear)) {
+    if (genre.trim() === '') {
+      displayErrorMessages({ genre: 'Genre cannot be empty.' });
+      return false;
+    }
+
+    // Only validate release year if it's not empty
+    if (releaseYear.trim() !== '' && !/^\d{4}$/.test(releaseYear)) {
       displayErrorMessages({ songName: 'Invalid release year. Please enter a four-digit number.' });
       return false;
     }
+
 
     return true;
   };
@@ -570,9 +579,10 @@
     const file = fileInput.files[0];
     const songName = songNameInput.value;
     const artistName = artistNameInput.value;
+    const genre = genreInput.value; // Get the genre value
     const releaseYear = releaseYearInput.value;
 
-    if (!validateFormData(file, songName, artistName, releaseYear)) {
+    if (!validateFormData(file, songName, artistName,genre ,releaseYear)) {
       return;
     }
 
@@ -581,7 +591,9 @@
     formData.append('songName', songName);
     formData.append('artistName', artistName);
     formData.append('album', document.getElementById('album').value || '');
+    formData.append('genre', genre); // Append the genre data to the form data
     formData.append('releaseYear', releaseYear);
+
 
     fetch('/songs/upload', {
       method: 'POST',
@@ -607,6 +619,7 @@
         <td>${song.songName}</td>
         <td>${song.artistName}</td>
         <td>${song.album || ''}</td>
+        <td>${song.genre || ''}</td>
         <td>${song.releaseYear}</td>
       `;
 
@@ -678,24 +691,28 @@
     const labelSongName = 'Enter a new song name:';
     const labelArtistName = 'Enter a new artist name:';
     const labelAlbum = 'Enter a new album:';
+    const labelGenre = 'Enter a new Genre:';
     const labelReleaseYear = 'Enter a new release year:';
 
     // Set the default values based on the current song information
     const defaultValueSongName = song.songName;
     const defaultValueArtistName = song.artistName;
     const defaultValueAlbum = song.album || '';
+    const defaultValueGenre = song.genre || '';
     const defaultValueReleaseYear = song.releaseYear.toString();
 
     // Show the custom prompt for each input field and handle the values
     showCustomPrompt(labelSongName, defaultValueSongName, (newSongName) => {
       showCustomPrompt(labelArtistName, defaultValueArtistName, (newArtistName) => {
         showCustomPrompt(labelAlbum, defaultValueAlbum, (newAlbum) => {
+        showCustomPrompt(labelAlbum, defaultValueGenre, (newGenre) => {
           showCustomPrompt(labelReleaseYear, defaultValueReleaseYear, (newReleaseYear) => {
             // Perform the song edit using the entered values
             const formData = new FormData();
             formData.append('songName', newSongName);
             formData.append('artistName', newArtistName);
             formData.append('album', newAlbum);
+            formData.append('genre', newGenre);
             formData.append('releaseYear', newReleaseYear);
 
             fetch(`/songs/${songId}/edit`, {
@@ -708,6 +725,7 @@
                         songs[rowIndex].songName = newSongName;
                         songs[rowIndex].artistName = newArtistName;
                         songs[rowIndex].album = newAlbum;
+                        songs[rowIndex].genre = newGenre;
                         songs[rowIndex].releaseYear = newReleaseYear;
 
                         // Update the song row in the table
@@ -721,6 +739,7 @@
                   <td>${newSongName}</td>
                   <td>${newArtistName}</td>
                   <td>${newAlbum || ''}</td>
+                  <td>${newGenre || ''}</td>
                   <td>${newReleaseYear}</td>
                 `;
 
@@ -736,30 +755,31 @@
                     });
           });
         });
+        });
       });
     });
   };
 
-  const showRecentlyPlayed = () => {
-    // Clear the songList table
-    songList.innerHTML = '';
+      const showRecentlyPlayed = () => {
+        // Clear the songList table
+        songList.innerHTML = '';
 
-    // Iterate over the recentlyPlayed array and create rows for the top 3 songs
-    recentlyPlayed.slice(0, 3).forEach((song, index) => {
-      const row = document.createElement('tr');
-      row.id = `recentlyPlayedRow${index}`;
-      row.innerHTML = `
+        // Iterate over the recentlyPlayed array and create rows for the top 3 songs
+        recentlyPlayed.slice(0, 3).forEach((song, index) => {
+          const row = document.createElement('tr');
+          row.id = `recentlyPlayedRow${index}`;
+          row.innerHTML = `
       <td>${index + 1}</td>
       <td>${song.songName}</td>
       <td>${song.artistName}</td>
       <td>${song.album || ''}</td>
+      <td>${song.genre || ''}</td>
       <td>${song.releaseYear}</td>
     `;
 
-      songList.appendChild(row);
-    });
-  };
-
+          songList.appendChild(row);
+        });
+      };
   // Load the initial song list
   fetch('/songs/all')
           .then((response) => {
@@ -784,6 +804,7 @@
         <td>${song.songName}</td>
         <td>${song.artistName}</td>
         <td>${song.album || ''}</td>
+        <td>${song.genre}</td>
         <td>${song.releaseYear}</td>
       `;
 
