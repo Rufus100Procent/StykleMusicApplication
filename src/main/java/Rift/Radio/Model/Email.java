@@ -1,34 +1,34 @@
 package Rift.Radio.Model;
 
 public class Email {
-    private String to;
-    private String subject;
-    private String message;
+    private String name;
+    private String email;
+    private String description;
 
     public Email() {
     }
 
-    public String getTo() {
-        return to;
+    public String getName() {
+        return name;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getMessage() {
-        return message;
+    public String getDescription() {
+        return description;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

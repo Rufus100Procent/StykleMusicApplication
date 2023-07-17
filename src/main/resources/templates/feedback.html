@@ -164,10 +164,32 @@
     e.preventDefault();
     const formData = new FormData(feedbackForm);
 
-    //  fetch API
+    // Convert form data to JSON format
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      description: formData.get('description'),
+    };
 
-    successMessage.classList.add('show');
-    feedbackForm.reset();
+    // Send the data to the backend using Fetch API
+    fetch('/send-feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+            .then((response) => {
+              if (response.ok) {
+                successMessage.classList.add('show');
+                feedbackForm.reset();
+              } else {
+                console.error('Failed to submit feedback');
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
   });
 </script>
 

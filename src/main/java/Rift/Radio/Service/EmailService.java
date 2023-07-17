@@ -10,14 +10,15 @@ public class EmailService implements EmailSenderService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
+
     @Override
-    public void sendEmail(String to, String subject, String message) {
+    public void sendEmail(String name, String mail, String description) {
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom("@gmail.com");
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(message);
+        simpleMailMessage.setTo(name);
+        simpleMailMessage.setSubject(mail);
+        simpleMailMessage.setText(description);
 
         this.mailSender.send(simpleMailMessage);
     }

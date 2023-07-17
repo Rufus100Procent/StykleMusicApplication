@@ -1,5 +1,5 @@
 package Rift.Radio.Repository;
 
 public interface EmailSenderService {
-    void sendEmail(String to, String subject, String message);
+    void sendEmail(String name, String mail, String description);
 }
