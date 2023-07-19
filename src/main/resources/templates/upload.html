@@ -101,6 +101,9 @@
 
     .errorMessage {
       color: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .popup {
@@ -201,6 +204,9 @@
       left: 200px; /* Adjust left position to align with the sidebar */
       width: calc(100% - 200px);
     }
+    .audio-player button.active {
+      background-color: black;
+    }
 
     .audio-player button {
       background-color: #4b4276;
@@ -249,7 +255,7 @@
 
     .playButton {
       font-size: 25px;
-      color: #250c2a;
+      color: #4b4276;
     }
 
     .editButton {
@@ -347,6 +353,8 @@
     </div>
 
     <table id="songTable">
+      <div id="errorContainer"></div>
+
       <thead>
       <tr>
         <th></th>
@@ -361,13 +369,13 @@
     </table>
 
     <div class="audio-player">
+      <button id="shuffleButton" onclick="shuffleSongs()"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
       <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
       <audio id="audioPlayer" controls></audio>
       <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
     </div>
 
     <!-- Error message elements -->
-    <div id="errorContainer"></div>
   </div>
 </div>
 <div id="uploadFormContainer" class="popup">
@@ -437,28 +445,6 @@
     uploadFormContainer.classList.remove('show');
   };
 
-  let songs = []; // Array to store the songs
-  let currentSongIndex = 0; // Index of the currently playing song
-  let recentlyPlayed = [];
-
-  // Function to toggle the display of the song form
-  const toggleForm = () => {
-    songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
-    addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
-  };
-
-  // Function to play the previous song
-  const playPreviousSong = () => {
-    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    playSongByIndex(currentSongIndex);
-  };
-
-  // Function to play the next song
-  const playNextSong = () => {
-    currentSongIndex = (currentSongIndex + 1) % songs.length;
-    playSongByIndex(currentSongIndex);
-  };
-
   // Perform search when the page loads
   const searchSongs = () => {
     const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
@@ -480,6 +466,45 @@
   document.getElementById('searchQuery').addEventListener('input', searchSongs);
 
   document.getElementById('searchQuery').addEventListener('input', searchSongs);
+  // Function to toggle the display of the song form
+
+  const toggleForm = () => {
+    songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
+    addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
+  };
+
+
+  let songs = []; // Array to store the songs
+  let currentSongIndex = 0; // Index of the currently playing song
+  let recentlyPlayed = [];
+  let shuffleMode = false;
+  const shuffleSongs = () => {
+    shuffleMode = !shuffleMode;
+    const shuffleButton = document.getElementById('shuffleButton');
+    if (shuffleMode) {
+      shuffleButton.classList.add('active');
+    } else {
+      shuffleButton.classList.remove('active');
+    }
+  };
+
+
+  // Function to play the previous song
+  const playPreviousSong = () => {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    playSongByIndex(currentSongIndex);
+  };
+
+  // Function to play the next song
+  const playNextSong = () => {
+    if (shuffleMode) {
+      const randomIndex = Math.floor(Math.random() * songs.length);
+      playSongByIndex(randomIndex);
+    } else {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      playSongByIndex(currentSongIndex);
+    }
+  };
 
   // Function to play a song by index
   const playSongByIndex = (index) => {
