@@ -52,12 +52,7 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.28</version>
-			<scope>provided</scope>
-		</dependency>
+
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -89,12 +84,6 @@
 			<version>2.11.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.4</version>
-		</dependency>
-
 
 
 		<!-- Spring Data JPA -->
@@ -111,34 +100,14 @@
 		</dependency>
 
 
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/com.mysql/mysql-connector-j &ndash;&gt;-->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<version>8.0.33</version>
-		</dependency>
 
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-			<version>2.5.0</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-parsers</artifactId>
 			<version>1.27</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-parsers-standard-package -->
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-parsers-standard-package</artifactId>
-			<version>2.8.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.drewnoakes</groupId>
-			<artifactId>metadata-extractor</artifactId>
-			<version>2.16.0</version>
-		</dependency>
+
 
 	</dependencies>
 

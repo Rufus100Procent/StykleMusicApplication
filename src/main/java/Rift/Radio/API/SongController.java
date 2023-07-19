@@ -1,14 +1,12 @@
     package Rift.Radio.API;
 
-    import Rift.Radio.MP3FileExistsException;
-    import Rift.Radio.Model.Playlist;
+    import Rift.Radio.Error.MP3FileExistsException;
     import Rift.Radio.Model.Song;
     import Rift.Radio.Service.SongService;
-    import Rift.Radio.SongNameExistsException;
+    import Rift.Radio.Error.SongNameExistsException;
     import jakarta.ws.rs.NotFoundException;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.core.io.Resource;
-    import org.springframework.data.domain.PageRequest;
     import org.springframework.http.HttpHeaders;
     import org.springframework.http.ResponseEntity;
     import org.springframework.stereotype.Controller;
@@ -16,7 +14,6 @@
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
 
-    import javax.validation.Valid;
     import javax.validation.constraints.Max;
     import javax.validation.constraints.Min;
     import javax.validation.constraints.NotBlank;
@@ -33,10 +30,15 @@
             this.songService = songService;
         }
 
+        @GetMapping
+        public String about(){
+            return "About";
+        }
+
         @GetMapping("/all")
         @ResponseBody
         public List<Song> getAllSongs(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                      @RequestParam(defaultValue = "10") @Min(1) @Max(100) int pageSize) {
+                                      @RequestParam(defaultValue = "20") @Min(1) @Max(100) int pageSize) {
             return songService.getAllSongs(page, pageSize);
         }
 
@@ -51,7 +53,7 @@
                                             @RequestParam("songName") @NotBlank String songName,
                                             @RequestParam("artistName") @NotBlank String artistName,
                                             @RequestParam("album") String album,
-                                            @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear,
+                                            @RequestParam("releaseYear") @Min(1800) @Max(2023) int releaseYear,
                                             @RequestParam("genre") String genre) {
             try {
                 Song song = songService.uploadSong(file, songName, artistName, album, releaseYear, genre);
@@ -100,7 +102,7 @@
                 @RequestParam("songName") @NotBlank String songName,
                 @RequestParam("artistName") @NotBlank String artistName,
                 @RequestParam("album") String album,
-                @RequestParam("releaseYear") @Min(1900) @Max(2100) int releaseYear,
+                @RequestParam("releaseYear") @Min(1900) @Max(2023) int releaseYear,
                 @RequestParam("genre") String genre) {
             try {
                 Song updatedSong = songService.editSong(id, file, songName, artistName, album, releaseYear, genre);
