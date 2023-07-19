@@ -654,10 +654,11 @@
               row.id = `songRow${songs.length - 1}`;
               row.innerHTML = `
         <td>
-          <button class="playButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fa-solid fa-play"></i></button>
-          <button class="deleteButton" onclick="deleteSong(${song.id}, ${songs.length - 1})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
-          <button class="editButton" onclick="editSong(${song.id}, ${songs.length - 1})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
-          <button class="downloadButton" onclick="downloadSong(${song.id})"><i class="fa-solid fa-download"></i></button>
+          <button class="playButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
+          <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})" title="Delete"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+          <button class="editButton" onclick="editSong(${song.id}, ${index})" title="Edit"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+          <button class="downloadButton" onclick="downloadSong(${song.id})" title="Download"><i class="fa-solid fa-download"></i></button>
+
 
         </td>
         <td>${song.songName}</td>
@@ -776,10 +777,11 @@
                         const row = document.getElementById(`songRow${rowIndex}`);
                         row.innerHTML = `
                   <td>
-                    <button class="playButton" onclick="playSongByIndex(${rowIndex})"><i class="fa-solid fa-play"></i></button>
-                    <button class="deleteButton" onclick="deleteSong(${songId}, ${rowIndex})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
-                    <button class="editButton" onclick="editSong(${songId}, ${rowIndex})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
-                    <button class="downloadButton" onclick="downloadSong(${song.id})"><i class="fa-solid fa-download"></i></button>
+                     <button class="playButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
+                     <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})" title="Delete"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+                     <button class="editButton" onclick="editSong(${song.id}, ${index})" title="Edit"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+                     <button class="downloadButton" onclick="downloadSong(${song.id})" title="Download"><i class="fa-solid fa-download"></i></button>
+
 
                   </td>
                   <td>${newSongName}</td>
@@ -843,10 +845,10 @@
               row.id = `songRow${index}`;
               row.innerHTML = `
         <td>
-          <button class="playButton" onclick="playSongByIndex(${index})"><i class="fa-solid fa-play"></i></button>
-          <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
-          <button class="editButton" onclick="editSong(${song.id}, ${index})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
-          <button class="downloadButton" onclick="downloadSong(${song.id})"><i class="fa-solid fa-download"></i></button>
+         <button class="playButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
+         <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})" title="Delete"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
+        <button class="editButton" onclick="editSong(${song.id}, ${index})" title="Edit"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
+        <button class="downloadButton" onclick="downloadSong(${song.id})" title="Download"><i class="fa-solid fa-download"></i></button>
 
         </td>
         <td>${song.songName}</td>
