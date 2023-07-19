@@ -205,7 +205,7 @@
       width: calc(100% - 200px);
     }
     .audio-player button.active {
-      background-color: black;
+      background-color: #4a885e;
     }
 
     .audio-player button {
@@ -478,6 +478,7 @@
   let currentSongIndex = 0; // Index of the currently playing song
   let recentlyPlayed = [];
   let shuffleMode = false;
+
   const shuffleSongs = () => {
     shuffleMode = !shuffleMode;
     const shuffleButton = document.getElementById('shuffleButton');
@@ -491,10 +492,22 @@
 
   // Function to play the previous song
   const playPreviousSong = () => {
-    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    playSongByIndex(currentSongIndex);
+    if (shuffleMode) {
+      const randomIndex = getRandomIndex();
+      playSongByIndex(randomIndex);
+    } else {
+      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      playSongByIndex(currentSongIndex);
+    }
   };
-
+  const getRandomIndex = () => {
+    // Generate a random index different from the current one
+    let randomIndex = currentSongIndex;
+    while (randomIndex === currentSongIndex) {
+      randomIndex = Math.floor(Math.random() * songs.length);
+    }
+    return randomIndex;
+  };
   // Function to play the next song
   const playNextSong = () => {
     if (shuffleMode) {
