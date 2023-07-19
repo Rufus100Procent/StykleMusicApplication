@@ -4,6 +4,7 @@
     import Rift.Radio.Model.Song;
     import Rift.Radio.Service.SongService;
     import Rift.Radio.Error.SongNameExistsException;
+    import jakarta.servlet.http.HttpServletResponse;
     import jakarta.ws.rs.NotFoundException;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.core.io.Resource;
@@ -20,7 +21,6 @@
     import java.util.List;
 
     @Controller
-    @RequestMapping("/songs")
     @Validated
     public class SongController {
         private final SongService songService;
@@ -30,7 +30,7 @@
             this.songService = songService;
         }
 
-        @GetMapping
+        @GetMapping("/")
         public String about(){
             return "About";
         }
@@ -38,13 +38,13 @@
         @GetMapping("/all")
         @ResponseBody
         public List<Song> getAllSongs(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                      @RequestParam(defaultValue = "20") @Min(1) @Max(100) int pageSize) {
+                                      @RequestParam(defaultValue = "50") @Min(1) @Max(100) int pageSize) {
             return songService.getAllSongs(page, pageSize);
         }
 
         @GetMapping("/upload")
         public String upload() {
-            return "upload";
+            return "musicApp";
         }
 
         @PostMapping("/upload")
@@ -115,6 +115,9 @@
                 return ResponseEntity.notFound().build();
             }
         }
-
+        @GetMapping("/{id}/download")
+        public void downloadSong(@PathVariable Long id, HttpServletResponse response) {
+            songService.downloadSong(id, response);
+        }
 
     }
