@@ -29,6 +29,15 @@ public class Song {
         return id;
     }
 
+    public Song(String songName, String artistName, String album, String genre, int releaseYear, String filePath) {
+        this.songName = songName;
+        this.artistName = artistName;
+        this.album = album;
+        this.genre = genre;
+        this.releaseYear = releaseYear;
+        this.filePath = filePath;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

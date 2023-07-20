@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customized Audio Player</title>
+    <!-- Add Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styles for the audio player container */
+        .audio-player {
+            display: flex;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Styles for the custom play/pause button */
+        .play-pause-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #007bff;
+            margin-right: 10px;
+        }
+
+        /* Styles for the progress bar */
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background-color: #ccc;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0;
+            background-color: #007bff;
+            border-radius: 2px;
+        }
+
+        /* Styles for the volume control */
+        .volume {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+
+        .volume-slider {
+            width: 80px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="audio-player">
+    <!-- Custom play/pause button -->
+    <div class="play-pause-btn">
+        <i class="fas fa-play" id="playPauseIcon"></i>
+    </div>
+
+    <!-- Audio element -->
+    <audio id="audioPlayer">
+        <source src="./Billy%20Idol%20-%20Rebel%20Yell%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Progress bar -->
+    <div class="progress-bar">
+        <div class="progress" id="progressBar"></div>
+    </div>
+
+    <!-- Volume control -->
+    <div class="volume">
+        <button class="volume-icon"><i class="fas fa-volume-up"></i></button>
+        <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1" id="volumeSlider">
+    </div>
+</div>
+
+<!-- JavaScript to control the audio player -->
+<script>
+    const audioPlayer = document.getElementById("audioPlayer");
+    const playPauseIcon = document.getElementById("playPauseIcon");
+    const progressBar = document.getElementById("progressBar");
+    const volumeIcon = document.querySelector(".volume-icon");
+    const volumeSlider = document.getElementById("volumeSlider");
+
+    // Play/Pause button click event handler
+    playPauseIcon.addEventListener("click", () => {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            playPauseIcon.classList.remove("fa-play");
+            playPauseIcon.classList.add("fa-pause");
+        } else {
+            audioPlayer.pause();
+            playPauseIcon.classList.remove("fa-pause");
+            playPauseIcon.classList.add("fa-play");
+        }
+    });
+
+    // Update progress bar as the audio plays
+    audioPlayer.addEventListener("timeupdate", () => {
+        const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBar.style.width = `${percentage}%`;
+    });
+
+    // Volume icon click event handler to mute/unmute audio
+    volumeIcon.addEventListener("click", () => {
+        audioPlayer.muted = !audioPlayer.muted;
+        if (audioPlayer.muted) {
+            volumeIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        } else {
+            volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+    });
+
+    // Volume slider change event handler
+    volumeSlider.addEventListener("input", () => {
+        audioPlayer.volume = volumeSlider.value;
+        if (volumeSlider.value == 0) {
+            volumeIcon.innerHTML = '<i class="fas fa-volume-off"></i>';
+        } else {
+            volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+    });
+</script>
+</body>
+</html>

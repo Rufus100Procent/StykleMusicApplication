@@ -34,6 +34,10 @@
         public String about(){
             return "About";
         }
+        @GetMapping("/test")
+        public String Test(){
+            return "Test";
+        }
 
         @GetMapping("/all")
         @ResponseBody
