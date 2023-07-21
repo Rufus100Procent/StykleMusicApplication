@@ -2,126 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customized Audio Player</title>
     <!-- Add Font Awesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
     <style>
-        /* Styles for the audio player container */
-        .audio-player {
+        body {
+            background: linear-gradient(to right, #9a1d86, #0eade0);
+            background-size: cover;
+            color: #1f2937;
+            font-family: 'Inter', sans-serif;
+        }
+        .audioContainer {
+            max-width: 900px;
+            margin: 20rem auto;
+            background: white; /* remove later*/
+            padding: 36px 32px 24px 32px;
+            border-radius: 14px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .player-controls {
             display: flex;
             align-items: center;
-            font-family: Arial, sans-serif;
+            justify-content: space-between;
+            margin-left: 50px;
         }
-
-        /* Styles for the custom play/pause button */
-        .play-pause-btn {
-            font-size: 24px;
-            cursor: pointer;
-            color: #007bff;
-            margin-right: 10px;
+        .player-controls .player-volume{
+            margin-left: 25px;
         }
-
-        /* Styles for the progress bar */
         .progress-bar {
-            flex: 1;
-            height: 4px;
-            background-color: #ccc;
-            position: relative;
-            border-radius: 2px;
-        }
-
-        .progress {
-            height: 100%;
-            width: 0;
-            background-color: #007bff;
-            border-radius: 2px;
-        }
-
-        /* Styles for the volume control */
-        .volume {
             display: flex;
+            flex: 1;
             align-items: center;
-            margin-left: 10px;
+            justify-content: space-between;
+            padding-left: 10px;
+        }
+        .player-time {
+            padding: 2px 5px;
         }
 
-        .volume-slider {
-            width: 80px;
-            margin-left: 5px;
+        .player-controls button{
+            background-color: #4b4276;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 20px;
+            font-size: 20px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .progress-bar input[type="range"] {
+            flex: 1; /* Make the seek-slider stretch and fill the available space */
         }
     </style>
 </head>
 <body>
-<div class="audio-player">
-    <!-- Custom play/pause button -->
-    <div class="play-pause-btn">
-        <i class="fas fa-play" id="playPauseIcon"></i>
+<div class="audioContainer">
+
+    <div class="player-track-meta">
+
+        <div class="progress-bar">
+            <span class="player-time current">00:00</span>
+            <input type="range" id="seek-slider" max="100" value="0">
+            <span class="player-time duration">00:00</span>
+        </div>
+
     </div>
 
-    <!-- Audio element -->
-    <audio id="audioPlayer">
-        <source src="./Billy%20Idol%20-%20Rebel%20Yell%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <div class="player-controls">
+        <button id="shuffleButton" onclick="shuffleSongs()"><i class="fa-solid fa-shuffle"></i> </button>
 
-    <!-- Progress bar -->
-    <div class="progress-bar">
-        <div class="progress" id="progressBar"></div>
+        <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
+
+        <button id="playButton" onclick="playPreviousSong()"><i class="fa-solid fa-play"></i></button>
+
+        <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
+        <div class="player-volume-container">
+            <input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
+        </div>
     </div>
 
-    <!-- Volume control -->
-    <div class="volume">
-        <button class="volume-icon"><i class="fas fa-volume-up"></i></button>
-        <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1" id="volumeSlider">
-    </div>
 </div>
-
-<!-- JavaScript to control the audio player -->
-<script>
-    const audioPlayer = document.getElementById("audioPlayer");
-    const playPauseIcon = document.getElementById("playPauseIcon");
-    const progressBar = document.getElementById("progressBar");
-    const volumeIcon = document.querySelector(".volume-icon");
-    const volumeSlider = document.getElementById("volumeSlider");
-
-    // Play/Pause button click event handler
-    playPauseIcon.addEventListener("click", () => {
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-            playPauseIcon.classList.remove("fa-play");
-            playPauseIcon.classList.add("fa-pause");
-        } else {
-            audioPlayer.pause();
-            playPauseIcon.classList.remove("fa-pause");
-            playPauseIcon.classList.add("fa-play");
-        }
-    });
-
-    // Update progress bar as the audio plays
-    audioPlayer.addEventListener("timeupdate", () => {
-        const percentage = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-        progressBar.style.width = `${percentage}%`;
-    });
-
-    // Volume icon click event handler to mute/unmute audio
-    volumeIcon.addEventListener("click", () => {
-        audioPlayer.muted = !audioPlayer.muted;
-        if (audioPlayer.muted) {
-            volumeIcon.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        } else {
-            volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
-        }
-    });
-
-    // Volume slider change event handler
-    volumeSlider.addEventListener("input", () => {
-        audioPlayer.volume = volumeSlider.value;
-        if (volumeSlider.value == 0) {
-            volumeIcon.innerHTML = '<i class="fas fa-volume-off"></i>';
-        } else {
-            volumeIcon.innerHTML = '<i class="fas fa-volume-up"></i>';
-        }
-    });
-</script>
 </body>
 </html>
