@@ -134,8 +134,8 @@
     const songList = document.getElementById('songList');
     const prevButton = document.getElementById('prevButton');
     const nextButton = document.getElementById('nextButton');
-    const seekSlider = document.getElementById('seek-slider'); // Add this line
-    let isSeeking = false; // Add this line
+    const seekSlider = document.getElementById('seek-slider');
+    let isSeeking = false;
 
     const audioPlayer = document.getElementById('audioPlayer');
     const currentTimeDisplay = document.querySelector('.player-time.current');
@@ -143,36 +143,29 @@
 
     const errorContainer = document.getElementById('errorContainer');
 
-    let songs = []; // Array to store the songs
-    let currentSongIndex = 0; // Index of the currently playing song
+    let songs = [];
+    let currentSongIndex = 0;
 
-    // Function to toggle the display of the song form
     const toggleForm = () => {
         songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
         addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
     };
+
     const volumeSlider = document.getElementById('volume');
     volumeSlider.addEventListener('input', () => {
         audioPlayer.volume = volumeSlider.value;
     });
+
     const togglePlayPause = () => {
         if (audioPlayer.paused) {
             audioPlayer.play();
         } else {
             audioPlayer.pause();
         }
-        updatePlayButtonIcons(); // Call the updated function
-
-        // Update individual song play buttons' icons
-        const playButtons = document.querySelectorAll('.songplayButton');
-        playButtons.forEach((button, index) => {
-            if (index === currentSongIndex) {
-                const icon = button.querySelector('i');
-                icon.classList.toggle('fa-play', audioPlayer.paused);
-                icon.classList.toggle('fa-pause', !audioPlayer.paused);
-            }
-        });
+        updatePlayButtonIcons();
+        highlightCurrentSong();
     };
+
     const updatePlayButtonIcons = () => {
         const playIcons = document.querySelectorAll('.songplayButton i');
         playIcons.forEach((icon, index) => {
@@ -185,12 +178,11 @@
             }
         });
 
-        // Update the play button icon in the main control area
         const playIcon = document.getElementById('playIcon');
         playIcon.classList.toggle('fa-play', audioPlayer.paused);
         playIcon.classList.toggle('fa-pause', !audioPlayer.paused);
     };
-    // Update the progress bar and time displays as the song plays
+
     audioPlayer.addEventListener('timeupdate', () => {
         if (!isSeeking) {
             const currentTime = audioPlayer.currentTime;
@@ -208,22 +200,18 @@
         }
     });
 
-    // Seek through the audio when the progress bar is dragged
     seekSlider.addEventListener('input', () => {
         audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
-
     });
 
-    // Set the isSeeking flag to true when the progress bar is being dragged
     seekSlider.addEventListener('mousedown', () => {
         isSeeking = true;
     });
 
-    // Set the isSeeking flag to false when the progress bar dragging is finished
     seekSlider.addEventListener('mouseup', () => {
         isSeeking = false;
     });
-    // Update the progress bar when the song is loaded
+
     audioPlayer.addEventListener('loadedmetadata', () => {
         seekSlider.value = 0;
         const duration = audioPlayer.duration;
@@ -233,40 +221,30 @@
         durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
     });
 
-    // Update the progress bar and time displays when the song ends
     audioPlayer.addEventListener('ended', () => {
         currentTimeDisplay.textContent = '00:00';
         durationDisplay.textContent = '00:00';
         seekSlider.value = 0;
-        updatePlayButtonIcon();
+        updatePlayButtonIcons();
+        highlightCurrentSong();
     });
-    // Function to play the previous song
+
     const playPreviousSong = () => {
         const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         playSongByIndex(prevIndex);
-
-        // Update the play button icons
-        const prevRow = document.getElementById(`songRow${prevIndex}`);
-        const prevPlayButton = prevRow.querySelector('.songplayButton i');
-        prevPlayButton.classList.remove('fa-pause');
-        prevPlayButton.classList.add('fa-play');
-
     };
 
-    // Function to play the next song
     const playNextSong = () => {
         currentSongIndex = (currentSongIndex + 1) % songs.length;
         playSongByIndex(currentSongIndex);
-
-        const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-        const prevRow = document.getElementById(`songRow${prevIndex}`);
-        const prevPlayButton = prevRow.querySelector('.songplayButton i');
-        prevPlayButton.classList.remove('fa-pause');
-        prevPlayButton.classList.add('fa-play');
     };
 
-    // Function to play a song by index
     const playSongByIndex = (index) => {
+        if (index === currentSongIndex) {
+            togglePlayPause();
+            return;
+        }
+
         currentSongIndex = index;
         const song = songs[index];
 
@@ -281,41 +259,36 @@
                 audioPlayer.src = URL.createObjectURL(blob);
                 audioPlayer.play();
                 updateButtonStates();
+                updatePlayButtonIcons();
                 highlightCurrentSong();
-                updatePlayButtonIcons(); // Update the play button icons
-
-                // Highlight the song in the table row
-                const rows = document.querySelectorAll('#songList tr');
-                rows.forEach((row) => row.classList.remove('playing'));
-                const currentRow = document.getElementById(`songRow${currentSongIndex}`);
-                currentRow.classList.add('playing');
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     };
-    // Function to update the states of the previous and next buttons
+
     const updateButtonStates = () => {
         prevButton.disabled = false;
         nextButton.disabled = false;
     };
 
-    // Function to highlight the currently playing song
     const highlightCurrentSong = () => {
         const rows = document.querySelectorAll('#songList tr');
-        rows.forEach((row) => row.classList.remove('playing'));
-        const currentRow = document.getElementById(`songRow${currentSongIndex}`);
-        currentRow.classList.add('playing');
+        rows.forEach((row, index) => {
+            if (index === currentSongIndex) {
+                row.classList.add('playing');
+            } else {
+                row.classList.remove('playing');
+            }
+        });
     };
 
-    // Function to display specific error messages
     const displayErrorMessages = (errors) => {
         errorContainer.innerHTML = Object.entries(errors)
             .map(([key, value]) => `<p class="errorMessage">${value}</p>`)
             .join('');
     };
 
-    // Function to validate form data
     const validateFormData = (file, songName, artistName, releaseYear) => {
         const fileName = file.name;
         const fileExtension = fileName.split('.').pop().toLowerCase();
@@ -337,8 +310,6 @@
 
         return true;
     };
-
-    // Submit the form data and handle the response
     document.getElementById('uploadForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -374,14 +345,14 @@
                 const row = document.createElement('tr');
                 row.id = `songRow${songs.length - 1}`;
                 row.innerHTML = `
-          <td>
-            <button class="songplayButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
-          </td>
-          <td>${song.songName}</td>
-          <td>${song.artistName}</td>
-          <td>${song.album || ''}</td>
-          <td>${song.releaseYear}</td>
-        `;
+        <td>
+          <button class="songplayButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
+        </td>
+        <td>${song.songName}</td>
+        <td>${song.artistName}</td>
+        <td>${song.album || ''}</td>
+        <td>${song.releaseYear}</td>
+      `;
 
                 songList.appendChild(row);
                 updateButtonStates();
@@ -397,8 +368,6 @@
             });
     });
 
-
-    // Load the initial song list
     fetch('/all')
         .then((response) => {
             if (!response.ok) {
@@ -409,26 +378,23 @@
         .then((data) => {
             songs = data;
 
-            // Render the song list
             songs.forEach((song, index) => {
                 const row = document.createElement('tr');
                 row.id = `songRow${index}`;
                 row.innerHTML = `
-          <td>
-            <button class="songplayButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
-          </td>
-          <td>${song.songName}</td>
-          <td>${song.artistName}</td>
-          <td>${song.album || ''}</td>
-          <td>${song.releaseYear}</td>
-        `;
+        <td>
+          <button class="songplayButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
+        </td>
+        <td>${song.songName}</td>
+        <td>${song.artistName}</td>
+        <td>${song.album || ''}</td>
+        <td>${song.releaseYear}</td>
+      `;
 
                 songList.appendChild(row);
             });
 
-            // Update button states and highlight the current song
             updateButtonStates();
-            highlightCurrentSong();
         })
         .catch((error) => {
             console.error('Error:', error);
