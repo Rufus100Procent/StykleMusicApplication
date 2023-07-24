@@ -542,7 +542,8 @@
               return response.blob();
             })
             .then((blob) => {
-              audioPlayer.src = URL.createObjectURL(blob);
+              const fileUrl = URL.createObjectURL(blob);
+              audioPlayer.src = fileUrl;
               audioPlayer.play();
               updateButtonStates();
               highlightCurrentSong();

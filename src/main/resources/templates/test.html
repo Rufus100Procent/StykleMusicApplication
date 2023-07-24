@@ -26,6 +26,7 @@
         }
         .audioContainer {
             max-width: 900px;
+            width: 90%; /* Adjust the width as needed */
             margin: 0 auto;
             background: white; /* remove later*/
             padding: 36px 32px 24px 32px;
@@ -40,7 +41,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-left: 50px;
+            margin-left: 100px;
         }
         .player-controls .player-volume{
             margin-left: 25px;
@@ -113,11 +114,16 @@
         </div>
     </div>
     <div class="player-controls">
+        <button id="shuffleButton" onclick="shuffleSongs()" title="Play Random"><i class="fa-solid fa-shuffle"></i> </button>
         <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
         <button id="playButton" onclick="togglePlayPause()"><i id="playIcon" class="fas fa-play"></i></button>
         <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
+        <button id="repeatButton" onclick="toggleRepeatSong()" title="Enable Repeat"><i id="beatIcon" class="fa-solid fa-repeat"></i></button>
+
         <div class="player-volume-container">
-            <label for="volume"></label><input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
+            <label for="volume"></label>
+            <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
+            <input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
         </div>
     </div>
 </div>
@@ -143,8 +149,26 @@
 
     const errorContainer = document.getElementById('errorContainer');
 
+
+
     let songs = [];
     let currentSongIndex = 0;
+    let isFetching = false;
+    let shuffleMode = false;
+    let isBeating = false;
+    const toggleRepeatSong = () => {
+        isBeating = !isBeating;
+        const beatIcon = document.getElementById('beatIcon');
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        if (isBeating) {
+            beatIcon.classList.add('fa-beat');
+            audioPlayer.loop = true; // Set the audio to loop
+        } else {
+            beatIcon.classList.remove('fa-beat');
+            audioPlayer.loop = false; // Remove the loop property
+        }
+    };
 
     const toggleForm = () => {
         songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
@@ -228,15 +252,72 @@
         updatePlayButtonIcons();
         highlightCurrentSong();
     });
+    const shuffleSongs = () => {
+        shuffleMode = !shuffleMode;
+
+        // Update the shuffleButton element and toggle the 'fa-beat' class
+        const shuffleButton = document.getElementById('shuffleButton');
+        const shuffleIcon = shuffleButton.querySelector('i.fa-shuffle');
+
+        if (shuffleMode) {
+            shuffleIcon.classList.add('fa-beat');
+        } else {
+            shuffleIcon.classList.remove('fa-beat');
+        }
+    };
+
+
+    const updateVolumeIcon = () => {
+        const volume = audioPlayer.volume;
+        const volumeIcon = document.getElementById('volumeIcon');
+
+        if (volume > 0.7) {
+            volumeIcon.className = 'fa-solid fa-volume-high';
+        } else if (volume > 0) {
+            volumeIcon.className = 'fa-solid fa-volume-low';
+        } else {
+            volumeIcon.className = 'fa-solid fa-volume-xmark';
+        }
+    };
+    volumeSlider.addEventListener('input', () => {
+        audioPlayer.volume = volumeSlider.value;
+        updateVolumeIcon();
+    });
 
     const playPreviousSong = () => {
-        const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-        playSongByIndex(prevIndex);
+        if (isFetching) {
+            return; // Ignore the click if a fetch request is already in progress
+        }
+        if (shuffleMode) {
+            const randomIndex = getRandomIndex();
+            playSongByIndex(randomIndex);
+        } else {
+            const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            playSongByIndex(prevIndex);
+        }
+    };
+
+    const getRandomIndex = () => {
+        // Generate a random index different from the current one
+        let randomIndex = currentSongIndex;
+        while (randomIndex === currentSongIndex) {
+            randomIndex = Math.floor(Math.random() * songs.length);
+        }
+        return randomIndex;
     };
 
     const playNextSong = () => {
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        playSongByIndex(currentSongIndex);
+        if (isFetching) {
+            return; // Ignore the click if a fetch request is already in progress
+        }
+        if (shuffleMode) {
+            const randomIndex = Math.floor(Math.random() * songs.length);
+            playSongByIndex(randomIndex);
+
+        } else {
+            const nextIndex = (currentSongIndex + 1) % songs.length; // Change 'prevIndex' to 'nextIndex'
+            playSongByIndex(nextIndex); // Change 'prevIndex' to 'nextIndex'
+        }
     };
 
     const playSongByIndex = (index) => {
@@ -247,6 +328,9 @@
 
         currentSongIndex = index;
         const song = songs[index];
+
+        isFetching = true; // Set isFetching to true before starting the fetch request
+
 
         fetch(`/${song.id}/file`)
             .then((response) => {
@@ -261,9 +345,11 @@
                 updateButtonStates();
                 updatePlayButtonIcons();
                 highlightCurrentSong();
+                isFetching = false; // Set isFetching back to false after the fetch request is completed
             })
             .catch((error) => {
                 console.error('Error:', error);
+                isFetching = false; // Make sure to set isFetching back to false even if an error occurs
             });
     };
 
@@ -304,12 +390,13 @@
         }
 
         if (!/^\d{4}$/.test(releaseYear)) {
-            displayErrorMessages({ songName: 'Invalid release year. Please enter a four-digit number.' });
+            displayErrorMessages({ releaseYear: 'Invalid release year. Please enter a four-digit number.' });
             return false;
         }
 
         return true;
     };
+
     document.getElementById('uploadForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -400,6 +487,13 @@
             console.error('Error:', error);
             displayErrorMessages({ listError: 'Failed to retrieve the song list.' });
         });
+    audioPlayer.addEventListener('ended', () => {
+        if (currentSongIndex === songs.length - 1) {
+            playSongByIndex(0);
+        } else {
+            playNextSong();
+        }
+    });
 </script>
 </body>
 </html>
