@@ -252,6 +252,11 @@
                 audioPlayer.play();
                 updateButtonStates();
                 highlightCurrentSong();
+
+                // Update the play button icon to show the pause icon
+                const playIcon = document.getElementById('playIcon');
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -339,7 +344,7 @@
                 row.id = `songRow${songs.length - 1}`;
                 row.innerHTML = `
           <td>
-            <button class="playButton" onclick="playSongByIndex(${songs.length - 1})">Play</button>
+            <button class="playButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
           </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>
@@ -379,7 +384,7 @@
                 row.id = `songRow${index}`;
                 row.innerHTML = `
           <td>
-            <button class="playButton" onclick="playSongByIndex(${index})">Play</button>
+            <button class="playButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
           </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>
