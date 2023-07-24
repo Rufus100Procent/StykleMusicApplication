@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>Song Upload</title>
+    <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
     <style>
         #songTable {
             margin: 0 auto;
@@ -23,6 +24,53 @@
         .errorMessage {
             color: red;
         }
+        .audioContainer {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white; /* remove later*/
+            padding: 36px 32px 24px 32px;
+            border-radius: 14px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            position: fixed;
+            bottom: 20px; /* Adjust this value as needed */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 50px;
+        }
+        .player-controls .player-volume{
+            margin-left: 25px;
+        }
+        .progress-bar {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 10px;
+        }
+        .player-time {
+            padding: 2px 5px;
+        }
+
+        .player-controls button{
+            background-color: #4b4276;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 20px;
+            font-size: 20px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .progress-bar input[type="range"] {
+            flex: 1; /* Make the seek-slider stretch and fill the available space */
+        }
     </style>
 </head>
 <body>
@@ -32,10 +80,10 @@
 
 <div id="songForm" style="display: none; text-align: center;">
     <form id="uploadForm" enctype="multipart/form-data">
-        <input type="text" name="songName" id="songName" placeholder="Song Name" required><br>
-        <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required><br>
-        <input type="text" name="album" id="album" placeholder="Album"><br>
-        <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required><br>
+        <label for="songName"></label><input type="text" name="songName" id="songName" placeholder="Song Name" required><br>
+        <label for="artistName"></label><input type="text" name="artistName" id="artistName" placeholder="Artist Name" required><br>
+        <label for="album"></label><input type="text" name="album" id="album" placeholder="Album"><br>
+        <label for="releaseYear"></label><input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required><br>
         <input type="file" name="file" id="fileInput" required multiple><br>
         <button type="submit">Upload</button>
     </form>
@@ -53,15 +101,28 @@
     </thead>
     <tbody id="songList"></tbody>
 </table>
-
-<div style="text-align: center;">
-    <button id="prevButton" onclick="playPreviousSong()">Previous</button>
-    <audio id="audioPlayer" controls></audio>
-    <button id="nextButton" onclick="playNextSong()">Next</button>
-</div>
-
 <!-- Error message elements -->
 <div id="errorContainer"></div>
+
+<div class="audioContainer">
+    <div class="audio-player">
+        <div class="progress-bar">
+            <span class="player-time current">00:00</span>
+            <label for="seek-slider"></label><input type="range" id="seek-slider" max="100" value="0">
+            <span class="player-time duration">00:00</span>
+        </div>
+    </div>
+    <div class="player-controls">
+        <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
+        <button id="playButton" onclick="togglePlayPause()"><i id="playIcon" class="fas fa-play"></i></button>
+        <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
+        <div class="player-volume-container">
+            <label for="volume"></label><input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
+        </div>
+    </div>
+</div>
+<audio id="audioPlayer" controls style="display: none;"></audio>
+
 <script>
     // DOM references
     const songForm = document.getElementById('songForm');
@@ -73,7 +134,12 @@
     const songList = document.getElementById('songList');
     const prevButton = document.getElementById('prevButton');
     const nextButton = document.getElementById('nextButton');
+    const seekSlider = document.getElementById('seek-slider'); // Add this line
+    let isSeeking = false; // Add this line
+
     const audioPlayer = document.getElementById('audioPlayer');
+    const currentTimeDisplay = document.querySelector('.player-time.current');
+    const durationDisplay = document.querySelector('.player-time.duration');
 
     const errorContainer = document.getElementById('errorContainer');
 
@@ -85,7 +151,78 @@
         songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
         addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
     };
+    const volumeSlider = document.getElementById('volume');
+    volumeSlider.addEventListener('input', () => {
+        audioPlayer.volume = volumeSlider.value;
+    });
+    const togglePlayPause = () => {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+        } else {
+            audioPlayer.pause();
+        }
+        updatePlayButtonIcon();
+    };
+    const updatePlayButtonIcon = () => {
+        const playIcon = document.getElementById('playIcon');
+        if (audioPlayer.paused) {
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+        } else {
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
+        }
+    };
+    // Update the progress bar and time displays as the song plays
+    audioPlayer.addEventListener('timeupdate', () => {
+        if (!isSeeking) {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
 
+            const currentMinutes = Math.floor(currentTime / 60);
+            const currentSeconds = Math.floor(currentTime % 60);
+            currentTimeDisplay.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+            const durationMinutes = Math.floor(duration / 60);
+            const durationSeconds = Math.floor(duration % 60);
+            durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+
+            seekSlider.value = (currentTime / duration) * 100;
+        }
+    });
+
+    // Seek through the audio when the progress bar is dragged
+    seekSlider.addEventListener('input', () => {
+        audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
+
+    });
+
+    // Set the isSeeking flag to true when the progress bar is being dragged
+    seekSlider.addEventListener('mousedown', () => {
+        isSeeking = true;
+    });
+
+    // Set the isSeeking flag to false when the progress bar dragging is finished
+    seekSlider.addEventListener('mouseup', () => {
+        isSeeking = false;
+    });
+    // Update the progress bar when the song is loaded
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        seekSlider.value = 0;
+        const duration = audioPlayer.duration;
+
+        const durationMinutes = Math.floor(duration / 60);
+        const durationSeconds = Math.floor(duration % 60);
+        durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+    });
+
+    // Update the progress bar and time displays when the song ends
+    audioPlayer.addEventListener('ended', () => {
+        currentTimeDisplay.textContent = '00:00';
+        durationDisplay.textContent = '00:00';
+        seekSlider.value = 0;
+        updatePlayButtonIcon();
+    });
     // Function to play the previous song
     const playPreviousSong = () => {
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
@@ -111,8 +248,7 @@
                 return response.blob();
             })
             .then((blob) => {
-                const fileUrl = URL.createObjectURL(blob);
-                audioPlayer.src = fileUrl;
+                audioPlayer.src = URL.createObjectURL(blob);
                 audioPlayer.play();
                 updateButtonStates();
                 highlightCurrentSong();
