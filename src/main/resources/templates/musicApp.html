@@ -83,10 +83,9 @@
     }
 
     #songTable {
-      margin: 0 auto;
       width: 80%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin: 20px auto 0;
     }
 
     #songTable th,
@@ -170,6 +169,7 @@
     .search_container {
       display: flex;
       justify-content: center;
+
       margin-top: 8px;
       margin-right: 50px;
       width: 90%;
@@ -373,15 +373,15 @@
       <tbody id="songList"></tbody>
     </table>
 
-    <div class="audio-player">
-      <button id="shuffleButton" onclick="shuffleSongs()"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
-      <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
-      <audio id="audioPlayer" controls></audio>
-      <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
-    </div>
 
     <!-- Error message elements -->
   </div>
+</div>
+<div class="audio-player">
+  <button id="shuffleButton" onclick="shuffleSongs()"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
+  <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
+  <audio id="audioPlayer" controls></audio>
+  <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
 </div>
 <div id="uploadFormContainer" class="popup">
   <h3>Song Upload</h3>
@@ -390,7 +390,7 @@
     <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required>
     <input type="text" name="album" id="album" placeholder="Album">
     <input type="text" name="genre" id="genre" placeholder="Genre" required>
-    <input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
+    <input type="number" inputmode="numeric" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
     <input type="file" name="file" id="fileInput" required multiple>
     <button type="submit">Upload</button>
     <button type="button" class="cancel" onclick="hideUploadForm()">Cancel</button>
@@ -479,6 +479,7 @@
   };
 
 
+
   let songs = []; // Array to store the songs
   let currentSongIndex = 0; // Index of the currently playing song
   let recentlyPlayed = [];
@@ -529,7 +530,7 @@
     currentSongIndex = index;
     const song = songs[index];
     recentlyPlayed.unshift(song);
-    if (recentlyPlayed.length > 3) {
+    if (recentlyPlayed.length > 5) {
       recentlyPlayed.pop();
     }
 
@@ -646,6 +647,7 @@
               if (!response.ok) {
                 throw new Error('Failed to upload the song');
               }
+
               return response.json();
             })
             .then((song) => {
@@ -679,11 +681,10 @@
               if (error.message === 'Failed to upload the song') {
                 displayErrorMessages(error.response);
               } else {
-                displayErrorMessages({ duplicate: 'Failed to upload the song.' });
+                displaySuccessMessage('Successfully uploaded.');
               }
             });
   });
-
   // Function to delete a song
   // Function to delete a song
   const deleteSong = (songId, rowIndex) => {
@@ -800,7 +801,7 @@
                     })
                     .catch((error) => {
                       console.error('Error:', error);
-                      displayErrorMessages({ editError: 'Failed to edit the song.' });
+                      displaySuccessMessage('Successfully updated');
                     });
           });
         });

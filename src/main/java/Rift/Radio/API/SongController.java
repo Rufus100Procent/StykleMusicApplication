@@ -38,6 +38,10 @@
         public String Test(){
             return "Test";
         }
+        @GetMapping("/test2")
+        public String Test2(){
+            return "test";
+        }
 
         @GetMapping("/all")
         @ResponseBody

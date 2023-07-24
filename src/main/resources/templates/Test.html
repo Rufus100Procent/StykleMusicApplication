@@ -61,7 +61,7 @@
 
 <div class="audioContainer">
 
-    <div class="player-track-meta">
+    <div class="audio-player">
         <div class="progress-bar">
             <span class="player-time current">00:00</span>
             <input type="range" id="seek-slider" max="100" value="0">
@@ -78,26 +78,50 @@
         </div>
     </div>
 
+    <div>
+        <input type="file" accept=".mp3" id="uploadButton" onchange="handleFileUpload()" style="display: none;">
+        <button onclick="document.getElementById('uploadButton').click()">
+            <i class="fas fa-upload"></i> Upload Song
+        </button>
+    </div>
+
 </div>
+
+<audio id="audioPlayer" controls style="display: none;"></audio>
 <script>
-    function togglePlayPause() {
-        const playIcon = document.getElementById('playIcon');
 
-        if (playIcon.classList.contains('fa-play')) {
-            playIcon.classList.remove('fa-play');
-            playIcon.classList.add('fa-pause');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playButton = document.getElementById('playButton');
+    const seekSlider = document.getElementById('seek-slider');
+    const currentTimeDisplay = document.querySelector('.player-time.current');
+    const durationDisplay = document.querySelector('.player-time.duration');
+    let currentSongIndex = 0;
+    let isSeeking = false;
 
-            // Add your play audio logic here
-            // For example: audio.play();
+    const volumeSlider = document.getElementById('volume');
+    volumeSlider.addEventListener('input', () => {
+        audioPlayer.volume = volumeSlider.value;
+    });
+    const togglePlayPause = () => {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
         } else {
-            // Switch from pause to play
+            audioPlayer.pause();
+        }
+        updatePlayButtonIcon();
+    };
+
+    const updatePlayButtonIcon = () => {
+        const playIcon = document.getElementById('playIcon');
+        if (audioPlayer.paused) {
             playIcon.classList.remove('fa-pause');
             playIcon.classList.add('fa-play');
-
-            // Add your pause audio logic here
-            // For example: audio.pause();
+        } else {
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
         }
-    }
+    };
+
     const playPreviousSong = () => {
         currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
         playSongByIndex(currentSongIndex);
@@ -108,32 +132,78 @@
         currentSongIndex = (currentSongIndex + 1) % songs.length;
         playSongByIndex(currentSongIndex);
     };
-    const playSongByIndex = (index) => {
-        currentSongIndex = index;
-        const song = songs[index];
-
-        fetch(`/songs/${song.id}/file`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to retrieve the song file');
-                }
-                return response.blob();
-            })
-            .then((blob) => {
-                const fileUrl = URL.createObjectURL(blob);
-                audioPlayer.src = fileUrl;
-                audioPlayer.play();
-                updateButtonStates();
-                highlightCurrentSong();
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+    const handleFileUpload = () => {
+        const fileInput = document.getElementById('uploadButton');
+        const file = fileInput.files[0];
+        if (file && file.type === 'audio/mpeg') {
+            audioPlayer.src = URL.createObjectURL(file);
+            audioPlayer.play();
+            updateButtonStates();
+            // You might want to update other UI elements to reflect the uploaded song
+        } else {
+            alert('Please select an MP3 audio file.');
+        }
     };
 
-    // Function to update the states of the previous and next buttons
-    const updateButtonStates = () => {
-    };
+    audioPlayer.addEventListener('play', () => {
+        updatePlayButtonIcon();
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+        updatePlayButtonIcon();
+    });
+
+    // Update the progress bar and time displays as the song plays
+    audioPlayer.addEventListener('timeupdate', () => {
+        if (!isSeeking) {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
+
+            const currentMinutes = Math.floor(currentTime / 60);
+            const currentSeconds = Math.floor(currentTime % 60);
+            currentTimeDisplay.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+            const durationMinutes = Math.floor(duration / 60);
+            const durationSeconds = Math.floor(duration % 60);
+            durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+
+            seekSlider.value = (currentTime / duration) * 100;
+        }
+    });
+
+    // Seek through the audio when the progress bar is dragged
+    seekSlider.addEventListener('input', () => {
+        audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
+
+    });
+
+    // Set the isSeeking flag to true when the progress bar is being dragged
+    seekSlider.addEventListener('mousedown', () => {
+        isSeeking = true;
+    });
+
+    // Set the isSeeking flag to false when the progress bar dragging is finished
+    seekSlider.addEventListener('mouseup', () => {
+        isSeeking = false;
+    });
+
+    // Update the progress bar when the song is loaded
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        seekSlider.value = 0;
+        const duration = audioPlayer.duration;
+
+        const durationMinutes = Math.floor(duration / 60);
+        const durationSeconds = Math.floor(duration % 60);
+        durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+    });
+
+    // Update the progress bar and time displays when the song ends
+    audioPlayer.addEventListener('ended', () => {
+        currentTimeDisplay.textContent = '00:00';
+        durationDisplay.textContent = '00:00';
+        seekSlider.value = 0;
+        updatePlayButtonIcon();
+    });
 
 </script>
 </body>
