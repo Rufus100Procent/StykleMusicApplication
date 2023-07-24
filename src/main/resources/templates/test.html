@@ -161,17 +161,34 @@
         } else {
             audioPlayer.pause();
         }
-        updatePlayButtonIcon();
+        updatePlayButtonIcons(); // Call the updated function
+
+        // Update individual song play buttons' icons
+        const playButtons = document.querySelectorAll('.songplayButton');
+        playButtons.forEach((button, index) => {
+            if (index === currentSongIndex) {
+                const icon = button.querySelector('i');
+                icon.classList.toggle('fa-play', audioPlayer.paused);
+                icon.classList.toggle('fa-pause', !audioPlayer.paused);
+            }
+        });
     };
-    const updatePlayButtonIcon = () => {
+    const updatePlayButtonIcons = () => {
+        const playIcons = document.querySelectorAll('.songplayButton i');
+        playIcons.forEach((icon, index) => {
+            if (index === currentSongIndex) {
+                icon.classList.toggle('fa-play', audioPlayer.paused);
+                icon.classList.toggle('fa-pause', !audioPlayer.paused);
+            } else {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+            }
+        });
+
+        // Update the play button icon in the main control area
         const playIcon = document.getElementById('playIcon');
-        if (audioPlayer.paused) {
-            playIcon.classList.remove('fa-pause');
-            playIcon.classList.add('fa-play');
-        } else {
-            playIcon.classList.remove('fa-play');
-            playIcon.classList.add('fa-pause');
-        }
+        playIcon.classList.toggle('fa-play', audioPlayer.paused);
+        playIcon.classList.toggle('fa-pause', !audioPlayer.paused);
     };
     // Update the progress bar and time displays as the song plays
     audioPlayer.addEventListener('timeupdate', () => {
@@ -225,14 +242,27 @@
     });
     // Function to play the previous song
     const playPreviousSong = () => {
-        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-        playSongByIndex(currentSongIndex);
+        const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        playSongByIndex(prevIndex);
+
+        // Update the play button icons
+        const prevRow = document.getElementById(`songRow${prevIndex}`);
+        const prevPlayButton = prevRow.querySelector('.songplayButton i');
+        prevPlayButton.classList.remove('fa-pause');
+        prevPlayButton.classList.add('fa-play');
+
     };
 
     // Function to play the next song
     const playNextSong = () => {
         currentSongIndex = (currentSongIndex + 1) % songs.length;
         playSongByIndex(currentSongIndex);
+
+        const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        const prevRow = document.getElementById(`songRow${prevIndex}`);
+        const prevPlayButton = prevRow.querySelector('.songplayButton i');
+        prevPlayButton.classList.remove('fa-pause');
+        prevPlayButton.classList.add('fa-play');
     };
 
     // Function to play a song by index
@@ -252,17 +282,18 @@
                 audioPlayer.play();
                 updateButtonStates();
                 highlightCurrentSong();
+                updatePlayButtonIcons(); // Update the play button icons
 
-                // Update the play button icon to show the pause icon
-                const playIcon = document.getElementById('playIcon');
-                playIcon.classList.remove('fa-play');
-                playIcon.classList.add('fa-pause');
+                // Highlight the song in the table row
+                const rows = document.querySelectorAll('#songList tr');
+                rows.forEach((row) => row.classList.remove('playing'));
+                const currentRow = document.getElementById(`songRow${currentSongIndex}`);
+                currentRow.classList.add('playing');
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     };
-
     // Function to update the states of the previous and next buttons
     const updateButtonStates = () => {
         prevButton.disabled = false;
@@ -344,7 +375,7 @@
                 row.id = `songRow${songs.length - 1}`;
                 row.innerHTML = `
           <td>
-            <button class="playButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
+            <button class="songplayButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
           </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>
@@ -384,7 +415,7 @@
                 row.id = `songRow${index}`;
                 row.innerHTML = `
           <td>
-            <button class="playButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
+            <button class="songplayButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
           </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>

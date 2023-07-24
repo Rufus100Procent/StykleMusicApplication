@@ -248,7 +248,7 @@ document.getElementById('uploadForm').addEventListener('submit', (e) => {
             row.id = `songRow${songs.length - 1}`;
             row.innerHTML = `
         <td>
-          <button class="playButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fa-solid fa-play"></i></button>
+          <button class="songplayButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fa-solid fa-play"></i></button>
           <button class="deleteButton" onclick="deleteSong(${song.id}, ${songs.length - 1})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
           <button class="editButton" onclick="editSong(${song.id}, ${songs.length - 1})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
         </td>
@@ -368,7 +368,7 @@ const editSong = (songId, rowIndex) => {
                                     const row = document.getElementById(`songRow${rowIndex}`);
                                     row.innerHTML = `
                   <td>
-                    <button class="playButton" onclick="playSongByIndex(${rowIndex})"><i class="fa-solid fa-play"></i></button>
+                    <button class="songplayButton" onclick="playSongByIndex(${rowIndex})"><i class="fa-solid fa-play"></i></button>
                     <button class="deleteButton" onclick="deleteSong(${songId}, ${rowIndex})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
                     <button class="editButton" onclick="editSong(${songId}, ${rowIndex})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
                   </td>
@@ -433,7 +433,7 @@ fetch('/all')
             row.id = `songRow${index}`;
             row.innerHTML = `
         <td>
-          <button class="playButton" onclick="playSongByIndex(${index})"><i class="fa-solid fa-play"></i></button>
+          <button class="songplayButton" onclick="playSongByIndex(${index})"><i class="fa-solid fa-play"></i></button>
           <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
           <button class="editButton" onclick="editSong(${song.id}, ${index})"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
         </td>
