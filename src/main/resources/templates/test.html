@@ -204,8 +204,6 @@
                 row.innerHTML = `
           <td>
             <button class="playButton" onclick="playSongByIndex(${songs.length - 1})">Play</button>
-            <button class="deleteButton" onclick="deleteSong(${song.id}, ${songs.length - 1})">Delete</button>
-            <button class="editButton" onclick="editSong(${song.id}, ${songs.length - 1})">Edit</button>
           </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>
@@ -227,93 +225,6 @@
             });
     });
 
-    // Function to delete a song
-    const deleteSong = (songId, rowIndex) => {
-        if (confirm('Are you sure you want to delete this song?')) {
-            fetch(`/${songId}`, {
-                method: 'DELETE'
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        // Remove the song from the songs array
-                        songs.splice(rowIndex, 1);
-
-                        // Remove the song row from the table
-                        const row = document.getElementById(`songRow${rowIndex}`);
-                        row.parentNode.removeChild(row);
-
-                        // Reset the current song index if necessary
-                        if (currentSongIndex >= rowIndex && currentSongIndex > 0) {
-                            currentSongIndex--;
-                        }
-
-                        // Update button states and highlight the current song
-                        updateButtonStates();
-                        highlightCurrentSong();
-                    } else {
-                        throw new Error('Failed to delete the song');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    displayErrorMessages({ deleteError: 'Failed to delete the song.' });
-                });
-        }
-    };
-
-    // Function to edit a song
-    const editSong = (songId, rowIndex) => {
-        const song = songs[rowIndex];
-        const newSongName = prompt('Enter a new song name:', song.songName);
-        const newArtistName = prompt('Enter a new artist name:', song.artistName);
-        const newAlbum = prompt('Enter a new album:', song.album);
-        const newReleaseYear = prompt('Enter a new release year:', song.releaseYear);
-
-        if (newSongName && newArtistName && newReleaseYear) {
-            const formData = new FormData();
-            formData.append('songName', newSongName);
-            formData.append('artistName', newArtistName);
-            formData.append('album', newAlbum || '');
-            formData.append('releaseYear', newReleaseYear);
-
-            fetch(`/${songId}/edit`, {
-                method: 'PUT',
-                body: formData
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        // Update the song object in the songs array
-                        songs[rowIndex].songName = newSongName;
-                        songs[rowIndex].artistName = newArtistName;
-                        songs[rowIndex].album = newAlbum;
-                        songs[rowIndex].releaseYear = newReleaseYear;
-
-                        // Update the song row in the table
-                        const row = document.getElementById(`songRow${rowIndex}`);
-                        row.innerHTML = `
-              <td>
-                <button class="playButton" onclick="playSongByIndex(${rowIndex})">Play</button>
-                <button class="deleteButton" onclick="deleteSong(${songId}, ${rowIndex})">Delete</button>
-                <button class="editButton" onclick="editSong(${songId}, ${rowIndex})">Edit</button>
-              </td>
-              <td>${newSongName}</td>
-              <td>${newArtistName}</td>
-              <td>${newAlbum || ''}</td>
-              <td>${newReleaseYear}</td>
-            `;
-
-                        // Highlight the current song
-                        highlightCurrentSong();
-                    } else {
-                        throw new Error('Failed to edit the song');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    displayErrorMessages({ editError: 'Failed to edit the song.' });
-                });
-        }
-    };
 
     // Load the initial song list
     fetch('/all')
@@ -333,8 +244,6 @@
                 row.innerHTML = `
           <td>
             <button class="playButton" onclick="playSongByIndex(${index})">Play</button>
-            <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})">Delete</button>
-            <button class="editButton" onclick="editSong(${song.id}, ${index})">Edit</button>
           </td>
           <td>${song.songName}</td>
           <td>${song.artistName}</td>
