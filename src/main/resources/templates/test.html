@@ -218,7 +218,7 @@
             <li><a href="/">About</a></li>
             <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
             <li><a href="/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-            <li><a href="#" onclick="showRecentlyPlayed()">Recently Played</a></li>
+            <li><a href="#" onClick="showRecentlyPlayed()">Recently Played</a></li>
         </ul>
     </div>
     <div class="main_content">
@@ -313,6 +313,15 @@
     let isFetching = false;
     let shuffleMode = false;
     let isBeating = false;
+    const recentlyPlayedHistory = [];
+    const updateRecentlyPlayed = (songIndex) => {
+        if (recentlyPlayedHistory.includes(songIndex)) {
+            const index = recentlyPlayedHistory.indexOf(songIndex);
+            recentlyPlayedHistory.splice(index, 1); // Remove the song from the history to rearrange the order
+        }
+        recentlyPlayedHistory.unshift(songIndex); // Add the song to the beginning of the history
+    };
+
     const toggleRepeatSong = () => {
         isBeating = !isBeating;
         const beatIcon = document.getElementById('beatIcon');
@@ -486,8 +495,7 @@
         currentSongIndex = index;
         const song = songs[index];
 
-        isFetching = true; // Set isFetching to true before starting the fetch request
-
+        isFetching = true;
 
         fetch(`/${song.id}/file`)
             .then((response) => {
@@ -502,13 +510,34 @@
                 updateButtonStates();
                 updatePlayButtonIcons();
                 highlightCurrentSong();
-                isFetching = false; // Set isFetching back to false after the fetch request is completed
+                updateRecentlyPlayed(index); // Update the recently played song
+                isFetching = false;
             })
             .catch((error) => {
                 console.error('Error:', error);
-                isFetching = false; // Make sure to set isFetching back to false even if an error occurs
+                isFetching = false;
             });
     };
+    let recentlyPlayedVisible = false;
+    const showRecentlyPlayed = () => {
+        const tableRows = document.querySelectorAll('#songList tr');
+        const shownIndexes = recentlyPlayedHistory.slice(0, tableRows.length);
+
+        tableRows.forEach((row, index) => {
+            if (recentlyPlayedVisible) {
+                row.style.display = 'table-row'; // Show all rows
+            } else {
+                if (shownIndexes.includes(index)) {
+                    row.style.display = 'table-row'; // Show the rows in the recently played history
+                } else {
+                    row.style.display = 'none'; // Hide other rows
+                }
+            }
+        });
+
+        recentlyPlayedVisible = !recentlyPlayedVisible; // Toggle the variable's value
+    };
+
 
     const updateButtonStates = () => {
         prevButton.disabled = false;
