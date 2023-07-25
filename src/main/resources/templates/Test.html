@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customized Audio Player</title>
+    <!-- Add Font Awesome icons -->
+    <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #9a1d86, #0eade0);
+            background-size: cover;
+            color: #1f2937;
+            font-family: 'Inter', sans-serif;
+        }
+        .audioContainer {
+            max-width: 900px;
+            margin: 20rem auto;
+            background: white; /* remove later*/
+            padding: 36px 32px 24px 32px;
+            border-radius: 14px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 50px;
+        }
+        .player-controls .player-volume{
+            margin-left: 25px;
+        }
+        .progress-bar {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 10px;
+        }
+        .player-time {
+            padding: 2px 5px;
+        }
+
+        .player-controls button{
+            background-color: #4b4276;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 20px;
+            font-size: 20px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .progress-bar input[type="range"] {
+            flex: 1; /* Make the seek-slider stretch and fill the available space */
+        }
+    </style>
+</head>
+<body>
+
+<div class="audioContainer">
+
+    <div class="audio-player">
+        <div class="progress-bar">
+            <span class="player-time current">00:00</span>
+            <input type="range" id="seek-slider" max="100" value="0">
+            <span class="player-time duration">00:00</span>
+        </div>
+    </div>
+
+    <div class="player-controls">
+        <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
+        <button id="playButton" onclick="togglePlayPause()"><i id="playIcon" class="fas fa-play"></i></button>
+        <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
+        <div class="player-volume-container">
+            <input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
+        </div>
+    </div>
+
+    <div>
+        <input type="file" accept=".mp3" id="uploadButton" onchange="handleFileUpload()" style="display: none;">
+        <button onclick="document.getElementById('uploadButton').click()">
+            <i class="fas fa-upload"></i> Upload Song
+        </button>
+    </div>
+
+</div>
+
+<audio id="audioPlayer" controls style="display: none;"></audio>
+<script>
+
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playButton = document.getElementById('playButton');
+    const seekSlider = document.getElementById('seek-slider');
+    const currentTimeDisplay = document.querySelector('.player-time.current');
+    const durationDisplay = document.querySelector('.player-time.duration');
+    let currentSongIndex = 0;
+    let isSeeking = false;
+
+    const volumeSlider = document.getElementById('volume');
+    volumeSlider.addEventListener('input', () => {
+        audioPlayer.volume = volumeSlider.value;
+    });
+    const togglePlayPause = () => {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+        } else {
+            audioPlayer.pause();
+        }
+        updatePlayButtonIcon();
+    };
+
+    const updatePlayButtonIcon = () => {
+        const playIcon = document.getElementById('playIcon');
+        if (audioPlayer.paused) {
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+        } else {
+            playIcon.classList.remove('fa-play');
+            playIcon.classList.add('fa-pause');
+        }
+    };
+
+
+    const playPreviousSong = () => {
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        playSongByIndex(currentSongIndex);
+    };
+
+    // Function to play the next song
+    const playNextSong = () => {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        playSongByIndex(currentSongIndex);
+    };
+    const handleFileUpload = () => {
+        const fileInput = document.getElementById('uploadButton');
+        const file = fileInput.files[0];
+        if (file && file.type === 'audio/mpeg') {
+            audioPlayer.src = URL.createObjectURL(file);
+            audioPlayer.play();
+            updateButtonStates();
+            // You might want to update other UI elements to reflect the uploaded song
+        } else {
+            alert('Please select an MP3 audio file.');
+        }
+    };
+
+    audioPlayer.addEventListener('play', () => {
+        updatePlayButtonIcon();
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+        updatePlayButtonIcon();
+    });
+
+    // Update the progress bar and time displays as the song plays
+    audioPlayer.addEventListener('timeupdate', () => {
+        if (!isSeeking) {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
+
+            const currentMinutes = Math.floor(currentTime / 60);
+            const currentSeconds = Math.floor(currentTime % 60);
+            currentTimeDisplay.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+            const durationMinutes = Math.floor(duration / 60);
+            const durationSeconds = Math.floor(duration % 60);
+            durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+
+            seekSlider.value = (currentTime / duration) * 100;
+        }
+    });
+
+    // Seek through the audio when the progress bar is dragged
+    seekSlider.addEventListener('input', () => {
+        audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
+
+    });
+
+    // Set the isSeeking flag to true when the progress bar is being dragged
+    seekSlider.addEventListener('mousedown', () => {
+        isSeeking = true;
+    });
+
+    // Set the isSeeking flag to false when the progress bar dragging is finished
+    seekSlider.addEventListener('mouseup', () => {
+        isSeeking = false;
+    });
+
+    // Update the progress bar when the song is loaded
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        seekSlider.value = 0;
+        const duration = audioPlayer.duration;
+
+        const durationMinutes = Math.floor(duration / 60);
+        const durationSeconds = Math.floor(duration % 60);
+        durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+    });
+
+    // Update the progress bar and time displays when the song ends
+    audioPlayer.addEventListener('ended', () => {
+        currentTimeDisplay.textContent = '00:00';
+        durationDisplay.textContent = '00:00';
+        seekSlider.value = 0;
+        updatePlayButtonIcon();
+    });
+
+</script>
+</body>
+</html>

@@ -1,9 +1,10 @@
 package Rift.Radio.Service;
 
-import Rift.Radio.MP3FileExistsException;
+import Rift.Radio.Error.MP3FileExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
-import Rift.Radio.SongNameExistsException;
+import Rift.Radio.Error.SongNameExistsException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -16,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -30,7 +33,7 @@ public class SongService {
         this.songRepository = songRepository;
     }
 
-    public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear) {
+    public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         // Check if song name already exists
         if (songRepository.existsBySongName(songName)) {
             throw new SongNameExistsException("Song name already exists");
@@ -54,6 +57,7 @@ public class SongService {
             song.setArtistName(artistName);
             song.setAlbum(album);
             song.setReleaseYear(releaseYear);
+            song.setGenre(genre); // Set the genre
             song.setFilePath(filePath);
             return songRepository.save(song);
         } catch (IOException e) {
@@ -134,7 +138,7 @@ public class SongService {
         }
     }
 
-    public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear) {
+    public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
             Song song = songOptional.get();
@@ -176,6 +180,7 @@ public class SongService {
             song.setArtistName(artistName);
             song.setAlbum(album);
             song.setReleaseYear(releaseYear);
+            song.setGenre(genre); // Set the genre
 
             return songRepository.save(song);
         } else {
@@ -183,4 +188,37 @@ public class SongService {
         }
     }
 
+    public void downloadSong(Long id, HttpServletResponse response) {
+        Optional<Song> songOptional = songRepository.findById(id);
+        if (songOptional.isPresent()) {
+            Song song = songOptional.get();
+            try {
+                Path filePath = Paths.get(song.getFilePath());
+                Resource resource = new UrlResource(filePath.toUri());
+
+                if (resource.exists()) {
+                    // Set response content type for the file download
+                    response.setContentType("audio/mpeg");
+                    response.setHeader("Content-Disposition", "attachment; filename=\"" + song.getSongName() + ".mp3\"");
+
+                    // Copy the file content to the response output stream
+                    InputStream inputStream = resource.getInputStream();
+                    OutputStream outputStream = response.getOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+
+                    outputStream.flush();
+                } else {
+                    throw new NotFoundException("Song file not found");
+                }
+            } catch (IOException e) {
+                throw new NotFoundException("Song file not found");
+            }
+        } else {
+            throw new NotFoundException("Song not found");
+        }
+    }
 }
