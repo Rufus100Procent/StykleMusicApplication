@@ -34,10 +34,6 @@
         public String about(){
             return "About";
         }
-        @GetMapping("/test")
-        public String Test(){
-            return "Test";
-        }
         @GetMapping("/test2")
         public String Test2(){
             return "test";

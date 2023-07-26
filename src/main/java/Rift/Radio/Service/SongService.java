@@ -43,7 +43,7 @@ public class SongService {
             validateFile(file);
 
             String fileName = StringUtils.cleanPath(StringUtils.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : "untitled.mp3");
-            String storagePath = "/home/stykle/Documents/MusicApplicationBetaTesting/sample/";
+            String storagePath = "/home/stykle/Documents/MusicApplicationBetaTesting/LocalStorage/MP3/";
             String filePath = storagePath + fileName;
             // Check if MP3 file already exists
             if (songRepository.existsByFilePath(filePath)) {
@@ -160,7 +160,7 @@ public class SongService {
 
                 String fileName = StringUtils.cleanPath(StringUtils.hasText(file.getOriginalFilename()) ?
                         file.getOriginalFilename() : "untitled.mp3");
-                String storagePath = "/home/stykle/Documents/MusicApplicationBetaTesting/sample/";
+                String storagePath = "/home/stykle/Documents/MusicApplicationBetaTesting/LocalStorage/MP3/";
                 String filePath = storagePath + fileName;
 
                 // Check if MP3 file already exists
