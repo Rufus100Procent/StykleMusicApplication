@@ -46,7 +46,7 @@
             return songService.getAllSongs(page, pageSize);
         }
 
-        @GetMapping("/upload")
+        @GetMapping("/songs")
         public String upload() {
             return "musicApp";
         }

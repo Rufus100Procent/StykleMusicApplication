@@ -14,8 +14,11 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,17 +35,14 @@ import static org.mockito.Mockito.when;
 public class SongServiceUnitTest {
     @Mock
     private SongRepository songRepository;
-
     @InjectMocks
     private SongService songService;
     private final String testFilesDirectory = "/home/stykle/Documents/MusicApplicationBetaTesting/src/test/java/Rift/Radio/songMP3Test/";
-
     @BeforeEach
     public void setUp() {
         // Initialize Mockito annotations for this test class
         MockitoAnnotations.openMocks(this);
     }
-
     // Test for successful song upload
     @Test
     public void testUploadSong_Success() throws IOException {
@@ -52,7 +52,7 @@ public class SongServiceUnitTest {
         String album = "Test Album";
         int releaseYear = 2023;
         String genre = "Pop";
-        String fileName = "AC DC - Shoot To Thrill.mp3";
+        String fileName = "Snortin’ Whiskey.mp3";
 
         // Load the test MP3 file
         Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
@@ -179,5 +179,152 @@ public class SongServiceUnitTest {
         // Assertions
         assertNotNull(resultSongs);
         assertEquals(pageSize, resultSongs.size());
+    }
+
+    // Test for successful song edit
+    @Test
+    public void testEditSong_Success() throws IOException {
+        // Mock data
+        Long songId = 1L;
+        String songName = "Edited Song";
+        String artistName = "Edited Artist";
+        String album = "Edited Album";
+        int releaseYear = 2024;
+        String genre = "Rock";
+        String fileName = "Enter Sandman (Remastered).mp3";
+
+        // Load the test MP3 file
+        Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
+        byte[] fileContent = Files.readAllBytes(mp3FilePath);
+        MockMultipartFile file = new MockMultipartFile("file", fileName, "audio/mpeg", fileContent);
+
+        // Create a mock Song object to represent the existing song in the database
+        Song mockSong = new Song();
+        mockSong.setId(songId);
+        mockSong.setSongName("Original Song");
+        mockSong.setArtistName("Original Artist");
+        mockSong.setAlbum("Original Album");
+        mockSong.setReleaseYear(2023);
+        mockSong.setGenre("Pop");
+        mockSong.setFilePath(testFilesDirectory + fileName);
+
+        // Mock the repository behavior
+        when(songRepository.findById(songId)).thenReturn(Optional.of(mockSong));
+        when(songRepository.existsBySongNameAndIdNot(songName, songId)).thenReturn(false);
+
+        // Configure the songRepository.save method to return the edited Song object
+        when(songRepository.save(any(Song.class))).thenAnswer(invocation -> invocation.<Song>getArgument(0));
+
+        // Test the editSong method
+        Song editedSong = songService.editSong(songId, file, songName, artistName, album, releaseYear, genre);
+        System.out.println("Edited Song: " + editedSong);
+
+        // Assertions
+        assertNotNull(editedSong);
+        assertEquals(songName, editedSong.getSongName());
+        assertEquals(artistName, editedSong.getArtistName());
+        assertEquals(album, editedSong.getAlbum());
+        assertEquals(releaseYear, editedSong.getReleaseYear());
+        assertEquals(genre, editedSong.getGenre());
+        assertNotNull(editedSong.getId()); // Ensure that the ID remains the same
+
+        // Verify that the songRepository methods were called with the expected arguments
+        verify(songRepository, times(1)).findById(songId);
+        verify(songRepository, times(1)).existsBySongNameAndIdNot(songName, songId);
+        verify(songRepository, times(1)).save(any(Song.class));
+    }
+
+    // Test for song edit with existing song name, expecting SongNameExistsException
+    @Test
+    public void testEditSong_SongNameExists() throws IOException {
+        // Mock data
+        Long songId = 1L;
+        String songName = "Existing Song";
+        String artistName = "Edited Artist";
+        String album = "Edited Album";
+        int releaseYear = 2024;
+        String genre = "Rock";
+        String fileName = "Enter Sandman (Remastered).mp3";
+
+        // Load the test MP3 file
+        Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
+        byte[] fileContent = Files.readAllBytes(mp3FilePath);
+        MockMultipartFile file = new MockMultipartFile("file", fileName, "audio/mpeg", fileContent);
+
+        // Create a mock Song object to represent the existing song in the database
+        Song mockSong = new Song();
+        mockSong.setId(songId);
+        mockSong.setSongName("Original Song");
+        mockSong.setArtistName("Original Artist");
+        mockSong.setAlbum("Original Album");
+        mockSong.setReleaseYear(2023);
+        mockSong.setGenre("Pop");
+        mockSong.setFilePath(testFilesDirectory + fileName);
+
+        // Mock the repository behavior
+        when(songRepository.findById(songId)).thenReturn(Optional.of(mockSong));
+        when(songRepository.existsBySongNameAndIdNot(songName, songId)).thenReturn(true);
+
+        // Test the editSong method and expect a SongNameExistsException
+        assertThrows(SongNameExistsException.class,
+                () -> songService.editSong(songId, file, songName, artistName, album, releaseYear, genre));
+    }
+
+
+    // Test for successful song deletion
+    @Test
+    public void testDeleteSong_Success() {
+        // Mock data
+        Long songId = 1L;
+        String filePath = testFilesDirectory + "AC DC - Hells Bells (Official Video).mp3";
+
+        // Create a mock Song object to represent the existing song in the database
+        Song mockSong = new Song();
+        mockSong.setId(songId);
+        mockSong.setFilePath(filePath);
+
+        // Mock the repository behavior
+        when(songRepository.findById(songId)).thenReturn(Optional.of(mockSong));
+
+        // Test the deleteSong method
+        songService.deleteSong(songId);
+
+        // Verify that the songRepository methods were called with the expected arguments
+        verify(songRepository, times(1)).findById(songId);
+        verify(songRepository, times(1)).delete(any(Song.class));
+
+        // Verify that the MP3 file was deleted
+        File mp3File = new File(filePath);
+        assertFalse(mp3File.exists());
+    }
+
+    // Test for successful song download
+    @Test
+    public void testDownloadSong_Success() {
+        // Mock data
+        Long songId = 1L;
+        String filePath = testFilesDirectory + "Enter Sandman (Remastered).mp3";
+
+        // Create a mock Song object to represent the existing song in the database
+        Song mockSong = new Song();
+        mockSong.setId(songId);
+        mockSong.setSongName("Test Song");
+        mockSong.setFilePath(filePath);
+
+        // Mock the repository behavior
+        when(songRepository.findById(songId)).thenReturn(Optional.of(mockSong));
+
+        // Mock the HttpServletResponse for capturing the response content
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // Test the downloadSong method
+        songService.downloadSong(songId, response);
+
+        // Verify that the songRepository methods were called with the expected arguments
+        verify(songRepository, times(1)).findById(songId);
+
+        // Verify the response content type and header
+        assertEquals("audio/mpeg", response.getContentType());
+        assertEquals("attachment; filename=\"Test Song.mp3\"", response.getHeader("Content-Disposition"));
     }
 }

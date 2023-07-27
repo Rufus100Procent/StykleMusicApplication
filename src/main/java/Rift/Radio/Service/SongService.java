@@ -27,7 +27,6 @@ import java.util.Optional;
 @Service
 public class SongService {
     private final SongRepository songRepository;
-
     @Autowired
     public SongService(SongRepository songRepository) {
         this.songRepository = songRepository;
@@ -137,7 +136,6 @@ public class SongService {
             throw new NotFoundException("Song not found");
         }
     }
-
     public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
