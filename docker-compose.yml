@@ -10,6 +10,9 @@ services:
       POSTGRES_DB: stykledb
     ports:
       - "5432:5432"
+#    volumes:
+#      - ./SQL:/docker-entrypoint-initdb.d/yourfile.sql:ro
+
   pgadmin:
     container_name: pgadmin4_container
     image: dpage/pgadmin4
@@ -19,3 +22,12 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "3010:80"
+
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:jdk17
+
+    ports:
+      - "8050:8080"
+      - "50000:50000"
+    restart: unless-stopped
