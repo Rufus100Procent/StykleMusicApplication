@@ -25,6 +25,11 @@ public class Song {
     public Song() {
     }
 
+    //Test purpose
+    public Song(long l, String sampleSong, String sampleArtist, String sampleAlbum, int i, String pop, String s) {
+
+    }
+
     public Long getId() {
         return id;
     }

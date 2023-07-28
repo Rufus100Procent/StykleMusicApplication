@@ -27,11 +27,24 @@ import java.util.Optional;
 @Service
 public class SongService {
     private final SongRepository songRepository;
+
     @Autowired
     public SongService(SongRepository songRepository) {
         this.songRepository = songRepository;
     }
 
+    /**
+     * Uploads a song with the provided metadata and file.
+     *
+     * @param file        The multipart file representing the song.
+     * @param songName    The name of the song.
+     * @param artistName  The name of the artist.
+     * @param album       The album of the song.
+     * @param releaseYear The release year of the song.
+     * @param genre       The genre of the song.
+     * @return The newly uploaded song entity.
+     * @throws SongNameExistsException If the song name already exists in the repository.
+     */
     public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         // Check if song name already exists
         if (songRepository.existsBySongName(songName)) {
@@ -60,11 +73,18 @@ public class SongService {
             song.setFilePath(filePath);
             return songRepository.save(song);
         } catch (IOException e) {
+            // Handle IOException separately
             e.printStackTrace();
             throw new RuntimeException("Failed to upload the song");
         }
     }
 
+    /**
+     * Validates the uploaded file.
+     *
+     * @param file The multipart file to be validated.
+     * @throws RuntimeException If the file is empty, exceeds the size limit, or has an invalid format.
+     */
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
             throw new RuntimeException("File is empty");
@@ -87,12 +107,26 @@ public class SongService {
         }
     }
 
+    /**
+     * Gets the file path of the song with the given ID.
+     *
+     * @param id The ID of the song.
+     * @return The file path of the song.
+     * @throws NotFoundException If the song with the given ID is not found.
+     */
     public String getSongPath(Long id) {
         Optional<Song> songOptional = songRepository.findById(id);
         return songOptional.map(Song::getFilePath)
                 .orElseThrow(() -> new NotFoundException("Song not found"));
     }
 
+    /**
+     * Retrieves the song file as a Resource for the given ID.
+     *
+     * @param id The ID of the song.
+     * @return The song file as a Resource.
+     * @throws NotFoundException If the song with the given ID is not found or the file does not exist.
+     */
     public Resource getSongFile(Long id) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
@@ -114,10 +148,23 @@ public class SongService {
         }
     }
 
+    /**
+     * Retrieves a paginated list of all songs.
+     *
+     * @param page     The page number.
+     * @param pageSize The number of songs per page.
+     * @return A list of songs for the given page and page size.
+     */
     public List<Song> getAllSongs(int page, int pageSize) {
         return songRepository.findAll(PageRequest.of(page, pageSize)).getContent();
     }
 
+    /**
+     * Deletes the song with the given ID.
+     *
+     * @param id The ID of the song to be deleted.
+     * @throws NotFoundException If the song with the given ID is not found.
+     */
     public void deleteSong(Long id) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
@@ -136,6 +183,21 @@ public class SongService {
             throw new NotFoundException("Song not found");
         }
     }
+
+    /**
+     * Edits the song with the given ID and updates its metadata and file if provided.
+     *
+     * @param id          The ID of the song to be edited.
+     * @param file        The new multipart file representing the song.
+     * @param songName    The new name of the song.
+     * @param artistName  The new name of the artist.
+     * @param album       The new album of the song.
+     * @param releaseYear The new release year of the song.
+     * @param genre       The new genre of the song.
+     * @return The updated song entity.
+     * @throws SongNameExistsException If the updated song name already exists in the repository.
+     * @throws NotFoundException     If the song with the given ID is not found.
+     */
     public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {
@@ -186,6 +248,13 @@ public class SongService {
         }
     }
 
+    /**
+     * Downloads the song with the given ID as a file to the HttpServletResponse output stream.
+     *
+     * @param id       The ID of the song to be downloaded.
+     * @param response The HttpServletResponse object to write the file content.
+     * @throws NotFoundException If the song with the given ID is not found or the file does not exist.
+     */
     public void downloadSong(Long id, HttpServletResponse response) {
         Optional<Song> songOptional = songRepository.findById(id);
         if (songOptional.isPresent()) {

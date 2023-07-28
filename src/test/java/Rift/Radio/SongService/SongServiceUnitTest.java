@@ -1,4 +1,4 @@
-package Rift.Radio;
+package Rift.Radio.SongService;
 
 import Rift.Radio.Error.SongNameExistsException;
 import Rift.Radio.Model.Song;
@@ -37,7 +37,7 @@ public class SongServiceUnitTest {
     private SongRepository songRepository;
     @InjectMocks
     private SongService songService;
-    private final String testFilesDirectory = "/home/stykle/Documents/MusicApplicationBetaTesting/src/test/java/Rift/Radio/songMP3Test/";
+    private final String testFilesDirectory = "src/test/java/Rift/Radio/songMP3Test/";
     @BeforeEach
     public void setUp() {
         // Initialize Mockito annotations for this test class
