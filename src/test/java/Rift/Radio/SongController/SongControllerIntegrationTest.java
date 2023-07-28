@@ -5,11 +5,11 @@ import Rift.Radio.Error.SongNameExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Service.SongService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,15 +19,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -39,8 +37,6 @@ public class SongControllerIntegrationTest {
 
     @MockBean
     private SongService songService;
-
-    // Other mock beans can be added if needed
 
     @BeforeEach
     public void setUp() {
@@ -66,65 +62,68 @@ public class SongControllerIntegrationTest {
     }
     /*trouble shoot, status 200, acutal 400*/
 //
-//    @Test
-//    public void testUploadFile_Success() throws Exception {
-//        // Mock the uploaded MultipartFile
-//        byte[] fileContent = Files.readAllBytes(Paths.get("src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3"));
-//        MultipartFile mockFile = new MockMultipartFile(
-//                "file", "AC DC - Shot In The Dark (Official Audio).mp3", "audio/mpeg", fileContent
-//        );
-//
-//        // Mock the songService behavior
-//        Song uploadedSong = new Song(1L, "Sample Song", "Sample Artist", "Sample Album", 2023, "Pop",
-//                "src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3");
-//        when(songService.uploadSong(any(MultipartFile.class), anyString(), anyString(), anyString(), anyInt(), anyString())).thenReturn(uploadedSong);
-//
-//        // Perform the request
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("file", mockFile.getName());
-//        params.add("songName", "Sample Song");
-//        params.add("artistName", "Sample Artist");
-//        params.add("album", "Sample Album");
-//        params.add("releaseYear", "2023");
-//        params.add("genre", "Pop");
-//
-//        mockMvc.perform(MockMvcRequestBuilders.multipart("/upload").params(params))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.songName").value("Sample Song"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.artistName").value("Sample Artist"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.album").value("Sample Album"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(2023))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value("Pop"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.filePath").value("src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3"))
-//                .andReturn();
-//    }
-//
+
+    @Test
+    @Disabled
+    public void testUploadFile_Success() throws Exception {
+        // Mock the uploaded MultipartFile
+        byte[] fileContent = Files.readAllBytes(Paths.get("src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3"));
+        MultipartFile mockFile = new MockMultipartFile(
+                "file", "AC DC - Shot In The Dark (Official Audio).mp3", "audio/mpeg", fileContent
+        );
+
+        // Mock the songService behavior
+        Song uploadedSong = new Song(1L, "Sample Song", "Sample Artist", "Sample Album", 2023, "Pop",
+                "src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3");
+        when(songService.uploadSong(any(MultipartFile.class), anyString(), anyString(), anyString(), anyInt(), anyString())).thenReturn(uploadedSong);
+
+        // Perform the request
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("file", mockFile.getName());
+        params.add("songName", "Sample Song");
+        params.add("artistName", "Sample Artist");
+        params.add("album", "Sample Album");
+        params.add("releaseYear", "2023");
+        params.add("genre", "Pop");
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/upload").params(params))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.songName").value("Sample Song"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artistName").value("Sample Artist"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.album").value("Sample Album"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(2023))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value("Pop"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.filePath").value("src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3"))
+                .andReturn();
+    }
+
     /* trouble shoot*/
 
-//    @Test
-//    public void testUploadFile_DuplicateSongName() throws Exception {
-//        // Mock the uploaded MultipartFile
-//        byte[] fileContent = Files.readAllBytes(Paths.get("src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3"));
-//        MultipartFile mockFile = new MockMultipartFile(
-//                "file", "sample.mp3", "audio/mpeg", fileContent
-//        );
-//
-//        // Mock the songService behavior to throw SongNameExistsException
-//        when(songService.uploadSong(any(MultipartFile.class), anyString(), anyString(), anyString(), anyInt(), anyString()))
-//                .thenThrow(new SongNameExistsException("Song name already exists"));
-//
-//        // Perform the request
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("file", mockFile.getName());
-//        params.add("songName", "Peer Günt - Backseat");
-//        params.add("artistName", "Sample Artist");
-//        params.add("album", "Sample Album");
-//        params.add("releaseYear", "2023");
-//        params.add("genre", "Pop");
-//
-//        mockMvc.perform(MockMvcRequestBuilders.multipart("/upload").params(params))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-//                .andExpect(MockMvcResultMatchers.content().string("Song name already exists"))
-//                .andReturn();
-//    }
+    @Test
+    @Disabled
+    public void testUploadFile_DuplicateSongName() throws Exception {
+        // Mock the uploaded MultipartFile
+        byte[] fileContent = Files.readAllBytes(Paths.get("src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3"));
+        MultipartFile mockFile = new MockMultipartFile(
+                "file", "sample.mp3", "audio/mpeg", fileContent
+        );
+
+        // Mock the songService behavior to throw SongNameExistsException
+        when(songService.uploadSong(any(MultipartFile.class), anyString(), anyString(), anyString(), anyInt(), anyString()))
+                .thenThrow(new SongNameExistsException("Song name already exists"));
+
+        // Perform the request
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("file", mockFile.getName());
+        params.add("songName", "Peer Günt - Backseat");
+        params.add("artistName", "Sample Artist");
+        params.add("album", "Sample Album");
+        params.add("releaseYear", "2023");
+        params.add("genre", "Pop");
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/upload").params(params))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string("Song name already exists"))
+                .andReturn();
+    }
 }
