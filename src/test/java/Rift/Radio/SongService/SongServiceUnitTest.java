@@ -5,6 +5,7 @@ import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
 import Rift.Radio.Service.SongService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -142,7 +143,7 @@ public class SongServiceUnitTest {
     public void testGetSongFile_Success() {
         // Mock data
         Long songId = 1L;
-        String filePath = testFilesDirectory + "Aerosmith - Back In The Saddle (Audio).mp3";
+        String filePath = testFilesDirectory + "AC DC - Fire Your Guns (Official Audio).mp3";
         Song mockSong = new Song();
         mockSong.setFilePath(filePath);
 
@@ -191,7 +192,7 @@ public class SongServiceUnitTest {
         String album = "Edited Album";
         int releaseYear = 2024;
         String genre = "Rock";
-        String fileName = "Enter Sandman (Remastered).mp3";
+        String fileName = "You Really Got Me.mp3";
 
         // Load the test MP3 file
         Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
@@ -244,7 +245,7 @@ public class SongServiceUnitTest {
         String album = "Edited Album";
         int releaseYear = 2024;
         String genre = "Rock";
-        String fileName = "Enter Sandman (Remastered).mp3";
+        String fileName = "Psycho - Muse (Lyrics).mp3";
 
         // Load the test MP3 file
         Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
@@ -303,7 +304,7 @@ public class SongServiceUnitTest {
     public void testDownloadSong_Success() {
         // Mock data
         Long songId = 1L;
-        String filePath = testFilesDirectory + "Enter Sandman (Remastered).mp3";
+        String filePath = testFilesDirectory + "ZZ Top Sharp Dressed Man.mp3";
 
         // Create a mock Song object to represent the existing song in the database
         Song mockSong = new Song();
