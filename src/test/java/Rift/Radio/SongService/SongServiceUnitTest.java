@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
 public class SongServiceUnitTest {
     @Mock
     private SongRepository songRepository;
@@ -102,7 +101,7 @@ public class SongServiceUnitTest {
         String album = "Test Album";
         int releaseYear = 2023;
         String genre = "Pop";
-        String fileName = "Aerosmith - Back In The Saddle (Audio).mp3";
+        String fileName = "AC DC - Shot In The Dark (Official Audio).mp3";
 
         // Load the test MP3 file
         Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
@@ -192,7 +191,7 @@ public class SongServiceUnitTest {
         String album = "Edited Album";
         int releaseYear = 2024;
         String genre = "Rock";
-        String fileName = "You Really Got Me.mp3";
+        String fileName = "Enter Sandman (Remastered).mp3";
 
         // Load the test MP3 file
         Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
@@ -245,7 +244,7 @@ public class SongServiceUnitTest {
         String album = "Edited Album";
         int releaseYear = 2024;
         String genre = "Rock";
-        String fileName = "Psycho - Muse (Lyrics).mp3";
+        String fileName = "Enter Sandman (Remastered).mp3";
 
         // Load the test MP3 file
         Path mp3FilePath = Paths.get(testFilesDirectory + fileName);
@@ -304,7 +303,7 @@ public class SongServiceUnitTest {
     public void testDownloadSong_Success() {
         // Mock data
         Long songId = 1L;
-        String filePath = testFilesDirectory + "ZZ Top Sharp Dressed Man.mp3";
+        String filePath = testFilesDirectory + "Enter Sandman (Remastered).mp3";
 
         // Create a mock Song object to represent the existing song in the database
         Song mockSong = new Song();
