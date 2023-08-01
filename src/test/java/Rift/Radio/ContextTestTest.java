@@ -38,8 +38,8 @@ public class ContextTestTest extends ContextTest {
 
     @Test
     void testSongGenresAndReleaseYears() {
-        assertEquals(4, GENRE.size(), "There should be 4 unique genres");
-        assertEquals(4, RELEASE_YEAR.size(), "There should be 4 unique release years");
+        assertEquals(6, GENRE.size(), "There should be 4 unique genres");
+        assertEquals(6, RELEASE_YEAR.size(), "There should be 4 unique release years");
 
         // Verify the existence of specific genres and release years
         assertTrue(GENRE.contains("hard Rock"));
@@ -73,10 +73,10 @@ public class ContextTestTest extends ContextTest {
     @Test
     void testSongFilePath() {
         //CORRECT
-        assertTrue(SONG1.getFilePath().endsWith(TEST_MP33));
-        assertTrue(SONG2.getFilePath().endsWith(TEST_MP34));
-        assertTrue(SONG3.getFilePath().endsWith(TEST_MP32));
-        assertTrue(SONG4.getFilePath().endsWith(TEST_MP31));
+        assertTrue(SONG1.getFilePath().endsWith(TEST_MP31));
+        assertTrue(SONG2.getFilePath().endsWith(TEST_MP32));
+        assertTrue(SONG3.getFilePath().endsWith(TEST_MP33));
+        assertTrue(SONG4.getFilePath().endsWith(TEST_MP34));
     }
 
     @Test
