@@ -11,6 +11,8 @@ Verifies both Test, and ContextTest are working correctly
 * */
 public class ContextTestTest extends ContextTest {
 
+
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -106,4 +108,5 @@ public class ContextTestTest extends ContextTest {
         assertFalse(RELEASE_YEAR.contains(1970));
         assertFalse(RELEASE_YEAR.contains(2021));
     }
+
 }

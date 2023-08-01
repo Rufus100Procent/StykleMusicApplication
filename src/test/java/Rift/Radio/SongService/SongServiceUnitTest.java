@@ -196,6 +196,8 @@
 //        String genre = "Rock";
 //        String fileName = "Psycho - Muse (Lyrics).mp3";
 //
+//
+//
 //        // Load the test MP3 file
 //        Path mp3FilePath = Paths.get(TEST_FILE_DIRECTORY + fileName);
 //        byte[] fileContent = Files.readAllBytes(mp3FilePath);
@@ -221,6 +223,8 @@
 //        // Test the editSong method
 //        Song editedSong = songService.editSong(songId, file, songName, artistName, album, releaseYear, genre);
 //        System.out.println("Edited Song: " + editedSong);
+//
+//
 //
 //        // Assertions
 //        assertNotNull(editedSong);
@@ -329,5 +333,58 @@
 //        // Verify the response content type and header
 //        assertEquals("audio/mpeg", response.getContentType());
 //        assertEquals("attachment; filename=\"Test Song.mp3\"", response.getHeader("Content-Disposition"));
+//    }
+//
+//    @Test
+//    void as(){
+//
+//        // Mock data
+//        String songName = "Test Song";
+//        String artistName = "Test Artist";
+//        String album = "Test Album";
+//        int releaseYear = 2023;
+//        String genre = "Pop";
+//        String fileName = TEST_MP32;
+//
+//        when(songRepository.save(any(Song.class))).thenReturn(SONG1)
+//
+//                .thenAnswer(invocation -> {
+//            Song savedSong = invocation.getArgument(0);
+//            savedSong.setId(1L); // Set a valid ID (e.g., 1L) for the saved song
+//            return savedSong;
+//        });
+//
+//
+//        // Load the test MP3 file
+//        Path mp3FilePath = Paths.get(TEST_FILE_DIRECTORY + fileName);
+//        System.out.println(mp3FilePath);
+//        byte[] fileContent = Files.readAllBytes(mp3FilePath);
+//        // Debug
+//        System.out.println("File content size: " + fileContent.length);
+//
+//        MockMultipartFile file = new MockMultipartFile("file", fileName, "audio/mpeg", fileContent);
+//        // Mock the repository behavior
+//        when(songRepository.existsBySongName(songName)).thenReturn(false);
+//        when(songRepository.existsByFilePath(anyString())).thenReturn(false);
+//
+//
+//
+//        // Test the uploadSong method
+//        Song uploadedSong = songService.uploadSong(file, songName, artistName, album, releaseYear, genre);
+//        System.out.println("Uploaded Song: " + uploadedSong);
+//
+//        // Assertions
+//        assertNotNull(uploadedSong);
+//        assertEquals(songName, uploadedSong.getSongName());
+//        assertEquals(artistName, uploadedSong.getArtistName());
+//        assertEquals(album, uploadedSong.getAlbum());
+//        assertEquals(releaseYear, uploadedSong.getReleaseYear());
+//        assertEquals(genre, uploadedSong.getGenre());
+//        assertNotNull(uploadedSong.getId()); // Ensure that a valid ID is set
+//
+//        // Verify that the songRepository methods were called with the expected arguments
+//        verify(songRepository, times(1)).existsBySongName(songName);
+//        verify(songRepository, times(1)).existsByFilePath(anyString());
+//        verify(songRepository, times(1)).save(any(Song.class));
 //    }
 //}

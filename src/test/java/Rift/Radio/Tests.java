@@ -27,6 +27,7 @@ public class Tests {
     protected static Song SONG5 = new Song( "Bad to the Bone", "George Thorogood", "Bad to the Bone", "Hard Rock/Blues", 1982, TEST_FILE_DIRECTORY + TEST_MP35);
     protected static Song SONG6 = new Song( "Sharp Dressed Man", "", "", " Blues Rock", 1983, TEST_FILE_DIRECTORY +TEST_MP36);
 
+
     protected static List<String> SONG_NAME;
     protected static List<String> ARTIST_NAMES;
     protected static List<String> ALBUM_NAME;
