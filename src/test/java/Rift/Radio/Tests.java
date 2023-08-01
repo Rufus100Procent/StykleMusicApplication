@@ -2,6 +2,7 @@ package Rift.Radio;
 
 import Rift.Radio.Model.Song;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

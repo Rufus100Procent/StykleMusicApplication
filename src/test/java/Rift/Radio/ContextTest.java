@@ -3,6 +3,7 @@ package Rift.Radio;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,10 +40,12 @@ public class ContextTest  extends Tests{
                 ( 6, 'Power Up', 'AC DC', './src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3', 2020, 'Shot in the dark', 'Power Up')
             """;
         jdbcTemplate.update(sql);
+//        System.out.println(sql);
     }
     @AfterEach
     void afterEach() {
 
         jdbcTemplate.update("DROP TABLE IF EXISTS songs CASCADE");
     }
+
 }
