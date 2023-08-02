@@ -37,7 +37,7 @@ pipeline {
         }
         stage('packing into war') {
             steps {
-                sh 'mvn war:war'
+
                 echo 'ROOT.war is ready to be used'
             }
         }
