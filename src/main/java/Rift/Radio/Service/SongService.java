@@ -1,11 +1,11 @@
 package Rift.Radio.Service;
 
 import Rift.Radio.Error.MP3FileExistsException;
+import Rift.Radio.Error.NotFoundException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
 import Rift.Radio.Error.SongNameExistsException;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -112,12 +112,12 @@ public class SongService {
      *
      * @param id The ID of the song.
      * @return The file path of the song.
-     * @throws NotFoundException If the song with the given ID is not found.
+     * @throws Rift.Radio.Error.NotFoundException If the song with the given ID is not found.
      */
     public String getSongPath(Long id) {
         Optional<Song> songOptional = songRepository.findById(id);
         return songOptional.map(Song::getFilePath)
-                .orElseThrow(() -> new NotFoundException("Song not found"));
+                .orElseThrow(NotFoundException::new); // Use your custom NotFoundException here
     }
 
     /**
