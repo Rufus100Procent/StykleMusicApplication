@@ -18,19 +18,7 @@ public class ContextTest  extends Tests{
     void beforeEach()
     {
         String sql = """
-          
-                CREATE TABLE songs (
-                  id INT PRIMARY KEY,
-                  album TEXT,
-                  artist_name TEXT,
-                  file_path TEXT,
-                  release_year INT,
-                  song_name TEXT,
-                  genre TEXT
-              );
-              
-
-            INSERT INTO songs (id, album, artist_name, file_path, release_year, song_name, genre) VALUES
+            INSERT INTO song (id, album, artist_name, file_path, release_year, song_name, genre) VALUES
                 (1, 'Rocks', 'aerosmith', './src/test/java/Rift/Radio/songMP3Test/Aerosmith - Back In The Saddle (Audio).mp3', 1976, 'back in the saddle', 'hard Rock'),
                 ( 2, 'Garage Inc.', 'Metallica', './src/test/java/Rift/Radio/songMP3Test/Metallica - Whiskey in the jar.mp3', 1998, 'Whiskey in the jar', 'Heavy Metal'),
                 ( 3, 'Bad to the Bone', 'George Thorogood', './src/test/java/Rift/Radio/songMP3Test/George Thorogood & The Destroyers - Bad To The Bone.mp3', 1982, 'Bad to the Bone', 'Hard Rock/Blues'),
@@ -39,12 +27,12 @@ public class ContextTest  extends Tests{
                 ( 6, 'Power Up', 'AC DC', './src/test/java/Rift/Radio/songMP3Test/AC DC - Shot In The Dark (Official Audio).mp3', 2020, 'Shot in the dark', 'Power Up')
             """;
         jdbcTemplate.update(sql);
-//        System.out.println(sql);
+        System.out.println(sql);
     }
     @AfterEach
     void afterEach() {
 
-        jdbcTemplate.update("DROP TABLE IF EXISTS songs CASCADE");
+        jdbcTemplate.update("DROP TABLE IF EXISTS song CASCADE");
     }
 
 }
