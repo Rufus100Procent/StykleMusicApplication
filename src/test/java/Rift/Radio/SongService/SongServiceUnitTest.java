@@ -234,24 +234,9 @@ public class SongServiceUnitTest extends Tests {
 
         // Verify mock interaction
         verify(songRepository, times(1)).findById(NON_EXISTING_SONG_ID);
-    }
-
-    @Test
-    public void testDeleteSong_NotFound() {
-        // Set up non-existing song data
-        Long NON_EXISTING_SONG_ID = 2L;
-
-        // Mock songRepository.findById() to return empty optional
-        when(songRepository.findById(NON_EXISTING_SONG_ID)).thenReturn(Optional.empty());
-
-        // Call the method being tested and verify NotFoundException is thrown
-        assertThrows(NotFoundException.class, () -> songService.deleteSong(NON_EXISTING_SONG_ID));
-
-        // Verify mock interactions
-        verify(songRepository, times(1)).findById(NON_EXISTING_SONG_ID);
         verify(songRepository, never()).delete(any());
-        // Verify mock interactions
     }
+
     @Test
     public void testDeleteSong_Success() {
         // Set up existing song data
