@@ -1,6 +1,7 @@
 package Rift.Radio.SongController;
 
 import Rift.Radio.API.SongController;
+import Rift.Radio.Error.MP3FileExistsException;
 import Rift.Radio.Error.SongNameExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Service.SongService;
@@ -11,18 +12,31 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 
 @TestPropertySource(locations = "classpath:test_local.properties")
 public class SongControllerUnitTest extends Tests {
@@ -251,4 +265,5 @@ public class SongControllerUnitTest extends Tests {
         // Verify mock interactions
         verify(songService, times(1)).downloadSong(SONG_SHOT_IN_THE_DARK.getId(), mockResponse);
     }
+
 }

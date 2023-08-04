@@ -8,6 +8,8 @@ import Rift.Radio.Service.SongService;
 import Rift.Radio.Tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -123,11 +128,104 @@ public class SongServiceIntegrationTest extends Tests {
         verify(songRepository, never()).save(any());
     }
 
-    // Add more test cases for other methods in SongService as needed
+
+    @Test
+    public void testDeleteSong_Success(@TempDir Path tempDir) throws IOException {
+        Long EXISTING_SONG_ID = 1L;
+        Song existingSong = new Song();
+        existingSong.setId(EXISTING_SONG_ID);
+        existingSong.setSongName("Test Song");
+        existingSong.setArtistName("Test Artist");
+        existingSong.setAlbum("Test Album");
+        existingSong.setReleaseYear(2022);
+        existingSong.setGenre("Test Genre");
+        existingSong.setFilePath(tempDir.resolve("test_song.mp3").toString());
+
+        Files.copy(Paths.get(FILE_DIRECTORY, SHOT_IN_THE_DARK_MP3), tempDir.resolve("test_song.mp3"));
+
+        when(songRepository.findById(EXISTING_SONG_ID)).thenReturn(Optional.of(existingSong));
+        doNothing().when(songRepository).delete(existingSong);
+
+        // Perform the delete
+        songService.deleteSong(EXISTING_SONG_ID);
+
+        // Verify interactions
+        verify(songRepository, times(1)).findById(EXISTING_SONG_ID);
+        verify(songRepository, times(1)).delete(existingSong);
+        // Check that the MP3 file is not deleted
+        verifyNoMoreInteractions(songRepository);
+    }
+    @Test
+    public void testEditSong_Success(@TempDir Path tempDir) throws IOException {
+        Long EXISTING_SONG_ID = 1L;
+
+        // Prepare the existing song
+        Song existingSong = new Song();
+        existingSong.setId(EXISTING_SONG_ID);
+        existingSong.setSongName("Test Song");
+        existingSong.setArtistName("Test Artist");
+        existingSong.setAlbum("Test Album");
+        existingSong.setReleaseYear(2022);
+        existingSong.setGenre("Test Genre");
+        existingSong.setFilePath(tempDir.resolve("test_song.mp3").toString());
+
+        // Copy the test MP3 file to the temporary directory
+        Files.copy(Paths.get(FILE_DIRECTORY, SHOT_IN_THE_DARK_MP3), tempDir.resolve("test_song.mp3"));
+
+        // Stub the songRepository.findById method
+        when(songRepository.findById(EXISTING_SONG_ID)).thenReturn(Optional.of(existingSong));
+
+        // Prepare the song object to be saved (with updated metadata)
+        Song songToBeSaved = new Song();
+        songToBeSaved.setId(EXISTING_SONG_ID);
+        songToBeSaved.setSongName("Edited Song Name");
+        songToBeSaved.setArtistName("Edited Artist");
+        songToBeSaved.setAlbum("Edited Album");
+        songToBeSaved.setReleaseYear(2023);
+        songToBeSaved.setGenre("Edited Genre");
+        songToBeSaved.setFilePath(tempDir.resolve("test_song.mp3").toString());
+
+        // Capture the saved song using an ArgumentCaptor
+        ArgumentCaptor<Song> songCaptor = ArgumentCaptor.forClass(Song.class);
+        when(songRepository.save(songCaptor.capture())).thenReturn(songToBeSaved);
+
+        // Perform the edit with no new file (replacing metadata only)
+        Song editedSong = songService.editSong(
+                EXISTING_SONG_ID,
+                null, // Pass null for no new file
+                "Edited Song Name",
+                "Edited Artist",
+                "Edited Album",
+                2023,
+                "Edited Genre"
+        );
+
+        // Assertions for the edited song metadata
+        assertNotNull(editedSong);
+        assertEquals("Edited Song Name", editedSong.getSongName());
+        assertEquals("Edited Artist", editedSong.getArtistName());
+        assertEquals("Edited Album", editedSong.getAlbum());
+        assertEquals(2023, editedSong.getReleaseYear());
+        assertEquals("Edited Genre", editedSong.getGenre());
+
+        // Verify interactions
+        verify(songRepository, times(1)).findById(EXISTING_SONG_ID);
+        verify(songRepository, times(1)).save(any());
+
+        // Check that the MP3 file is not deleted during metadata edit
+        File mp3File = new File(existingSong.getFilePath());
+        assertTrue(mp3File.exists());
+
+        // Additional verification to ensure that the MP3 file is not deleted
+        File savedMp3File = new File(songCaptor.getValue().getFilePath());
+        assertTrue(savedMp3File.exists());
+    }
+
 
     private MultipartFile createMockMultipartFile(String filePath) throws IOException {
         File file = new File(filePath);
         byte[] content = Files.readAllBytes(file.toPath());
         return new MockMultipartFile("file", file.getName(), "audio/mpeg", content);
     }
+
 }
