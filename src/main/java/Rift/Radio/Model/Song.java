@@ -25,6 +25,11 @@ public class Song {
     public Song() {
     }
 
+    //Test purpose
+    public Song(long l, String sampleSong, String sampleArtist, String sampleAlbum, int i, String pop, String s) {
+
+    }
+
     public Long getId() {
         return id;
     }
@@ -88,5 +93,18 @@ public class Song {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "id=" + id +
+                ", songName='" + songName + '\'' +
+                ", artistName='" + artistName + '\'' +
+                ", album='" + album + '\'' +
+                ", genre='" + genre + '\'' +
+                ", releaseYear=" + releaseYear +
+                ", filePath='" + filePath + '\'' +
+                '}';
     }
 }

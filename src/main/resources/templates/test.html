@@ -4,134 +4,21 @@
     <title>Song Upload</title>
     <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
     <style>
-        #songTable {
-            margin: 0 auto;
-            width: 80%;
-            border-collapse: collapse;
-        }
-
-        #songTable th,
-        #songTable td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .table-container {
-            max-height: calc(100vh - 220px); /* Adjust the value based on your audio container's height */
-            overflow-y: auto;
-            position: relative;
-            margin-bottom: 20px; /* Adjust this value to create space between the table and the audio container */
-        }
-        .table-wrapper {
-            max-height: calc(100vh - 220px); /* Adjust the value based on your audio container's height */
-            overflow-y: auto;
-        }
-        #songTable thead {
-            position: sticky;
-            top: 0;
-            /*background: linear-gradient(to right, #9a1d86, #9a1d86);*/
-            z-index: 1;
-        }
-
-        /* Update the table container styles */
-        .table-container {
-            position: relative;
-            margin-bottom: 20px; /* Adjust this value to create space between the table and the audio container */
-        }
-        .playing {
-            background-color: green;
-        }
-
-        .errorMessage {
-            color: red;
-        }
-        .audioContainer {
-            max-width: 900px; /* Adjust the maximum width as needed */
-            width: 100%; /* Adjust the width as needed */
-            margin: 0 auto;
-            padding: 0 0; /* Adjust the padding as needed */
-            border-radius: 14px;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            position: fixed;
-            bottom: 20px;
-            left: 55%;
-            transform: translateX(-50%);
-        }
-        .player-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-left: 32px; /* Adjust the left margin as needed */
-            max-width: calc(100% - 64px); /* Set the maximum width to ensure icons stay within the container */
-        }
-        .player-controls .player-volume{
-            margin-left: 25px;
-        }
-        .progress-bar {
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: space-between;
-            padding-left: 10px;
-        }
-        .player-time {
-            padding: 2px 5px;
-        }
-
-        .player-controls button{
-            background-color: #4b4276;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            padding: 20px;
-            font-size: 20px;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-        .progress-bar input[type="range"] {
-            flex: 1; /* Make the seek-slider stretch and fill the available space */
-        }
-        .main_content .header a {
-            display: inline-block;
-            color: #594f8d;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             text-decoration: none;
-            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .main_content .header a:hover {
-            color: #914b8d;
-        }
-
-        .search_container {
+        body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
-
-            margin-top: 8px;
-            margin-right: 50px;
-            width: 90%;
+            background: linear-gradient(to right, #9a1d86, #0eade0);
         }
 
-        .search_container input[type="text"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px 0 0 4px;
-            outline: none;
-        }
-
-        .search_container button {
-            padding: 8px 16px;
-            background-color: #4b4276;
-            color: #eeeded;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-        }
-
-        .search_container button:hover {
-            background-color: #914b8d;
-        }
         .wrapper {
             display: flex;
             position: relative;
@@ -177,7 +64,7 @@
             background-color: #914b8d;
         }
 
-        .wrapper .sidebar lu li:hover a {
+        .wrapper .sidebar ul li:hover a {
             color: #914b8d;
         }
 
@@ -193,20 +80,137 @@
             border-bottom: 1px solid #e5ecf1;
             text-align: center;
         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            text-decoration: none;
-            font-family: 'Poppins', sans-serif;
+
+        #songTable {
+            margin: 0 auto;
+            width: 80%;
+            border-collapse: collapse;
         }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: linear-gradient(to right, #9a1d86, #0eade0);
+        #songTable th,
+        #songTable td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
 
+        .table-container {
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+        }
+
+        #songTable thead {
+            position: sticky;
+            top: 0;
+            /*background: linear-gradient(to right, #9a1d86, #9a1d86);*/
+            z-index: 1;
+        }
+
+        .playing {
+            background-color: green;
+        }
+
+        .errorMessage {
+            color: red;
+        }
+
+        .audioContainer {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 0;
+            border-radius: 14px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            bottom: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-left: 32px;
+            max-width: calc(100% - 64px);
+        }
+
+        .player-controls .player-volume {
+            margin-left: 25px;
+        }
+
+        .progress-bar {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 10px;
+        }
+
+        .player-time {
+            padding: 2px 5px;
+        }
+
+        .player-controls button {
+            background-color: #4b4276;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 20px;
+            font-size: 20px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-bar input[type="range"] {
+            flex: 1;
+        }
+
+        .main_content .header a {
+            display: inline-block;
+            color: #594f8d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .main_content .header a:hover {
+            color: #914b8d;
+        }
+
+        .search_container {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+            margin-right: 50px;
+            width: 90%;
+        }
+
+        .search_container input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .search_container button {
+            padding: 8px 16px;
+            background-color: #4b4276;
+            color: #eeeded;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .search_container button:hover {
+            background-color: #914b8d;
         }
     </style>
 </head>
@@ -218,7 +222,7 @@
             <li><a href="/">About</a></li>
             <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
             <li><a href="/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-            <li><a href="#" onclick="showRecentlyPlayed()">Recently Played</a></li>
+            <li><a href="#" onClick="showRecentlyPlayed()">Recently Played</a></li>
         </ul>
     </div>
     <div class="main_content">
@@ -262,6 +266,7 @@
         <button type="submit">Upload</button>
     </form>
 </div>
+
 <div class="audioContainer">
     <div class="audio-player">
         <div class="progress-bar">
@@ -298,26 +303,32 @@
     const prevButton = document.getElementById('prevButton');
     const nextButton = document.getElementById('nextButton');
     const seekSlider = document.getElementById('seek-slider');
-    let isSeeking = false;
-
     const audioPlayer = document.getElementById('audioPlayer');
+
     const currentTimeDisplay = document.querySelector('.player-time.current');
     const durationDisplay = document.querySelector('.player-time.duration');
-
     const errorContainer = document.getElementById('errorContainer');
-
-
 
     let songs = [];
     let currentSongIndex = 0;
     let isFetching = false;
     let shuffleMode = false;
     let isBeating = false;
+    let isSeeking = false;
+    const recentlyPlayedHistory = [];
+    let recentlyPlayedVisible = false;
+
+    const updateRecentlyPlayed = (songIndex) => {
+        if (recentlyPlayedHistory.includes(songIndex)) {
+            const index = recentlyPlayedHistory.indexOf(songIndex);
+            recentlyPlayedHistory.splice(index, 1); // Remove the song from the history to rearrange the order
+        }
+        recentlyPlayedHistory.unshift(songIndex); // Add the song to the beginning of the history
+    };
+
     const toggleRepeatSong = () => {
         isBeating = !isBeating;
         const beatIcon = document.getElementById('beatIcon');
-        const audioPlayer = document.getElementById('audioPlayer');
-
         if (isBeating) {
             beatIcon.classList.add('fa-beat');
             audioPlayer.loop = true; // Set the audio to loop
@@ -327,16 +338,11 @@
         }
     };
 
-    const toggleForm = () => {
-        songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
-        addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
-    };
-
     const volumeSlider = document.getElementById('volume');
+
     volumeSlider.addEventListener('input', () => {
         audioPlayer.volume = volumeSlider.value;
     });
-
     const togglePlayPause = () => {
         if (audioPlayer.paused) {
             audioPlayer.play();
@@ -408,7 +414,13 @@
         seekSlider.value = 0;
         updatePlayButtonIcons();
         highlightCurrentSong();
+        if (currentSongIndex === songs.length - 1) {
+            playSongByIndex(0);
+        } else {
+            playNextSong();
+        }
     });
+
     const shuffleSongs = () => {
         shuffleMode = !shuffleMode;
 
@@ -422,25 +434,18 @@
             shuffleIcon.classList.remove('fa-beat');
         }
     };
-
-
     const updateVolumeIcon = () => {
         const volume = audioPlayer.volume;
         const volumeIcon = document.getElementById('volumeIcon');
 
-        if (volume > 0.7) {
-            volumeIcon.className = 'fa-solid fa-volume-high';
-        } else if (volume > 0) {
-            volumeIcon.className = 'fa-solid fa-volume-low';
-        } else {
-            volumeIcon.className = 'fa-solid fa-volume-xmark';
-        }
+        volumeIcon.className = volume > 0.7 ? 'fa-solid fa-volume-high' : volume > 0 ? 'fa-solid fa-volume-low' : 'fa-solid fa-volume-xmark';
     };
+
+
     volumeSlider.addEventListener('input', () => {
         audioPlayer.volume = volumeSlider.value;
         updateVolumeIcon();
     });
-
     const playPreviousSong = () => {
         if (isFetching) {
             return; // Ignore the click if a fetch request is already in progress
@@ -477,6 +482,44 @@
         }
     };
 
+    const updateButtonStates = () => {
+        prevButton.disabled = false;
+        nextButton.disabled = false;
+    };
+    const highlightCurrentSong = () => {
+        const rows = document.querySelectorAll('#songList tr');
+        rows.forEach((row, index) => {
+            if (index === currentSongIndex) {
+                row.classList.add('playing');
+            } else {
+                row.classList.remove('playing');
+            }
+        });
+    };
+
+    const showRecentlyPlayed = () => {
+        const tableRows = document.querySelectorAll('#songList tr');
+        const shownIndexes = recentlyPlayedHistory.slice(0, tableRows.length);
+
+        tableRows.forEach((row, index) => {
+            if (recentlyPlayedVisible) {
+                row.style.display = 'table-row'; // Show all rows
+            } else {
+                if (shownIndexes.includes(index)) {
+                    row.style.display = 'table-row'; // Show the rows in the recently played history
+                } else {
+                    row.style.display = 'none'; // Hide other rows
+                }
+            }
+        });
+
+        recentlyPlayedVisible = !recentlyPlayedVisible; // Toggle the variable's value
+    };
+    const toggleForm = () => {
+        songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
+        addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
+    };
+
     const playSongByIndex = (index) => {
         if (index === currentSongIndex) {
             togglePlayPause();
@@ -486,8 +529,7 @@
         currentSongIndex = index;
         const song = songs[index];
 
-        isFetching = true; // Set isFetching to true before starting the fetch request
-
+        isFetching = true;
 
         fetch(`/${song.id}/file`)
             .then((response) => {
@@ -502,28 +544,13 @@
                 updateButtonStates();
                 updatePlayButtonIcons();
                 highlightCurrentSong();
-                isFetching = false; // Set isFetching back to false after the fetch request is completed
+                updateRecentlyPlayed(index); // Update the recently played song
+                isFetching = false;
             })
             .catch((error) => {
                 console.error('Error:', error);
-                isFetching = false; // Make sure to set isFetching back to false even if an error occurs
+                isFetching = false;
             });
-    };
-
-    const updateButtonStates = () => {
-        prevButton.disabled = false;
-        nextButton.disabled = false;
-    };
-
-    const highlightCurrentSong = () => {
-        const rows = document.querySelectorAll('#songList tr');
-        rows.forEach((row, index) => {
-            if (index === currentSongIndex) {
-                row.classList.add('playing');
-            } else {
-                row.classList.remove('playing');
-            }
-        });
     };
 
     const displayErrorMessages = (errors) => {
@@ -644,13 +671,6 @@
             console.error('Error:', error);
             displayErrorMessages({ listError: 'Failed to retrieve the song list.' });
         });
-    audioPlayer.addEventListener('ended', () => {
-        if (currentSongIndex === songs.length - 1) {
-            playSongByIndex(0);
-        } else {
-            playNextSong();
-        }
-    });
 </script>
 </body>
 </html>

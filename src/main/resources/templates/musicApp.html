@@ -17,7 +17,6 @@
       flex-direction: column;
       justify-content: center;
       background: linear-gradient(to right, #9a1d86, #0eade0);
-
     }
 
     .wrapper {
@@ -56,24 +55,19 @@
       color: #bdb;
       display: block;
     }
-
     .wrapper .sidebar ul li a .fas {
       width: 25px;
     }
-
     .wrapper .sidebar ul li:hover {
-      background-color: #914b8d;
+      background-color: #594f8d;
     }
-
-    .wrapper .sidebar lu li:hover a {
+    .wrapper .sidebar ul li:hover a {
       color: #914b8d;
     }
-
     .wrapper .main_content {
-      width: 100%;
+      width: calc(100% - 250px); /* Adjust the width to accommodate the sidebar */
       margin-left: 200px;
     }
-
     .wrapper .main_content .header {
       padding: 20px;
       background-color: #f6eeee;
@@ -83,9 +77,9 @@
     }
 
     #songTable {
+      margin: 0 auto;
       width: 80%;
       border-collapse: collapse;
-      margin: 20px auto 0;
     }
 
     #songTable th,
@@ -95,9 +89,125 @@
       border-bottom: 1px solid #ddd;
     }
 
+    .table-container {
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .table-wrapper {
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+    }
+    #songTable thead {
+      position: sticky;
+      top: 0;
+      /*background: linear-gradient(to right, #9a1d86, #9a1d86);*/
+      z-index: 1;
+      background: linear-gradient(to right, #88267a, #0eade0);
+    }
+
     .playing {
       background-color: green;
     }
+
+    .errorMessage {
+      color: red;
+    }
+
+    .audioContainer {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 0;
+      border-radius: 14px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      bottom: 20px;
+      left: 55%;
+      transform: translateX(-50%);
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-left: 32px;
+      max-width: calc(100% - 64px);
+    }
+
+    .player-controls .player-volume {
+      margin-left: 25px;
+    }
+
+    .progress-bar {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 10px;
+    }
+
+    .player-time {
+      padding: 2px 5px;
+    }
+
+    .player-controls button {
+      background-color: #4b4276;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 20px;
+      font-size: 20px;
+      margin: 0 10px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .progress-bar input[type="range"] {
+      flex: 1;
+    }
+
+    .main_content .header a {
+      display: inline-block;
+      color: #594f8d;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .main_content .header a:hover {
+      color: #914b8d;
+    }
+
+    .search_container {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+      margin-right: 50px;
+      width: 90%;
+    }
+
+    .search_container input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+
+    .search_container button {
+      padding: 8px 16px;
+      background-color: #4b4276;
+      color: #eeeded;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    .search_container button:hover {
+      background-color: #914b8d;
+    }
+
 
     .errorMessage {
       color: red;
@@ -161,110 +271,10 @@
       text-decoration: none;
       font-weight: bold;
     }
-
-    .main_content .header a:hover {
-      color: #914b8d;
-    }
-
-    .search_container {
-      display: flex;
-      justify-content: center;
-
-      margin-top: 8px;
-      margin-right: 50px;
-      width: 90%;
-    }
-
-    .search_container input[type="text"] {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px 0 0 4px;
-      outline: none;
-    }
-
-    .search_container button {
-      padding: 8px 16px;
-      background-color: #4b4276;
-      color: #eeeded;
-      border: none;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer;
-    }
-
-    .search_container button:hover {
-      background-color: #914b8d;
-    }
-
-    .audio-player {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 300px;
-      position: fixed;
-      bottom: 0;
-      left: 200px; /* Adjust left position to align with the sidebar */
-      width: calc(100% - 200px);
-    }
-    .audio-player button.active {
-      background-color: #4a885e;
-    }
-
-    .audio-player button {
-      background-color: #4b4276;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      padding: 20px;
-      font-size: 24px;
-      margin: 0 10px;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    }
-
-    .audio-player button:hover {
-      background-color: #594f8d;
-    }
-
-    .audio-player audio {
-      width: 60%; /* Set the width to 100% to expand to the available space */
-      height: 60px;
-      appearance: none;
-      background-color: transparent;
-      outline: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-    }
-
-    .audio-player audio::-webkit-slider-thumb {
-      appearance: none;
-      width: 10px;
-      height: 30px;
-      background-color: #4b4276;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .audio-player audio::-moz-range-thumb {
-      appearance: none;
-      width: 10px;
-      height: 30px;
-      background-color: #4b4276;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .songplayButton {
-      font-size: 25px;
-      color: #4b4276;
-
-    }
-
     .editButton {
       font-size: 20px;
       color: #2a082c;
     }
-
     .deleteButton {
       font-size: 20px;
       color: #4b4276;
@@ -273,9 +283,12 @@
       font-size: 20px;
       color: #4b4276;
     }
-
+    .songplayButton{
+      font-size: 20px;
+      color: #4b4276;
+    }
     .songplayButton:hover {
-      font-size: 30px;
+      font-size: 25px;
       color: #4b4276;
     }
 
@@ -283,12 +296,10 @@
       font-size: 25px;
       color: #4b4276;
     }
-
     .deleteButton:hover {
       font-size: 25px;
       color: #4b4276;
     }
-
     .custom-prompt {
       display: none;
       flex-direction: column;
@@ -302,7 +313,6 @@
       background-color: rgba(0, 0, 0, 0.4);
       z-index: 9999;
     }
-
     .custom-prompt-content {
       background-color: #fff;
       padding: 20px;
@@ -311,18 +321,15 @@
       display: flex;
       flex-direction: column;
     }
-
     .custom-prompt label {
       margin-bottom: 10px;
       font-size: 16px;
     }
-
     .custom-prompt input[type="text"] {
       margin-bottom: 10px;
       padding: 5px;
       border: 1px solid #ddd;
     }
-
     .custom-prompt button {
       padding: 8px 16px;
       background-color: #4b4276;
@@ -331,7 +338,6 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
     .custom-prompt button.cancel {
       background-color: #ddd;
       color: #333;
@@ -345,8 +351,7 @@
     <ul>
       <li><a href="/">About</a></li>
       <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
-      <li><a href="/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-      <li><a href="#" onclick="showRecentlyPlayed()">Recently Played</a></li>
+      <li><a  onClick="showRecentlyPlayed()">Recently Played</a></li>
     </ul>
   </div>
   <div class="main_content">
@@ -357,40 +362,36 @@
       <button onclick="searchSongs()"><i class="fa-solid fa-search"></i></button>
     </div>
 
-    <table id="songTable">
-      <div id="errorContainer"></div>
-
-      <thead>
-      <tr>
-        <th></th>
-        <th>Song Name</th>
-        <th>Artist</th>
-        <th>Album</th>
-        <th>Genre</th> <!-- Add the Genre column -->
-        <th>Year</th>
-      </tr>
-      </thead>
-      <tbody id="songList"></tbody>
-    </table>
-
-
+    <div class="table-container">
+      <div class="table-wrapper">
+        <table id="songTable">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Song Name</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Year</th>
+          </tr>
+          </thead>
+          <tbody id="songList"></tbody>
+        </table>
+      </div>
+    </div>
     <!-- Error message elements -->
   </div>
 </div>
-<div class="audio-player">
-  <button id="shuffleButton" onclick="shuffleSongs()"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
-  <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
-  <audio id="audioPlayer" controls></audio>
-  <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
-</div>
+
+
 <div id="uploadFormContainer" class="popup">
   <h3>Song Upload</h3>
   <form id="uploadForm" enctype="multipart/form-data">
-    <input type="text" name="songName" id="songName" placeholder="Song Name" required>
-    <input type="text" name="artistName" id="artistName" placeholder="Artist Name" required>
-    <input type="text" name="album" id="album" placeholder="Album">
-    <input type="text" name="genre" id="genre" placeholder="Genre" required>
-    <input type="number" inputmode="numeric" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
+    <label for="songName"></label><input type="text" name="songName" id="songName" placeholder="Song Name" required>
+    <label for="artistName"></label><input type="text" name="artistName" id="artistName" placeholder="Artist Name" required>
+    <label for="album"></label><input type="text" name="album" id="album" placeholder="Album">
+    <label for="genre"></label><input type="text" name="genre" id="genre" placeholder="Genre" required>
+    <label for="releaseYear"></label><input type="number" inputmode="numeric" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
     <input type="file" name="file" id="fileInput" required multiple>
     <button type="submit">Upload</button>
     <button type="button" class="cancel" onclick="hideUploadForm()">Cancel</button>
@@ -404,7 +405,32 @@
     <button id="customPromptCancel" class="cancel">Cancel</button>
   </div>
 </div>
-<script>
+
+<div class="audioContainer">
+  <div class="audio-player">
+    <div class="progress-bar">
+      <span class="player-time current">00:00</span>
+      <label for="seek-slider"></label><input type="range" id="seek-slider" max="100" value="0">
+      <span class="player-time duration">00:00</span>
+    </div>
+  </div>
+  <div class="player-controls">
+    <button id="shuffleButton" onclick="shuffleSongs()" title="Play Random"><i class="fa-solid fa-shuffle"></i> </button>
+    <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
+    <button id="playButton" onclick="togglePlayPause()"><i id="playIcon" class="fas fa-play"></i></button>
+    <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
+    <button id="repeatButton" onclick="toggleRepeatSong()" title="Enable Repeat"><i id="beatIcon" class="fa-solid fa-repeat"></i></button>
+
+    <div class="player-volume-container">
+      <label for="volume"></label>
+      <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
+      <input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
+    </div>
+  </div>
+</div>
+<audio id="audioPlayer" controls style="display: none;"></audio>
+
+  <script>
   // DOM references
   const songForm = document.getElementById('songForm');
   const addSongButton = document.getElementById('addSongButton');
@@ -415,8 +441,13 @@
   const songList = document.getElementById('songList');
   const prevButton = document.getElementById('prevButton');
   const nextButton = document.getElementById('nextButton');
+  const seekSlider = document.getElementById('seek-slider');
   const audioPlayer = document.getElementById('audioPlayer');
+
+  const currentTimeDisplay = document.querySelector('.player-time.current');
+  const durationDisplay = document.querySelector('.player-time.duration');
   const errorContainer = document.getElementById('errorContainer');
+
   const uploadFormContainer = document.getElementById('uploadFormContainer');
   const genreInput = document.getElementById('genre');
   const showCustomPrompt = (labelText, defaultValue, callback) => {
@@ -471,41 +502,160 @@
   document.getElementById('searchQuery').addEventListener('input', searchSongs);
 
   document.getElementById('searchQuery').addEventListener('input', searchSongs);
-  // Function to toggle the display of the song form
 
-  const toggleForm = () => {
-    songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
-    addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
+
+  let songs = [];
+  let currentSongIndex = 0;
+  let isFetching = false;
+  let shuffleMode = false;
+  let isBeating = false;
+  let isSeeking = false;
+  const recentlyPlayedHistory = [];
+  let recentlyPlayedVisible = false;
+
+
+
+  const updateRecentlyPlayed = (songIndex) => {
+    if (recentlyPlayedHistory.includes(songIndex)) {
+      const index = recentlyPlayedHistory.indexOf(songIndex);
+      recentlyPlayedHistory.splice(index, 1); // Remove the song from the history to rearrange the order
+    }
+    recentlyPlayedHistory.unshift(songIndex); // Add the song to the beginning of the history
   };
 
-
-
-  let songs = []; // Array to store the songs
-  let currentSongIndex = 0; // Index of the currently playing song
-  let recentlyPlayed = [];
-  let shuffleMode = false;
-
-  const shuffleSongs = () => {
-    shuffleMode = !shuffleMode;
-    const shuffleButton = document.getElementById('shuffleButton');
-    if (shuffleMode) {
-      shuffleButton.classList.add('active');
+  const toggleRepeatSong = () => {
+    isBeating = !isBeating;
+    const beatIcon = document.getElementById('beatIcon');
+    if (isBeating) {
+      beatIcon.classList.add('fa-beat');
+      audioPlayer.loop = true; // Set the audio to loop
     } else {
-      shuffleButton.classList.remove('active');
+      beatIcon.classList.remove('fa-beat');
+      audioPlayer.loop = false; // Remove the loop property
     }
   };
 
+  const volumeSlider = document.getElementById('volume');
 
-  // Function to play the previous song
+  volumeSlider.addEventListener('input', () => {
+    audioPlayer.volume = volumeSlider.value;
+  });
+  const togglePlayPause = () => {
+    if (audioPlayer.paused) {
+      audioPlayer.play();
+    } else {
+      audioPlayer.pause();
+    }
+    updatePlayButtonIcons();
+    highlightCurrentSong();
+  };
+
+  const updatePlayButtonIcons = () => {
+    const playIcons = document.querySelectorAll('.songplayButton i');
+    playIcons.forEach((icon, index) => {
+      if (index === currentSongIndex) {
+        icon.classList.toggle('fa-play', audioPlayer.paused);
+        icon.classList.toggle('fa-pause', !audioPlayer.paused);
+      } else {
+        icon.classList.remove('fa-pause');
+        icon.classList.add('fa-play');
+      }
+    });
+
+    const playIcon = document.getElementById('playIcon');
+    playIcon.classList.toggle('fa-play', audioPlayer.paused);
+    playIcon.classList.toggle('fa-pause', !audioPlayer.paused);
+  };
+
+  audioPlayer.addEventListener('timeupdate', () => {
+    if (!isSeeking) {
+      const currentTime = audioPlayer.currentTime;
+      const duration = audioPlayer.duration;
+
+      const currentMinutes = Math.floor(currentTime / 60);
+      const currentSeconds = Math.floor(currentTime % 60);
+      currentTimeDisplay.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+      const durationMinutes = Math.floor(duration / 60);
+      const durationSeconds = Math.floor(duration % 60);
+      durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+
+      seekSlider.value = (currentTime / duration) * 100;
+    }
+  });
+
+  seekSlider.addEventListener('input', () => {
+    audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
+  });
+
+  seekSlider.addEventListener('mousedown', () => {
+    isSeeking = true;
+  });
+
+  seekSlider.addEventListener('mouseup', () => {
+    isSeeking = false;
+  });
+
+  audioPlayer.addEventListener('loadedmetadata', () => {
+    seekSlider.value = 0;
+    const duration = audioPlayer.duration;
+
+    const durationMinutes = Math.floor(duration / 60);
+    const durationSeconds = Math.floor(duration % 60);
+    durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+  });
+
+  audioPlayer.addEventListener('ended', () => {
+    currentTimeDisplay.textContent = '00:00';
+    durationDisplay.textContent = '00:00';
+    seekSlider.value = 0;
+    updatePlayButtonIcons();
+    highlightCurrentSong();
+    if (currentSongIndex === songs.length - 1) {
+      playSongByIndex(0);
+    } else {
+      playNextSong();
+    }
+  });
+
+  const shuffleSongs = () => {
+    shuffleMode = !shuffleMode;
+
+    // Update the shuffleButton element and toggle the 'fa-beat' class
+    const shuffleButton = document.getElementById('shuffleButton');
+    const shuffleIcon = shuffleButton.querySelector('i.fa-shuffle');
+
+    if (shuffleMode) {
+      shuffleIcon.classList.add('fa-beat');
+    } else {
+      shuffleIcon.classList.remove('fa-beat');
+    }
+  };
+  const updateVolumeIcon = () => {
+    const volume = audioPlayer.volume;
+    const volumeIcon = document.getElementById('volumeIcon');
+
+    volumeIcon.className = volume > 0.7 ? 'fa-solid fa-volume-high' : volume > 0 ? 'fa-solid fa-volume-low' : 'fa-solid fa-volume-xmark';
+  };
+
+
+  volumeSlider.addEventListener('input', () => {
+    audioPlayer.volume = volumeSlider.value;
+    updateVolumeIcon();
+  });
   const playPreviousSong = () => {
+    if (isFetching) {
+      return; // Ignore the click if a fetch request is already in progress
+    }
     if (shuffleMode) {
       const randomIndex = getRandomIndex();
       playSongByIndex(randomIndex);
     } else {
-      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-      playSongByIndex(currentSongIndex);
+      const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      playSongByIndex(prevIndex);
     }
   };
+
   const getRandomIndex = () => {
     // Generate a random index different from the current one
     let randomIndex = currentSongIndex;
@@ -514,25 +664,65 @@
     }
     return randomIndex;
   };
-  // Function to play the next song
+
   const playNextSong = () => {
+    if (isFetching) {
+      return; // Ignore the click if a fetch request is already in progress
+    }
     if (shuffleMode) {
       const randomIndex = Math.floor(Math.random() * songs.length);
       playSongByIndex(randomIndex);
+
     } else {
-      currentSongIndex = (currentSongIndex + 1) % songs.length;
-      playSongByIndex(currentSongIndex);
+      const nextIndex = (currentSongIndex + 1) % songs.length; // Change 'prevIndex' to 'nextIndex'
+      playSongByIndex(nextIndex); // Change 'prevIndex' to 'nextIndex'
     }
   };
 
-  // Function to play a song by index
+  const updateButtonStates = () => {
+    prevButton.disabled = false;
+    nextButton.disabled = false;
+  };
+  const highlightCurrentSong = () => {
+    const rows = document.querySelectorAll('#songList tr');
+    rows.forEach((row, index) => {
+      if (index === currentSongIndex) {
+        row.classList.add('playing');
+      } else {
+        row.classList.remove('playing');
+      }
+    });
+  };
+
+  const showRecentlyPlayed = () => {
+    const tableRows = document.querySelectorAll('#songList tr');
+    const shownIndexes = recentlyPlayedHistory.slice(0, tableRows.length);
+
+    tableRows.forEach((row, index) => {
+      if (recentlyPlayedVisible) {
+        row.style.display = 'table-row'; // Show all rows
+      } else {
+        if (shownIndexes.includes(index)) {
+          row.style.display = 'table-row'; // Show the rows in the recently played history
+        } else {
+          row.style.display = 'none'; // Hide other rows
+        }
+      }
+    });
+
+    recentlyPlayedVisible = !recentlyPlayedVisible; // Toggle the variable's value
+  };
+
   const playSongByIndex = (index) => {
+    if (index === currentSongIndex) {
+      togglePlayPause();
+      return;
+    }
+
     currentSongIndex = index;
     const song = songs[index];
-    recentlyPlayed.unshift(song);
-    if (recentlyPlayed.length > 5) {
-      recentlyPlayed.pop();
-    }
+
+    isFetching = true;
 
     fetch(`/${song.id}/file`)
             .then((response) => {
@@ -542,28 +732,18 @@
               return response.blob();
             })
             .then((blob) => {
-              const fileUrl = URL.createObjectURL(blob);
-              audioPlayer.src = fileUrl;
+              audioPlayer.src = URL.createObjectURL(blob);
               audioPlayer.play();
               updateButtonStates();
+              updatePlayButtonIcons();
               highlightCurrentSong();
+              updateRecentlyPlayed(index); // Update the recently played song
+              isFetching = false;
             })
             .catch((error) => {
               console.error('Error:', error);
+              isFetching = false;
             });
-  };
-
-  // Function to update the states of the previous and next buttons
-  const updateButtonStates = () => {
-    // TODO: Update button states
-  };
-
-  // Function to highlight the currently playing song
-  const highlightCurrentSong = () => {
-    const rows = document.querySelectorAll('#songList tr');
-    rows.forEach((row) => row.classList.remove('playing'));
-    const currentRow = document.getElementById(`songRow${currentSongIndex}`);
-    currentRow.classList.add('playing');
   };
 
   // Function to display specific error messages
@@ -590,28 +770,30 @@
   const validateFormData = (file, songName, artistName, genre, releaseYear) => {
     const fileName = file.name;
     const fileExtension = fileName.split('.').pop().toLowerCase();
+    const errorMessages = {};
 
     if (fileExtension !== 'mp3') {
-      displayErrorMessages({ mp3File: 'Invalid file format. Only MP3 files are allowed.' });
-      return false;
+      errorMessages.mp3File = 'Invalid file format. Only MP3 files are allowed.';
     }
 
     if (songName.trim() === '' || artistName.trim() === '' || genre.trim() === '') {
-      displayErrorMessages({ songName: 'Song name, artist name, and genre cannot be empty.' });
-      return false;
+      errorMessages.common = 'Song name, artist name, and genre cannot be empty.';
     }
 
     if (genre.trim() === '') {
-      displayErrorMessages({ genre: 'Genre cannot be empty.' });
-      return false;
+      errorMessages.genre = 'Genre cannot be empty.';
     }
 
     // Only validate release year if it's not empty
     if (releaseYear.trim() !== '' && !/^\d{4}$/.test(releaseYear)) {
-      displayErrorMessages({ songName: 'Invalid release year. Please enter a four-digit number.' });
-      return false;
+      errorMessages.releaseYear = 'Invalid release year. Please enter a four-digit number.';
     }
 
+    // Display the error messages
+    if (Object.keys(errorMessages).length > 0) {
+      displayErrorMessages(errorMessages);
+      return false;
+    }
 
     return true;
   };
@@ -657,7 +839,7 @@
               row.id = `songRow${songs.length - 1}`;
               row.innerHTML = `
         <td>
-          <button class="playButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
+          <button class="songplayButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
           <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})" title="Delete"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
           <button class="editButton" onclick="editSong(${song.id}, ${index})" title="Edit"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
           <button class="downloadButton" onclick="downloadSong(${song.id})" title="Download"><i class="fa-solid fa-download"></i></button>
@@ -686,7 +868,6 @@
             });
   });
   // Function to delete a song
-  // Function to delete a song
   const deleteSong = (songId, rowIndex) => {
     // Check if the song being deleted is the currently playing song
     const isCurrentSong = currentSongIndex === rowIndex;
@@ -704,7 +885,6 @@
                       audioPlayer.pause();
                       audioPlayer.src = '';
                     }
-
                     // Remove the song from the songs array
                     songs.splice(rowIndex, 1);
 
@@ -779,12 +959,10 @@
                         const row = document.getElementById(`songRow${rowIndex}`);
                         row.innerHTML = `
                   <td>
-                     <button class="playButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
+                     <button class="songplayButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
                      <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})" title="Delete"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
                      <button class="editButton" onclick="editSong(${song.id}, ${index})" title="Edit"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
                      <button class="downloadButton" onclick="downloadSong(${song.id})" title="Download"><i class="fa-solid fa-download"></i></button>
-
-
                   </td>
                   <td>${newSongName}</td>
                   <td>${newArtistName}</td>
@@ -810,26 +988,6 @@
     });
   };
 
-      const showRecentlyPlayed = () => {
-        // Clear the songList table
-        songList.innerHTML = '';
-
-        // Iterate over the recentlyPlayed array and create rows for the top 3 songs
-        recentlyPlayed.slice(0, 3).forEach((song, index) => {
-          const row = document.createElement('tr');
-          row.id = `recentlyPlayedRow${index}`;
-          row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${song.songName}</td>
-      <td>${song.artistName}</td>
-      <td>${song.album || ''}</td>
-      <td>${song.genre || ''}</td>
-      <td>${song.releaseYear}</td>
-    `;
-
-          songList.appendChild(row);
-        });
-      };
   // Load the initial song list
   fetch('/all')
           .then((response) => {
@@ -847,7 +1005,7 @@
               row.id = `songRow${index}`;
               row.innerHTML = `
         <td>
-         <button class="playButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
+         <button class="songplayButton" onclick="playSongByIndex(${index})" title="Play"><i class="fa-solid fa-play"></i></button>
          <button class="deleteButton" onclick="deleteSong(${song.id}, ${index})" title="Delete"><i class="fa-solid fa-circle-xmark fa-lg"></i></button>
         <button class="editButton" onclick="editSong(${song.id}, ${index})" title="Edit"><i class="fa-solid fa-pen-to-square fa-lg"></i></button>
         <button class="downloadButton" onclick="downloadSong(${song.id})" title="Download"><i class="fa-solid fa-download"></i></button>
@@ -894,14 +1052,14 @@
             });
   };
 
-  // Function to automatically play the next song when the current song ends
-  audioPlayer.addEventListener('ended', () => {
-    if (currentSongIndex === songs.length - 1) {
-      playSongByIndex(0);
-    } else {
-      playNextSong();
-    }
-  });
+  // // Function to automatically play the next song when the current song ends
+  // audioPlayer.addEventListener('ended', () => {
+  //   if (currentSongIndex === songs.length - 1) {
+  //     playSongByIndex(0);
+  //   } else {
+  //     playNextSong();
+  //   }
+  // });
 </script>
 </body>
 </html>
