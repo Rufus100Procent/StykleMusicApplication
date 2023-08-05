@@ -41,15 +41,6 @@ public class SongController {
         return "About";
     }
 
-    /**
-     * Endpoint for testing purposes.
-     *
-     * @return The name of the view page "test".
-     */
-    @GetMapping("/test2")
-    public String Test2() {
-        return "test";
-    }
 
     /**
      * Endpoint to get a paginated list of all songs.
