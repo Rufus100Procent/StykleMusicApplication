@@ -31,8 +31,11 @@ pipeline {
                 echo 'starting test.....'
                 sh 'mvn surefire:test'
                 echo 'finished test'
-                junit testResults: './target/surefire-reports/*.xml'
-
+                script {
+                    def testResults = findFiles(glob: 'build/reports/**/*.xml')
+                    for(xml in testResults) {
+                        touch xml.getPath()
+                    }
             }
         }
         stage('packing into war') {
