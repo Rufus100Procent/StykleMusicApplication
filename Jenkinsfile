@@ -31,7 +31,7 @@ pipeline {
                 echo 'starting test.....'
                 sh 'mvn surefire:test'
                 echo 'finished test'
-                junit allowEmptyResults: true, testResults: './target/surefire-reports/*.xml'
+                junit testResults: './target/surefire-reports/*.xml'
 
             }
         }
