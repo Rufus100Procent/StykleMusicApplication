@@ -31,7 +31,7 @@ pipeline {
                 echo 'starting test.....'
                 sh 'mvn surefire:test'
                 echo 'finished test'
-                junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                junit allowEmptyResults: true, testResults: './target/surefire-reports/*.xml'
 
             }
         }
@@ -44,7 +44,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh 'pwd'
-                sh 'cp 'target/ROOT.war /artifacts'
+                sh 'cp target/ROOT.war /artifacts'
                 echo 'ROOT.war is now inside tomcat'
             }
         }
