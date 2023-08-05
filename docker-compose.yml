@@ -26,8 +26,17 @@ services:
   jenkins:
     container_name: jenkins
     image: jenkins/jenkins:jdk17
-
+    volumes:
+      - ./TomcatDeployment/webapps:/artifacts
     ports:
       - "8050:8080"
       - "50000:50000"
     restart: unless-stopped
+  TomcatDeployment:
+      container_name: backend
+      image: tomcat:11.0.0-M1-jdk17
+      volumes:
+        - ./TomcatDeployment/webapps:/usr/local/tomcat/webapps
+      ports:
+        - "8099:8080"
+      restart: unless-stopped

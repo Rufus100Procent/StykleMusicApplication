@@ -44,7 +44,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh 'pwd'
-                echo 'ROOT.war is now ready to be Deployed'
+                sh 'cp ./target/ROOT.war /artifacts'
+                echo 'ROOT.war is now inside tomcat'
             }
         }
     }
