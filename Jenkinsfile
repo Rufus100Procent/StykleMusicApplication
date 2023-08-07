@@ -31,16 +31,13 @@ pipeline {
                 echo 'starting test.....'
                 sh 'mvn surefire:test'
                 echo 'finished test'
-                script {
-                    def testResults = findFiles(glob: 'build/reports/**/*.xml')
-                    for(xml in testResults) {
-                        touch xml.getPath()
-                    }
+                junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+
             }
         }
         stage('packing into war') {
             steps {
-
+                sh 'mvn war:war'
                 echo 'ROOT.war is ready to be used'
             }
         }
