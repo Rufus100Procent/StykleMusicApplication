@@ -7,7 +7,10 @@
 - git clone  https://github.com/Rufus100Procent/StykleMusicApplication.git
 - cd StykleMusicApplication
 - docker-compose.yml up -d
-- open project in IDEA (intelij) and start
+- open project in IDEA (intelij) and start program
+
+# Requirment
+- docker installed
 
 # Here is image of overall how the app is designed
 ![finalDesign](https://github.com/Rufus100Procent/MusicApplicationBetaTesting/assets/66412126/8a5ea5dc-6916-424e-b183-e6cb199ca2aa)
