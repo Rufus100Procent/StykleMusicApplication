@@ -1,14 +1,13 @@
 version: '3.8'
 services:
-  db:
+  database:
     container_name: database
-    image: postgres
+    image: postgres:latest
     restart: unless-stopped
     environment:
       POSTGRES_DB: stykledb
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: pass
-      PGDATA: /data/stykledb
     ports:
       - "5432:5432"
     volumes:
@@ -25,14 +24,25 @@ services:
       - "50000:50000"
     restart: unless-stopped
   TomcatDeployment:
-      container_name: backend
-      image: tomcat:11.0.0-M1-jdk17
-      volumes:
-        - ./webapps:/usr/local/tomcat/webapps
-        -  ./m2repo:/root/.m2/repository
-      ports:
-        - "8099:8080"
-      restart: unless-stopped
+    container_name: backend
+    image: tomcat:11.0.0-M1-jdk17
+    volumes:
+      - ./webapps:/usr/local/tomcat/webapps
+      -  ./m2repo:/root/.m2/repository
+
+    ports:
+      - "8099:8080"
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "3010:80"
 volumes:
   m2repo:
     name: m2repo
