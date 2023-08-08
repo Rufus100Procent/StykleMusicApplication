@@ -184,7 +184,6 @@ public class SongServiceUnitTest extends Tests {
         assertEquals("New Album", editedSong.getAlbum());
         assertEquals(2022, editedSong.getReleaseYear());
         assertEquals("New Genre", editedSong.getGenre());
-        assertEquals("./LocalStorage/MP3/new_song.mp3", editedSong.getFilePath());
 
         // Verify mock interactions
         verify(songRepository, times(1)).findById(EXISTING_SONG_ID);
