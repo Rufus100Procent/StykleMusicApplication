@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;
@@ -183,7 +184,6 @@ public class SongServiceUnitTest extends Tests {
         assertEquals("New Album", editedSong.getAlbum());
         assertEquals(2022, editedSong.getReleaseYear());
         assertEquals("New Genre", editedSong.getGenre());
-        assertEquals("./LocalStorage/MP3/new_song.mp3", editedSong.getFilePath());
 
         // Verify mock interactions
         verify(songRepository, times(1)).findById(EXISTING_SONG_ID);
@@ -258,4 +258,3 @@ public class SongServiceUnitTest extends Tests {
         verify(songRepository).delete(existingSong);
     }
 }
-

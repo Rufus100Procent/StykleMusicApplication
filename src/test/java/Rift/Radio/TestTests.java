@@ -53,4 +53,4 @@ public class TestTests extends Tests {
         assertEquals(FILE_DIRECTORY + TOP_SHARP_DRESSED_MAN_MP3, SONG_SHARP_DRESSED_MAN.getFilePath());
     }
 
-    }
+}
