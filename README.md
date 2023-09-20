@@ -1,4 +1,7 @@
 # Music Application
+
+SOLO Project
+
 - Rift Radio is a music application that allows you to upload and listen to your own MP3 songs.
 
 ![MusicApp](https://github.com/Rufus100Procent/MusicApplicationBetaTesting/assets/66412126/ddc3fdf3-2e52-4f01-8bcf-fc07ea97b6d3)
