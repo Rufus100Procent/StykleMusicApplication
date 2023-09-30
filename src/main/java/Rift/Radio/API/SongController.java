@@ -36,10 +36,7 @@ public class SongController {
      *
      * @return The name of the view page "About".
      */
-    @GetMapping("/")
-    public String about() {
-        return "About";
-    }
+
 
 
     /**
