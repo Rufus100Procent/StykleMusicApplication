@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        button {
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #00598c;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .movie {
+            max-width: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #444;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .movie img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <a class="active" href="#">Home</a>
+    <a href="/songs">Music</a>
+    <a href="/Movies">Movies</a>
+    <a href="/TV-Shows">TV-Shows</a>
+    <a href="/">About</a>
+</div>
+<h1>Development undergoing</h1>
+
+<header>
+    <h1>My Favorite Movies</h1>
+    <button id="addMovieBtn"><i class="fas fa-plus"></i> Add Movies</button>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;" multiple>
+</header>
+<div id="movieContainer" class="container">
+    <!-- Movie images will be displayed here -->
+</div>
+<a href="/songs">Songs</a>
+<script>
+    const addMovieBtn = document.getElementById('addMovieBtn');
+    const fileInput = document.getElementById('fileInput');
+    const movieContainer = document.getElementById('movieContainer');
+
+    // Array to store selected files
+    const selectedFiles = [];
+
+    addMovieBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+            // Loop through selected files and create img elements
+            for (const file of files) {
+                const movieDiv = document.createElement('div');
+                movieDiv.classList.add('movie');
+                const movieImage = document.createElement('img');
+                movieImage.src = URL.createObjectURL(file);
+                movieDiv.appendChild(movieImage);
+                movieContainer.appendChild(movieDiv);
+
+                // Add the file to the selectedFiles array
+                selectedFiles.push(file);
+            }
+        }
+    });
+    // You can now access the selected files in the selectedFiles array and save them as needed.
+    // For example, you can use the File API to upload them to a server or store them in a local database.
+</script>
+</body>
+</html>
