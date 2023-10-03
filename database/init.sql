@@ -7,7 +7,6 @@ release_year INT,
 song_name TEXT,
 genre TEXT
 );
-
 insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (62, 'Rocks', 'aerosmith', 'src/main/resources/LocalStorage/MP3/Aerosmith - Back In The Saddle (Audio).mp3', 1976, 'back in the saddle', 'hard Rock');
 insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (102, ' Garage Inc.', 'Metalica', 'src/main/resources/LocalStorage/MP3/Metallica - Whiskey in the jar.mp3', 1998, 'Whiskey in the jar', 'Heavy Metal');
 insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (73, 'Backseat', 'Peer Günt', 'src/main/resources/LocalStorage/MP3/Peer Günt  Backseat.mp3', 1986, 'Peer Günt - Backseat', 'hard Rock');

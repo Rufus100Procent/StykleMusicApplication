@@ -11,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +38,10 @@ public class SongController {
      * @return The name of the view page "About".
      */
 
-
+    @GetMapping("/")
+    public String home() {
+        return "About";
+    }
 
     /**
      * Endpoint to get a paginated list of all songs.
