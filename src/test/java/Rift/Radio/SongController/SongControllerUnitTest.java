@@ -1,8 +1,7 @@
 package Rift.Radio.SongController;
 
 import Rift.Radio.API.SongController;
-import Rift.Radio.Error.MP3FileExistsException;
-import Rift.Radio.Error.SongNameExistsException;
+import Rift.Radio.Error.FileNameExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Service.SongService;
 import Rift.Radio.Tests;
@@ -12,25 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +77,7 @@ public class SongControllerUnitTest extends Tests {
         // Set up mock service behavior to throw SongNameExistsException
         when(songService.uploadSong(file, SONG_SHOT_IN_THE_DARK.getSongName(), SONG_SHOT_IN_THE_DARK.getArtistName(),
                 SONG_SHOT_IN_THE_DARK.getAlbum(), SONG_SHOT_IN_THE_DARK.getReleaseYear(), SONG_SHOT_IN_THE_DARK.getGenre()))
-                .thenThrow(new SongNameExistsException("Song name already exists"));
+                .thenThrow(new FileNameExistsException("Song name already exists"));
 
         // Call the method being tested
         ResponseEntity<?> response = songController.uploadFile(file, SONG_SHOT_IN_THE_DARK.getSongName(),
@@ -214,7 +201,7 @@ public class SongControllerUnitTest extends Tests {
         // Set up mock service behavior to throw SongNameExistsException
         when(songService.editSong(eq(SONG_SHOT_IN_THE_DARK.getId()), any(), eq(SONG_BACK_IN_THE_SADDLE.getSongName()),
                 eq(SONG_SHOT_IN_THE_DARK.getArtistName()), eq(SONG_SHOT_IN_THE_DARK.getAlbum()), eq(2021), eq("Edited Genre")))
-                .thenThrow(new SongNameExistsException("Song name already exists"));
+                .thenThrow(new FileNameExistsException("Song name already exists"));
 
         // Call the method being tested
         ResponseEntity<?> response = songController.editSong(SONG_SHOT_IN_THE_DARK.getId(), file, SONG_BACK_IN_THE_SADDLE.getSongName(),

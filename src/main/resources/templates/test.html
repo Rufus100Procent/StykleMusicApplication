@@ -1,676 +1,676 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Song Upload</title>
-    <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            text-decoration: none;
-            font-family: 'Poppins', sans-serif;
-        }
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>Song Upload</title>
+        <script src="https://kit.fontawesome.com/9f0616f8e0.js" crossorigin="anonymous"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                text-decoration: none;
+                font-family: 'Poppins', sans-serif;
+            }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: linear-gradient(to right, #9a1d86, #0eade0);
-        }
+            body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                background: linear-gradient(to right, #9a1d86, #0eade0);
+            }
 
-        .wrapper {
-            display: flex;
-            position: relative;
-        }
+            .wrapper {
+                display: flex;
+                position: relative;
+            }
 
-        .wrapper .sidebar {
-            position: fixed;
-            width: 200px;
-            height: 100%;
-            background-color: #4b4276;
-            padding: 30px 0;
-        }
+            .wrapper .sidebar {
+                position: fixed;
+                width: 200px;
+                height: 100%;
+                background-color: #4b4276;
+                padding: 30px 0;
+            }
 
-        .wrapper .sidebar h2 {
-            color: #161c12;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+            .wrapper .sidebar h2 {
+                color: #161c12;
+                font-weight: 700;
+                text-transform: uppercase;
+                text-align: center;
+                margin-bottom: 30px;
+            }
 
-        .wrapper .sidebar span {
-            font-weight: 1000;
-            color: #838f32;
-        }
+            .wrapper .sidebar span {
+                font-weight: 1000;
+                color: #838f32;
+            }
 
-        .wrapper .sidebar ul li {
-            padding: 15px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
-        }
+            .wrapper .sidebar ul li {
+                padding: 15px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+                border-top: 1px solid rgba(255, 255, 255, 0.5);
+            }
 
-        .wrapper .sidebar ul li a {
-            color: #bdb;
-            display: block;
-        }
+            .wrapper .sidebar ul li a {
+                color: #bdb;
+                display: block;
+            }
 
-        .wrapper .sidebar ul li a .fas {
-            width: 25px;
-        }
+            .wrapper .sidebar ul li a .fas {
+                width: 25px;
+            }
 
-        .wrapper .sidebar ul li:hover {
-            background-color: #914b8d;
-        }
+            .wrapper .sidebar ul li:hover {
+                background-color: #914b8d;
+            }
 
-        .wrapper .sidebar ul li:hover a {
-            color: #914b8d;
-        }
+            .wrapper .sidebar ul li:hover a {
+                color: #914b8d;
+            }
 
-        .wrapper .main_content {
-            width: calc(100% - 250px); /* Adjust the width to accommodate the sidebar */
-            margin-left: 200px;
-        }
+            .wrapper .main_content {
+                width: calc(100% - 250px); /* Adjust the width to accommodate the sidebar */
+                margin-left: 200px;
+            }
 
-        .wrapper .main_content .header {
-            padding: 20px;
-            background-color: #f6eeee;
-            color: #1c0d0d;
-            border-bottom: 1px solid #e5ecf1;
-            text-align: center;
-        }
+            .wrapper .main_content .header {
+                padding: 20px;
+                background-color: #f6eeee;
+                color: #1c0d0d;
+                border-bottom: 1px solid #e5ecf1;
+                text-align: center;
+            }
 
-        #songTable {
-            margin: 0 auto;
-            width: 80%;
-            border-collapse: collapse;
-        }
+            #songTable {
+                margin: 0 auto;
+                width: 80%;
+                border-collapse: collapse;
+            }
 
-        #songTable th,
-        #songTable td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+            #songTable th,
+            #songTable td {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
 
-        .table-container {
-            max-height: calc(100vh - 220px);
-            overflow-y: auto;
-            position: relative;
-            margin-bottom: 20px;
-        }
+            .table-container {
+                max-height: calc(100vh - 220px);
+                overflow-y: auto;
+                position: relative;
+                margin-bottom: 20px;
+            }
 
-        .table-wrapper {
-            max-height: calc(100vh - 220px);
-            overflow-y: auto;
-        }
+            .table-wrapper {
+                max-height: calc(100vh - 220px);
+                overflow-y: auto;
+            }
 
-        #songTable thead {
-            position: sticky;
-            top: 0;
-            /*background: linear-gradient(to right, #9a1d86, #9a1d86);*/
-            z-index: 1;
-        }
+            #songTable thead {
+                position: sticky;
+                top: 0;
+                /*background: linear-gradient(to right, #9a1d86, #9a1d86);*/
+                z-index: 1;
+            }
 
-        .playing {
-            background-color: green;
-        }
+            .playing {
+                background-color: green;
+            }
 
-        .errorMessage {
-            color: red;
-        }
+            .errorMessage {
+                color: red;
+            }
 
-        .audioContainer {
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 0 0;
-            border-radius: 14px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            bottom: 20px;
-            left: 55%;
-            transform: translateX(-50%);
-        }
+            .audioContainer {
+                max-width: 900px;
+                width: 100%;
+                margin: 0 auto;
+                padding: 0 0;
+                border-radius: 14px;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+                position: fixed;
+                bottom: 20px;
+                left: 55%;
+                transform: translateX(-50%);
+            }
 
-        .player-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-left: 32px;
-            max-width: calc(100% - 64px);
-        }
+            .player-controls {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-left: 32px;
+                max-width: calc(100% - 64px);
+            }
 
-        .player-controls .player-volume {
-            margin-left: 25px;
-        }
+            .player-controls .player-volume {
+                margin-left: 25px;
+            }
 
-        .progress-bar {
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: space-between;
-            padding-left: 10px;
-        }
+            .progress-bar {
+                display: flex;
+                flex: 1;
+                align-items: center;
+                justify-content: space-between;
+                padding-left: 10px;
+            }
 
-        .player-time {
-            padding: 2px 5px;
-        }
+            .player-time {
+                padding: 2px 5px;
+            }
 
-        .player-controls button {
-            background-color: #4b4276;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            padding: 20px;
-            font-size: 20px;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
+            .player-controls button {
+                background-color: #4b4276;
+                color: #fff;
+                border: none;
+                border-radius: 50%;
+                cursor: pointer;
+                padding: 20px;
+                font-size: 20px;
+                margin: 0 10px;
+                transition: background-color 0.3s ease;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            }
 
-        .progress-bar input[type="range"] {
-            flex: 1;
-        }
+            .progress-bar input[type="range"] {
+                flex: 1;
+            }
 
-        .main_content .header a {
-            display: inline-block;
-            color: #594f8d;
-            text-decoration: none;
-            font-weight: bold;
-        }
+            .main_content .header a {
+                display: inline-block;
+                color: #594f8d;
+                text-decoration: none;
+                font-weight: bold;
+            }
 
-        .main_content .header a:hover {
-            color: #914b8d;
-        }
+            .main_content .header a:hover {
+                color: #914b8d;
+            }
 
-        .search_container {
-            display: flex;
-            justify-content: center;
-            margin-top: 8px;
-            margin-right: 50px;
-            width: 90%;
-        }
+            .search_container {
+                display: flex;
+                justify-content: center;
+                margin-top: 8px;
+                margin-right: 50px;
+                width: 90%;
+            }
 
-        .search_container input[type="text"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px 0 0 4px;
-            outline: none;
-        }
+            .search_container input[type="text"] {
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px 0 0 4px;
+                outline: none;
+            }
 
-        .search_container button {
-            padding: 8px 16px;
-            background-color: #4b4276;
-            color: #eeeded;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-        }
-        .search_container button:hover {
-            background-color: #914b8d;
-        }
-    </style>
-</head>
-<body>
-<div class="wrapper">
-    <div class="sidebar">
-        <h2>Rift <span>Radio</span> <i class="fa-solid fa-radio"></i></h2>
-        <ul>
-            <li><a href="/">About</a></li>
-            <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
-            <li><a href="/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
-            <li><a href="#" onClick="showRecentlyPlayed()">Recently Played</a></li>
-        </ul>
-    </div>
-    <div class="main_content">
-        <div class="search_container">
-            <label for="searchQuery">
-                <input type="text" id="searchQuery" placeholder="Search by song name, artist, album, or year">
-            </label>
-            <button onclick="searchSongs()"><i class="fa-solid fa-search"></i></button>
+            .search_container button {
+                padding: 8px 16px;
+                background-color: #4b4276;
+                color: #eeeded;
+                border: none;
+                border-radius: 0 4px 4px 0;
+                cursor: pointer;
+            }
+            .search_container button:hover {
+                background-color: #914b8d;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>Rift <span>Radio</span> <i class="fa-solid fa-radio"></i></h2>
+            <ul>
+                <li><a href="/">About</a></li>
+                <li><a id="uploadLink" onclick="showUploadForm()"><i class="fa-solid fa-upload"></i> Upload</a></li>
+                <li><a href="/upload"><i class="fa-solid fa-headphones"></i> Songs</a></li>
+                <li><a href="#" onClick="showRecentlyPlayed()">Recently Played</a></li>
+            </ul>
         </div>
+        <div class="main_content">
+            <div class="search_container">
+                <label for="searchQuery">
+                    <input type="text" id="searchQuery" placeholder="Search by song name, artist, album, or year">
+                </label>
+                <button onclick="searchSongs()"><i class="fa-solid fa-search"></i></button>
+            </div>
 
-        <div class="table-container">
-            <div class="table-wrapper">
-                <table id="songTable">
-                    <thead>
-                    <tr>
-                        <th>Actions</th>
-                        <th>Song Name</th>
-                        <th>Artist</th>
-                        <th>Album</th>
-                        <th>Year</th>
-                    </tr>
-                    </thead>
-                    <tbody id="songList"></tbody>
-                </table>
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table id="songTable">
+                        <thead>
+                        <tr>
+                            <th>Actions</th>
+                            <th>Song Name</th>
+                            <th>Artist</th>
+                            <th>Album</th>
+                            <th>Year</th>
+                        </tr>
+                        </thead>
+                        <tbody id="songList"></tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Error message elements -->
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <button id="addSongButton" onclick="toggleForm()">Add Song</button>
+    </div>
+
+    <div id="songForm" style="display: none; text-align: center;">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="songName"></label><input type="text" name="songName" id="songName" placeholder="Song Name" required><br>
+            <label for="artistName"></label><input type="text" name="artistName" id="artistName" placeholder="Artist Name" required><br>
+            <label for="album"></label><input type="text" name="album" id="album" placeholder="Album"><br>
+            <label for="releaseYear"></label><input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required><br>
+            <input type="file" name="file" id="fileInput" required multiple><br>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
+    <div class="audioContainer">
+        <div class="audio-player">
+            <div class="progress-bar">
+                <span class="player-time current">00:00</span>
+                <label for="seek-slider"></label><input type="range" id="seek-slider" max="100" value="0">
+                <span class="player-time duration">00:00</span>
             </div>
         </div>
-        <!-- Error message elements -->
-    </div>
-</div>
-<div style="text-align: center;">
-    <button id="addSongButton" onclick="toggleForm()">Add Song</button>
-</div>
+        <div class="player-controls">
+            <button id="shuffleButton" onclick="shuffleSongs()" title="Play Random"><i class="fa-solid fa-shuffle"></i> </button>
+            <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
+            <button id="playButton" onclick="togglePlayPause()"><i id="playIcon" class="fas fa-play"></i></button>
+            <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
+            <button id="repeatButton" onclick="toggleRepeatSong()" title="Enable Repeat"><i id="beatIcon" class="fa-solid fa-repeat"></i></button>
 
-<div id="songForm" style="display: none; text-align: center;">
-    <form id="uploadForm" enctype="multipart/form-data">
-        <label for="songName"></label><input type="text" name="songName" id="songName" placeholder="Song Name" required><br>
-        <label for="artistName"></label><input type="text" name="artistName" id="artistName" placeholder="Artist Name" required><br>
-        <label for="album"></label><input type="text" name="album" id="album" placeholder="Album"><br>
-        <label for="releaseYear"></label><input type="number" name="releaseYear" id="releaseYear" placeholder="Release Year" required><br>
-        <input type="file" name="file" id="fileInput" required multiple><br>
-        <button type="submit">Upload</button>
-    </form>
-</div>
-
-<div class="audioContainer">
-    <div class="audio-player">
-        <div class="progress-bar">
-            <span class="player-time current">00:00</span>
-            <label for="seek-slider"></label><input type="range" id="seek-slider" max="100" value="0">
-            <span class="player-time duration">00:00</span>
+            <div class="player-volume-container">
+                <label for="volume"></label>
+                <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
+                <input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
+            </div>
         </div>
     </div>
-    <div class="player-controls">
-        <button id="shuffleButton" onclick="shuffleSongs()" title="Play Random"><i class="fa-solid fa-shuffle"></i> </button>
-        <button id="prevButton" onclick="playPreviousSong()"><i class="fa-solid fa-backward"></i></button>
-        <button id="playButton" onclick="togglePlayPause()"><i id="playIcon" class="fas fa-play"></i></button>
-        <button id="nextButton" onclick="playNextSong()"><i class="fa-solid fa-forward"></i></button>
-        <button id="repeatButton" onclick="toggleRepeatSong()" title="Enable Repeat"><i id="beatIcon" class="fa-solid fa-repeat"></i></button>
+    <audio id="audioPlayer" controls style="display: none;"></audio>
 
-        <div class="player-volume-container">
-            <label for="volume"></label>
-            <i id="volumeIcon" class="fa-solid fa-volume-high"></i>
-            <input type="range" id="volume" min="0" max="1" value="1" step="0.01" class="player-volume" />
-        </div>
-    </div>
-</div>
-<audio id="audioPlayer" controls style="display: none;"></audio>
+    <script>
+        // DOM references
+        const songForm = document.getElementById('songForm');
+        const addSongButton = document.getElementById('addSongButton');
+        const fileInput = document.getElementById('fileInput');
+        const songNameInput = document.getElementById('songName');
+        const artistNameInput = document.getElementById('artistName');
+        const releaseYearInput = document.getElementById('releaseYear');
+        const songList = document.getElementById('songList');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const seekSlider = document.getElementById('seek-slider');
+        const audioPlayer = document.getElementById('audioPlayer');
 
-<script>
-    // DOM references
-    const songForm = document.getElementById('songForm');
-    const addSongButton = document.getElementById('addSongButton');
-    const fileInput = document.getElementById('fileInput');
-    const songNameInput = document.getElementById('songName');
-    const artistNameInput = document.getElementById('artistName');
-    const releaseYearInput = document.getElementById('releaseYear');
-    const songList = document.getElementById('songList');
-    const prevButton = document.getElementById('prevButton');
-    const nextButton = document.getElementById('nextButton');
-    const seekSlider = document.getElementById('seek-slider');
-    const audioPlayer = document.getElementById('audioPlayer');
+        const currentTimeDisplay = document.querySelector('.player-time.current');
+        const durationDisplay = document.querySelector('.player-time.duration');
+        const errorContainer = document.getElementById('errorContainer');
 
-    const currentTimeDisplay = document.querySelector('.player-time.current');
-    const durationDisplay = document.querySelector('.player-time.duration');
-    const errorContainer = document.getElementById('errorContainer');
+        let songs = [];
+        let currentSongIndex = 0;
+        let isFetching = false;
+        let shuffleMode = false;
+        let isBeating = false;
+        let isSeeking = false;
+        const recentlyPlayedHistory = [];
+        let recentlyPlayedVisible = false;
 
-    let songs = [];
-    let currentSongIndex = 0;
-    let isFetching = false;
-    let shuffleMode = false;
-    let isBeating = false;
-    let isSeeking = false;
-    const recentlyPlayedHistory = [];
-    let recentlyPlayedVisible = false;
+        const updateRecentlyPlayed = (songIndex) => {
+            if (recentlyPlayedHistory.includes(songIndex)) {
+                const index = recentlyPlayedHistory.indexOf(songIndex);
+                recentlyPlayedHistory.splice(index, 1); // Remove the song from the history to rearrange the order
+            }
+            recentlyPlayedHistory.unshift(songIndex); // Add the song to the beginning of the history
+        };
 
-    const updateRecentlyPlayed = (songIndex) => {
-        if (recentlyPlayedHistory.includes(songIndex)) {
-            const index = recentlyPlayedHistory.indexOf(songIndex);
-            recentlyPlayedHistory.splice(index, 1); // Remove the song from the history to rearrange the order
-        }
-        recentlyPlayedHistory.unshift(songIndex); // Add the song to the beginning of the history
-    };
-
-    const toggleRepeatSong = () => {
-        isBeating = !isBeating;
-        const beatIcon = document.getElementById('beatIcon');
-        if (isBeating) {
-            beatIcon.classList.add('fa-beat');
-            audioPlayer.loop = true; // Set the audio to loop
-        } else {
-            beatIcon.classList.remove('fa-beat');
-            audioPlayer.loop = false; // Remove the loop property
-        }
-    };
-
-    const volumeSlider = document.getElementById('volume');
-
-    volumeSlider.addEventListener('input', () => {
-        audioPlayer.volume = volumeSlider.value;
-    });
-    const togglePlayPause = () => {
-        if (audioPlayer.paused) {
-            audioPlayer.play();
-        } else {
-            audioPlayer.pause();
-        }
-        updatePlayButtonIcons();
-        highlightCurrentSong();
-    };
-
-    const updatePlayButtonIcons = () => {
-        const playIcons = document.querySelectorAll('.songplayButton i');
-        playIcons.forEach((icon, index) => {
-            if (index === currentSongIndex) {
-                icon.classList.toggle('fa-play', audioPlayer.paused);
-                icon.classList.toggle('fa-pause', !audioPlayer.paused);
+        const toggleRepeatSong = () => {
+            isBeating = !isBeating;
+            const beatIcon = document.getElementById('beatIcon');
+            if (isBeating) {
+                beatIcon.classList.add('fa-beat');
+                audioPlayer.loop = true; // Set the audio to loop
             } else {
-                icon.classList.remove('fa-pause');
-                icon.classList.add('fa-play');
+                beatIcon.classList.remove('fa-beat');
+                audioPlayer.loop = false; // Remove the loop property
+            }
+        };
+
+        const volumeSlider = document.getElementById('volume');
+
+        volumeSlider.addEventListener('input', () => {
+            audioPlayer.volume = volumeSlider.value;
+        });
+        const togglePlayPause = () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
+            updatePlayButtonIcons();
+            highlightCurrentSong();
+        };
+
+        const updatePlayButtonIcons = () => {
+            const playIcons = document.querySelectorAll('.songplayButton i');
+            playIcons.forEach((icon, index) => {
+                if (index === currentSongIndex) {
+                    icon.classList.toggle('fa-play', audioPlayer.paused);
+                    icon.classList.toggle('fa-pause', !audioPlayer.paused);
+                } else {
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                }
+            });
+
+            const playIcon = document.getElementById('playIcon');
+            playIcon.classList.toggle('fa-play', audioPlayer.paused);
+            playIcon.classList.toggle('fa-pause', !audioPlayer.paused);
+        };
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (!isSeeking) {
+                const currentTime = audioPlayer.currentTime;
+                const duration = audioPlayer.duration;
+
+                const currentMinutes = Math.floor(currentTime / 60);
+                const currentSeconds = Math.floor(currentTime % 60);
+                currentTimeDisplay.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+                const durationMinutes = Math.floor(duration / 60);
+                const durationSeconds = Math.floor(duration % 60);
+                durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+
+                seekSlider.value = (currentTime / duration) * 100;
             }
         });
 
-        const playIcon = document.getElementById('playIcon');
-        playIcon.classList.toggle('fa-play', audioPlayer.paused);
-        playIcon.classList.toggle('fa-pause', !audioPlayer.paused);
-    };
+        seekSlider.addEventListener('input', () => {
+            audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
+        });
 
-    audioPlayer.addEventListener('timeupdate', () => {
-        if (!isSeeking) {
-            const currentTime = audioPlayer.currentTime;
+        seekSlider.addEventListener('mousedown', () => {
+            isSeeking = true;
+        });
+
+        seekSlider.addEventListener('mouseup', () => {
+            isSeeking = false;
+        });
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            seekSlider.value = 0;
             const duration = audioPlayer.duration;
-
-            const currentMinutes = Math.floor(currentTime / 60);
-            const currentSeconds = Math.floor(currentTime % 60);
-            currentTimeDisplay.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
 
             const durationMinutes = Math.floor(duration / 60);
             const durationSeconds = Math.floor(duration % 60);
             durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+        });
 
-            seekSlider.value = (currentTime / duration) * 100;
-        }
-    });
-
-    seekSlider.addEventListener('input', () => {
-        audioPlayer.currentTime = (audioPlayer.duration * (seekSlider.value / 100));
-    });
-
-    seekSlider.addEventListener('mousedown', () => {
-        isSeeking = true;
-    });
-
-    seekSlider.addEventListener('mouseup', () => {
-        isSeeking = false;
-    });
-
-    audioPlayer.addEventListener('loadedmetadata', () => {
-        seekSlider.value = 0;
-        const duration = audioPlayer.duration;
-
-        const durationMinutes = Math.floor(duration / 60);
-        const durationSeconds = Math.floor(duration % 60);
-        durationDisplay.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
-    });
-
-    audioPlayer.addEventListener('ended', () => {
-        currentTimeDisplay.textContent = '00:00';
-        durationDisplay.textContent = '00:00';
-        seekSlider.value = 0;
-        updatePlayButtonIcons();
-        highlightCurrentSong();
-        if (currentSongIndex === songs.length - 1) {
-            playSongByIndex(0);
-        } else {
-            playNextSong();
-        }
-    });
-
-    const shuffleSongs = () => {
-        shuffleMode = !shuffleMode;
-
-        // Update the shuffleButton element and toggle the 'fa-beat' class
-        const shuffleButton = document.getElementById('shuffleButton');
-        const shuffleIcon = shuffleButton.querySelector('i.fa-shuffle');
-
-        if (shuffleMode) {
-            shuffleIcon.classList.add('fa-beat');
-        } else {
-            shuffleIcon.classList.remove('fa-beat');
-        }
-    };
-    const updateVolumeIcon = () => {
-        const volume = audioPlayer.volume;
-        const volumeIcon = document.getElementById('volumeIcon');
-
-        volumeIcon.className = volume > 0.7 ? 'fa-solid fa-volume-high' : volume > 0 ? 'fa-solid fa-volume-low' : 'fa-solid fa-volume-xmark';
-    };
-
-
-    volumeSlider.addEventListener('input', () => {
-        audioPlayer.volume = volumeSlider.value;
-        updateVolumeIcon();
-    });
-    const playPreviousSong = () => {
-        if (isFetching) {
-            return; // Ignore the click if a fetch request is already in progress
-        }
-        if (shuffleMode) {
-            const randomIndex = getRandomIndex();
-            playSongByIndex(randomIndex);
-        } else {
-            const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-            playSongByIndex(prevIndex);
-        }
-    };
-
-    const getRandomIndex = () => {
-        // Generate a random index different from the current one
-        let randomIndex = currentSongIndex;
-        while (randomIndex === currentSongIndex) {
-            randomIndex = Math.floor(Math.random() * songs.length);
-        }
-        return randomIndex;
-    };
-
-    const playNextSong = () => {
-        if (isFetching) {
-            return; // Ignore the click if a fetch request is already in progress
-        }
-        if (shuffleMode) {
-            const randomIndex = Math.floor(Math.random() * songs.length);
-            playSongByIndex(randomIndex);
-
-        } else {
-            const nextIndex = (currentSongIndex + 1) % songs.length; // Change 'prevIndex' to 'nextIndex'
-            playSongByIndex(nextIndex); // Change 'prevIndex' to 'nextIndex'
-        }
-    };
-
-    const updateButtonStates = () => {
-        prevButton.disabled = false;
-        nextButton.disabled = false;
-    };
-    const highlightCurrentSong = () => {
-        const rows = document.querySelectorAll('#songList tr');
-        rows.forEach((row, index) => {
-            if (index === currentSongIndex) {
-                row.classList.add('playing');
+        audioPlayer.addEventListener('ended', () => {
+            currentTimeDisplay.textContent = '00:00';
+            durationDisplay.textContent = '00:00';
+            seekSlider.value = 0;
+            updatePlayButtonIcons();
+            highlightCurrentSong();
+            if (currentSongIndex === songs.length - 1) {
+                playSongByIndex(0);
             } else {
-                row.classList.remove('playing');
+                playNextSong();
             }
         });
-    };
 
-    const showRecentlyPlayed = () => {
-        const tableRows = document.querySelectorAll('#songList tr');
-        const shownIndexes = recentlyPlayedHistory.slice(0, tableRows.length);
+        const shuffleSongs = () => {
+            shuffleMode = !shuffleMode;
 
-        tableRows.forEach((row, index) => {
-            if (recentlyPlayedVisible) {
-                row.style.display = 'table-row'; // Show all rows
+            // Update the shuffleButton element and toggle the 'fa-beat' class
+            const shuffleButton = document.getElementById('shuffleButton');
+            const shuffleIcon = shuffleButton.querySelector('i.fa-shuffle');
+
+            if (shuffleMode) {
+                shuffleIcon.classList.add('fa-beat');
             } else {
-                if (shownIndexes.includes(index)) {
-                    row.style.display = 'table-row'; // Show the rows in the recently played history
+                shuffleIcon.classList.remove('fa-beat');
+            }
+        };
+        const updateVolumeIcon = () => {
+            const volume = audioPlayer.volume;
+            const volumeIcon = document.getElementById('volumeIcon');
+
+            volumeIcon.className = volume > 0.7 ? 'fa-solid fa-volume-high' : volume > 0 ? 'fa-solid fa-volume-low' : 'fa-solid fa-volume-xmark';
+        };
+
+
+        volumeSlider.addEventListener('input', () => {
+            audioPlayer.volume = volumeSlider.value;
+            updateVolumeIcon();
+        });
+        const playPreviousSong = () => {
+            if (isFetching) {
+                return; // Ignore the click if a fetch request is already in progress
+            }
+            if (shuffleMode) {
+                const randomIndex = getRandomIndex();
+                playSongByIndex(randomIndex);
+            } else {
+                const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+                playSongByIndex(prevIndex);
+            }
+        };
+
+        const getRandomIndex = () => {
+            // Generate a random index different from the current one
+            let randomIndex = currentSongIndex;
+            while (randomIndex === currentSongIndex) {
+                randomIndex = Math.floor(Math.random() * songs.length);
+            }
+            return randomIndex;
+        };
+
+        const playNextSong = () => {
+            if (isFetching) {
+                return; // Ignore the click if a fetch request is already in progress
+            }
+            if (shuffleMode) {
+                const randomIndex = Math.floor(Math.random() * songs.length);
+                playSongByIndex(randomIndex);
+
+            } else {
+                const nextIndex = (currentSongIndex + 1) % songs.length; // Change 'prevIndex' to 'nextIndex'
+                playSongByIndex(nextIndex); // Change 'prevIndex' to 'nextIndex'
+            }
+        };
+
+        const updateButtonStates = () => {
+            prevButton.disabled = false;
+            nextButton.disabled = false;
+        };
+        const highlightCurrentSong = () => {
+            const rows = document.querySelectorAll('#songList tr');
+            rows.forEach((row, index) => {
+                if (index === currentSongIndex) {
+                    row.classList.add('playing');
                 } else {
-                    row.style.display = 'none'; // Hide other rows
+                    row.classList.remove('playing');
                 }
+            });
+        };
+
+        const showRecentlyPlayed = () => {
+            const tableRows = document.querySelectorAll('#songList tr');
+            const shownIndexes = recentlyPlayedHistory.slice(0, tableRows.length);
+
+            tableRows.forEach((row, index) => {
+                if (recentlyPlayedVisible) {
+                    row.style.display = 'table-row'; // Show all rows
+                } else {
+                    if (shownIndexes.includes(index)) {
+                        row.style.display = 'table-row'; // Show the rows in the recently played history
+                    } else {
+                        row.style.display = 'none'; // Hide other rows
+                    }
+                }
+            });
+
+            recentlyPlayedVisible = !recentlyPlayedVisible; // Toggle the variable's value
+        };
+        const toggleForm = () => {
+            songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
+            addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
+        };
+
+        const playSongByIndex = (index) => {
+            if (index === currentSongIndex) {
+                togglePlayPause();
+                return;
             }
+
+            currentSongIndex = index;
+            const song = songs[index];
+
+            isFetching = true;
+
+            fetch(`/${song.id}/file`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to retrieve the song file');
+                    }
+                    return response.blob();
+                })
+                .then((blob) => {
+                    audioPlayer.src = URL.createObjectURL(blob);
+                    audioPlayer.play();
+                    updateButtonStates();
+                    updatePlayButtonIcons();
+                    highlightCurrentSong();
+                    updateRecentlyPlayed(index); // Update the recently played song
+                    isFetching = false;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    isFetching = false;
+                });
+        };
+
+        const displayErrorMessages = (errors) => {
+            errorContainer.innerHTML = Object.entries(errors)
+                .map(([key, value]) => `<p class="errorMessage">${value}</p>`)
+                .join('');
+        };
+
+        const validateFormData = (file, songName, artistName, releaseYear) => {
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            if (fileExtension !== 'mp3') {
+                displayErrorMessages({ mp3File: 'Invalid file format. Only MP3 files are allowed.' });
+                return false;
+            }
+
+            if (songName.trim() === '' || artistName.trim() === '') {
+                displayErrorMessages({ songName: 'Song name and artist name cannot be empty.' });
+                return false;
+            }
+
+            if (!/^\d{4}$/.test(releaseYear)) {
+                displayErrorMessages({ releaseYear: 'Invalid release year. Please enter a four-digit number.' });
+                return false;
+            }
+
+            return true;
+        };
+
+        document.getElementById('uploadForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            const songName = songNameInput.value;
+            const artistName = artistNameInput.value;
+            const releaseYear = releaseYearInput.value;
+
+            if (!validateFormData(file, songName, artistName, releaseYear)) {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('songName', songName);
+            formData.append('artistName', artistName);
+            formData.append('album', document.getElementById('album').value || '');
+            formData.append('releaseYear', releaseYear);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to upload the song');
+                    }
+                    return response.json();
+                })
+                .then((song) => {
+                    songs.push(song);
+
+                    const row = document.createElement('tr');
+                    row.id = `songRow${songs.length - 1}`;
+                    row.innerHTML = `
+            <td>
+              <button class="songplayButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
+            </td>
+            <td>${song.songName}</td>
+            <td>${song.artistName}</td>
+            <td>${song.album || ''}</td>
+            <td>${song.releaseYear}</td>
+          `;
+
+                    songList.appendChild(row);
+                    updateButtonStates();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+
+                    if (error.message === 'Failed to upload the song') {
+                        displayErrorMessages(error.response);
+                    } else {
+                        displayErrorMessages({ duplicate: 'Failed to upload the song.' });
+                    }
+                });
         });
 
-        recentlyPlayedVisible = !recentlyPlayedVisible; // Toggle the variable's value
-    };
-    const toggleForm = () => {
-        songForm.style.display = songForm.style.display === 'none' ? 'block' : 'none';
-        addSongButton.textContent = songForm.style.display === 'none' ? 'Add Song' : 'Cancel';
-    };
-
-    const playSongByIndex = (index) => {
-        if (index === currentSongIndex) {
-            togglePlayPause();
-            return;
-        }
-
-        currentSongIndex = index;
-        const song = songs[index];
-
-        isFetching = true;
-
-        fetch(`/${song.id}/file`)
+        fetch('/all')
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Failed to retrieve the song file');
-                }
-                return response.blob();
-            })
-            .then((blob) => {
-                audioPlayer.src = URL.createObjectURL(blob);
-                audioPlayer.play();
-                updateButtonStates();
-                updatePlayButtonIcons();
-                highlightCurrentSong();
-                updateRecentlyPlayed(index); // Update the recently played song
-                isFetching = false;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                isFetching = false;
-            });
-    };
-
-    const displayErrorMessages = (errors) => {
-        errorContainer.innerHTML = Object.entries(errors)
-            .map(([key, value]) => `<p class="errorMessage">${value}</p>`)
-            .join('');
-    };
-
-    const validateFormData = (file, songName, artistName, releaseYear) => {
-        const fileName = file.name;
-        const fileExtension = fileName.split('.').pop().toLowerCase();
-
-        if (fileExtension !== 'mp3') {
-            displayErrorMessages({ mp3File: 'Invalid file format. Only MP3 files are allowed.' });
-            return false;
-        }
-
-        if (songName.trim() === '' || artistName.trim() === '') {
-            displayErrorMessages({ songName: 'Song name and artist name cannot be empty.' });
-            return false;
-        }
-
-        if (!/^\d{4}$/.test(releaseYear)) {
-            displayErrorMessages({ releaseYear: 'Invalid release year. Please enter a four-digit number.' });
-            return false;
-        }
-
-        return true;
-    };
-
-    document.getElementById('uploadForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const file = fileInput.files[0];
-        const songName = songNameInput.value;
-        const artistName = artistNameInput.value;
-        const releaseYear = releaseYearInput.value;
-
-        if (!validateFormData(file, songName, artistName, releaseYear)) {
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('songName', songName);
-        formData.append('artistName', artistName);
-        formData.append('album', document.getElementById('album').value || '');
-        formData.append('releaseYear', releaseYear);
-
-        fetch('/upload', {
-            method: 'POST',
-            body: formData
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to upload the song');
+                    throw new Error('Failed to retrieve the song list');
                 }
                 return response.json();
             })
-            .then((song) => {
-                songs.push(song);
+            .then((data) => {
+                songs = data;
 
-                const row = document.createElement('tr');
-                row.id = `songRow${songs.length - 1}`;
-                row.innerHTML = `
-        <td>
-          <button class="songplayButton" onclick="playSongByIndex(${songs.length - 1})"><i class="fas fa-play"></i></button>
-        </td>
-        <td>${song.songName}</td>
-        <td>${song.artistName}</td>
-        <td>${song.album || ''}</td>
-        <td>${song.releaseYear}</td>
-      `;
+                songs.forEach((song, index) => {
+                    const row = document.createElement('tr');
+                    row.id = `songRow${index}`;
+                    row.innerHTML = `
+            <td>
+              <button class="songplayButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
+            </td>
+            <td>${song.songName}</td>
+            <td>${song.artistName}</td>
+            <td>${song.album || ''}</td>
+            <td>${song.releaseYear}</td>
+          `;
 
-                songList.appendChild(row);
+                    songList.appendChild(row);
+                });
+
                 updateButtonStates();
             })
             .catch((error) => {
                 console.error('Error:', error);
-
-                if (error.message === 'Failed to upload the song') {
-                    displayErrorMessages(error.response);
-                } else {
-                    displayErrorMessages({ duplicate: 'Failed to upload the song.' });
-                }
+                displayErrorMessages({ listError: 'Failed to retrieve the song list.' });
             });
-    });
-
-    fetch('/all')
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Failed to retrieve the song list');
-            }
-            return response.json();
-        })
-        .then((data) => {
-            songs = data;
-
-            songs.forEach((song, index) => {
-                const row = document.createElement('tr');
-                row.id = `songRow${index}`;
-                row.innerHTML = `
-        <td>
-          <button class="songplayButton" onclick="playSongByIndex(${index})"><i class="fas fa-play"></i></button>
-        </td>
-        <td>${song.songName}</td>
-        <td>${song.artistName}</td>
-        <td>${song.album || ''}</td>
-        <td>${song.releaseYear}</td>
-      `;
-
-                songList.appendChild(row);
-            });
-
-            updateButtonStates();
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            displayErrorMessages({ listError: 'Failed to retrieve the song list.' });
-        });
-</script>
-</body>
-</html>
+    </script>
+    </body>
+    </html>

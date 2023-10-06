@@ -1,7 +1,7 @@
 package Rift.Radio.SongService;
 
-import Rift.Radio.Error.MP3FileExistsException;
-import Rift.Radio.Error.SongNameExistsException;
+import Rift.Radio.Error.FileExistsException;
+import Rift.Radio.Error.FileNameExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
 import Rift.Radio.Service.SongService;
@@ -97,7 +97,7 @@ public class SongServiceIntegrationTest extends Tests {
         when(songRepository.existsByFilePath(anyString())).thenReturn(true);
 
         // Perform the upload and assert the exception
-        assertThrows(MP3FileExistsException.class, () -> {
+        assertThrows(FileExistsException.class, () -> {
             songService.uploadSong(file, SONG_BACK_IN_THE_SADDLE.getSongName(), SONG_BACK_IN_THE_SADDLE.getArtistName(),SONG_BACK_IN_THE_SADDLE.getAlbum(),
                     SONG_BACK_IN_THE_SADDLE.getReleaseYear(),SONG_BACK_IN_THE_SADDLE.getGenre());
         });
@@ -117,7 +117,7 @@ public class SongServiceIntegrationTest extends Tests {
         when(songRepository.existsBySongName(anyString())).thenReturn(true);
 
         // Perform the upload and assert the exception
-        assertThrows(SongNameExistsException.class, () -> {
+        assertThrows(FileNameExistsException.class, () -> {
             songService.uploadSong(file, SONG_SHOT_IN_THE_DARK.getSongName(), SONG_SHOT_IN_THE_DARK.getArtistName(), SONG_SHOT_IN_THE_DARK.getAlbum(),
                     SONG_SHOT_IN_THE_DARK.getReleaseYear(), SONG_SHOT_IN_THE_DARK.getGenre());
         });

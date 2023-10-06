@@ -2,7 +2,7 @@ package Rift.Radio.SongService;
 
 
 import Rift.Radio.Error.NotFoundException;
-import Rift.Radio.Error.SongNameExistsException;
+import Rift.Radio.Error.FileNameExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
 import Rift.Radio.Service.SongService;
@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;
@@ -95,7 +94,7 @@ public class SongServiceUnitTest extends Tests {
         when(songRepository.existsBySongName(any())).thenReturn(true);
 
         // Perform assertion for expected exception
-        assertThrows(SongNameExistsException.class,
+        assertThrows(FileNameExistsException.class,
                 () -> songService.uploadSong(file, "Shot in the dark", "AC DC", "Power Up", 2020, "Klassisk rock"));
 
         // Verify mock interactions

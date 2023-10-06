@@ -1,10 +1,10 @@
 package Rift.Radio.Service;
 
-import Rift.Radio.Error.MP3FileExistsException;
+import Rift.Radio.Error.FileExistsException;
 import Rift.Radio.Error.NotFoundException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Repository.SongRepository;
-import Rift.Radio.Error.SongNameExistsException;
+import Rift.Radio.Error.FileNameExistsException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -43,12 +43,12 @@ public class SongService {
      * @param releaseYear The release year of the song.
      * @param genre       The genre of the song.
      * @return The newly uploaded song entity.
-     * @throws SongNameExistsException If the song name already exists in the repository.
+     * @throws FileNameExistsException If the song name already exists in the repository.
      */
     public Song uploadSong(MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
         // Check if song name already exists
         if (songRepository.existsBySongName(songName)) {
-            throw new SongNameExistsException("Song name already exists");
+            throw new FileNameExistsException("Song name already exists");
         }
 
         try {
@@ -59,7 +59,7 @@ public class SongService {
             String filePath = storagePath + fileName;
             // Check if MP3 file already exists
             if (songRepository.existsByFilePath(filePath)) {
-                throw new MP3FileExistsException("MP3 file already uploaded");
+                throw new FileExistsException("MP3 file already uploaded");
             }
 
             file.transferTo(new File(filePath));
@@ -195,7 +195,7 @@ public class SongService {
      * @param releaseYear The new release year of the song.
      * @param genre       The new genre of the song.
      * @return The updated song entity.
-     * @throws SongNameExistsException If the updated song name already exists in the repository.
+     * @throws FileNameExistsException If the updated song name already exists in the repository.
      * @throws NotFoundException     If the song with the given ID is not found.
      */
     public Song editSong(Long id, MultipartFile file, String songName, String artistName, String album, int releaseYear, String genre) {
@@ -206,7 +206,7 @@ public class SongService {
 
             // Check if song name already exists
             if (songRepository.existsBySongNameAndIdNot(songName, id)) {
-                throw new SongNameExistsException("Song name already exists");
+                throw new FileNameExistsException("Song name already exists");
             }
 
             // Delete the current MP3 file if a new one is uploaded
@@ -225,7 +225,7 @@ public class SongService {
 
                 // Check if MP3 file already exists
                 if (songRepository.existsByFilePath(filePath)) {
-                    throw new MP3FileExistsException("MP3 file already uploaded");
+                    throw new FileExistsException("MP3 file already uploaded");
                 }
 
                 try {

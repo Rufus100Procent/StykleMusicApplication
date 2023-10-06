@@ -2,62 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>My Favorite Movies</title>
     <style>
-        body {
-            background-color: #222;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        h1 {
-            margin: 0;
-        }
-
-        button {
-            background-color: #007acc;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #00598c;
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .movie {
-            max-width: 200px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #444;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .movie img {
-            max-width: 100%;
-            height: auto;
-        }
+        /* Your existing CSS styles here */
     </style>
 </head>
 <body>
@@ -68,48 +15,90 @@
     <a href="/TV-Shows">TV-Shows</a>
     <a href="/">About</a>
 </div>
-<h1>Development undergoing</h1>
+<h1>My Favorite Movies</h1>
 
 <header>
-    <h1>My Favorite Movies</h1>
-    <button id="addMovieBtn"><i class="fas fa-plus"></i> Add Movies</button>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;" multiple>
+    <button id="addMovieBtn"><i class="fas fa-plus"></i> Add Movie</button>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
 </header>
+
+<div id="movieForm" style="display: none;">
+    <h2>Add a Movie</h2>
+    <form id="uploadMovieForm" enctype="multipart/form-data">
+        <label for="movieName">Movie Name:</label>
+        <input type="text" id="movieName" name="movieName" required><br>
+
+        <label for="producer">Producer:</label>
+        <input type="text" id="producer" name="producer" required><br>
+
+        <label for="releaseYear">Release Year:</label>
+        <input type="number" id="releaseYear" name="releaseYear" required><br>
+
+        <label for="movieImage">Select Movie Image:</label>
+        <input type="file" id="movieImage" name="movieImage" accept="image/*" required><br>
+
+        <button type="submit">Upload Movie</button>
+    </form>
+</div>
+
 <div id="movieContainer" class="container">
     <!-- Movie images will be displayed here -->
 </div>
-<a href="/songs">Songs</a>
+
 <script>
     const addMovieBtn = document.getElementById('addMovieBtn');
     const fileInput = document.getElementById('fileInput');
+    const movieForm = document.getElementById('movieForm');
+    const uploadMovieForm = document.getElementById('uploadMovieForm');
     const movieContainer = document.getElementById('movieContainer');
 
-    // Array to store selected files
-    const selectedFiles = [];
-
     addMovieBtn.addEventListener('click', () => {
-        fileInput.click();
+        movieForm.style.display = 'block';
     });
 
     fileInput.addEventListener('change', (e) => {
-        const files = e.target.files;
-        if (files.length > 0) {
-            // Loop through selected files and create img elements
-            for (const file of files) {
+        // Handle file selection and display as you did before
+    });
+
+    uploadMovieForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(uploadMovieForm);
+
+        try {
+            const response = await fetch('/movies', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const movieData = await response.json();
+
+                // Save movie data to localStorage
+                localStorage.setItem('movieName', movieData.movieName);
+                localStorage.setItem('producer', movieData.producer);
+                localStorage.setItem('releaseYear', movieData.releaseYear);
+
+                // Display the movie image on the page
                 const movieDiv = document.createElement('div');
                 movieDiv.classList.add('movie');
+
                 const movieImage = document.createElement('img');
-                movieImage.src = URL.createObjectURL(file);
+                movieImage.src = movieData.imagePath;
                 movieDiv.appendChild(movieImage);
+
                 movieContainer.appendChild(movieDiv);
 
-                // Add the file to the selectedFiles array
-                selectedFiles.push(file);
+                // Hide the movie form
+                movieForm.style.display = 'none';
+            } else {
+                const errorMessage = await response.text();
+                alert(errorMessage);
             }
+        } catch (error) {
+            console.error('Error uploading movie:', error);
         }
     });
-    // You can now access the selected files in the selectedFiles array and save them as needed.
-    // For example, you can use the File API to upload them to a server or store them in a local database.
 </script>
 </body>
 </html>

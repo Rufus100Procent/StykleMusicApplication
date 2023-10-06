@@ -12,19 +12,22 @@ public class Movie {
     public int release_year;
     @Column(nullable = false)
 
-    public String movie_Name;
+    public String movieName;
+    @Column(nullable = false)
+
+    public String producer;
     @Column(nullable = false)
 
     public String imagePath;
 
-    public Movie(int release_year, String movie_Name, String imagePath) {
-        this.release_year = release_year;
-        this.movie_Name = movie_Name;
-        this.imagePath = imagePath;
+    public Movie() {
     }
 
-    public Movie() {
-
+    public Movie(int release_year, String movieName, String producer, String imagePath) {
+        this.release_year = release_year;
+        this.movieName = movieName;
+        this.producer = producer;
+        this.imagePath = imagePath;
     }
 
     public int getRelease_year() {
@@ -35,12 +38,20 @@ public class Movie {
         this.release_year = release_year;
     }
 
-    public String getMovie_Name() {
-        return movie_Name;
+    public String getMovieName() {
+        return movieName;
     }
 
-    public void setMovie_Name(String movie_Name) {
-        this.movie_Name = movie_Name;
+    public void setMovieName(String movieName) {
+        this.movieName = movieName;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
     }
 
     public String getImagePath() {

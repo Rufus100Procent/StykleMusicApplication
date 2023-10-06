@@ -1,9 +1,9 @@
 package Rift.Radio.API;
 
-import Rift.Radio.Error.MP3FileExistsException;
+import Rift.Radio.Error.FileExistsException;
 import Rift.Radio.Model.Song;
 import Rift.Radio.Service.SongService;
-import Rift.Radio.Error.SongNameExistsException;
+import Rift.Radio.Error.FileNameExistsException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +36,10 @@ public class SongController {
      *
      * @return The name of the view page "About".
      */
-    @GetMapping("/")
-    public String about() {
-        return "About";
-    }
+//    @GetMapping("/")
+//    public String about() {
+//        return "About";
+//    }
 
     /**
      * Endpoint for testing purposes.
@@ -81,8 +81,8 @@ public class SongController {
      * @param releaseYear The release year of the song.
      * @param genre       The genre of the song.
      * @return The response entity with the uploaded song entity if successful.
-     * @throws SongNameExistsException If the song name already exists in the repository.
-     * @throws MP3FileExistsException  If the MP3 file with the same path already exists in the repository.
+     * @throws FileNameExistsException If the song name already exists in the repository.
+     * @throws FileExistsException  If the MP3 file with the same path already exists in the repository.
      */
     @PostMapping("/upload")
     @ResponseBody
@@ -95,9 +95,9 @@ public class SongController {
         try {
             Song song = songService.uploadSong(file, songName, artistName, album, releaseYear, genre);
             return ResponseEntity.ok(song);
-        } catch (SongNameExistsException e) {
+        } catch (FileNameExistsException e) {
             return ResponseEntity.badRequest().body("Song name already exists");
-        } catch (MP3FileExistsException e) {
+        } catch (FileExistsException e) {
             return ResponseEntity.badRequest().body("MP3 file already uploaded");
         }
     }
@@ -159,8 +159,8 @@ public class SongController {
      * @param releaseYear The new release year of the song.
      * @param genre       The new genre of the song.
      * @return The response entity with the updated song entity if successful.
-     * @throws SongNameExistsException If the new song name already exists in the repository.
-     * @throws MP3FileExistsException  If the new MP3 file with the same path already exists in the repository.
+     * @throws FileNameExistsException If the new song name already exists in the repository.
+     * @throws FileExistsException  If the new MP3 file with the same path already exists in the repository.
      * @throws NotFoundException      If the song is not found.
      */
     @PutMapping("/{id}/edit")
@@ -175,9 +175,9 @@ public class SongController {
         try {
             Song updatedSong = songService.editSong(id, file, songName, artistName, album, releaseYear, genre);
             return ResponseEntity.ok(updatedSong);
-        } catch (SongNameExistsException e) {
+        } catch (FileNameExistsException e) {
             return ResponseEntity.badRequest().body("Song name already exists");
-        } catch (MP3FileExistsException e) {
+        } catch (FileExistsException e) {
             return ResponseEntity.badRequest().body("MP3 file already uploaded");
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
