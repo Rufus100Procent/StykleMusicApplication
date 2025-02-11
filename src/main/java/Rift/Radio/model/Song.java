@@ -1,10 +1,9 @@
 package Rift.Radio.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
+@SuppressWarnings("unused")
 public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

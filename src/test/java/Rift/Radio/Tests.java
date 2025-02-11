@@ -2,7 +2,6 @@ package Rift.Radio;
 
 import Rift.Radio.model.Song;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class Tests {
     public final static String FILE_DIRECTORY = "src/test/java/Rift/Radio/songMP3Test/";

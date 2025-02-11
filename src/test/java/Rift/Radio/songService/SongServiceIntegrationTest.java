@@ -1,7 +1,6 @@
 package Rift.Radio.songService;
 
-import Rift.Radio.error.MP3FileExistsException;
-import Rift.Radio.error.SongNameExistsException;
+import Rift.Radio.error.SongException;
 import Rift.Radio.model.Song;
 import Rift.Radio.repository.SongRepository;
 import Rift.Radio.service.SongService;
@@ -28,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+
 @SpringBootTest
 @TestPropertySource(locations = "classpath:test_local.properties")
 public class SongServiceIntegrationTest extends Tests {
@@ -40,7 +40,6 @@ public class SongServiceIntegrationTest extends Tests {
 
     @BeforeEach
     public void setup() {
-        // Mock the songRepository methods as needed
     }
 
     @Test
@@ -80,13 +79,11 @@ public class SongServiceIntegrationTest extends Tests {
         assertEquals(releaseYear, uploadedSong.getReleaseYear());
         assertEquals(genre, uploadedSong.getGenre());
 
-
         // Verify interactions
         verify(songRepository, times(1)).existsBySongName(anyString());
         verify(songRepository, times(1)).existsByFilePath(anyString());
         verify(songRepository, times(1)).save(any());
     }
-
 
     @Test
     public void testUploadSong_MP3FileExistsException() throws IOException {
@@ -97,10 +94,10 @@ public class SongServiceIntegrationTest extends Tests {
         when(songRepository.existsByFilePath(anyString())).thenReturn(true);
 
         // Perform the upload and assert the exception
-        assertThrows(MP3FileExistsException.class, () -> {
-            songService.uploadSong(file, SONG_BACK_IN_THE_SADDLE.getSongName(), SONG_BACK_IN_THE_SADDLE.getArtistName(),SONG_BACK_IN_THE_SADDLE.getAlbum(),
-                    SONG_BACK_IN_THE_SADDLE.getReleaseYear(),SONG_BACK_IN_THE_SADDLE.getGenre());
-        });
+        SongException ex = assertThrows(SongException.class, () -> songService.uploadSong(file, SONG_BACK_IN_THE_SADDLE.getSongName(),
+                SONG_BACK_IN_THE_SADDLE.getArtistName(), SONG_BACK_IN_THE_SADDLE.getAlbum(),
+                SONG_BACK_IN_THE_SADDLE.getReleaseYear(), SONG_BACK_IN_THE_SADDLE.getGenre()));
+        assertTrue(ex.getMessage().contains("MP3 file already uploaded"));
 
         // Verify interactions
         verify(songRepository, times(1)).existsBySongName(anyString());
@@ -113,21 +110,19 @@ public class SongServiceIntegrationTest extends Tests {
         // Prepare test data
         MultipartFile file = createMockMultipartFile(SONG_SHOT_IN_THE_DARK.getFilePath());
 
-
         when(songRepository.existsBySongName(anyString())).thenReturn(true);
 
         // Perform the upload and assert the exception
-        assertThrows(SongNameExistsException.class, () -> {
-            songService.uploadSong(file, SONG_SHOT_IN_THE_DARK.getSongName(), SONG_SHOT_IN_THE_DARK.getArtistName(), SONG_SHOT_IN_THE_DARK.getAlbum(),
-                    SONG_SHOT_IN_THE_DARK.getReleaseYear(), SONG_SHOT_IN_THE_DARK.getGenre());
-        });
+        SongException ex = assertThrows(SongException.class, () -> songService.uploadSong(file, SONG_SHOT_IN_THE_DARK.getSongName(),
+                SONG_SHOT_IN_THE_DARK.getArtistName(), SONG_SHOT_IN_THE_DARK.getAlbum(),
+                SONG_SHOT_IN_THE_DARK.getReleaseYear(), SONG_SHOT_IN_THE_DARK.getGenre()));
+        assertTrue(ex.getMessage().contains("Song name already exists"));
 
         // Verify interactions
         verify(songRepository, times(1)).existsBySongName(anyString());
         verify(songRepository, never()).existsByFilePath(anyString());
         verify(songRepository, never()).save(any());
     }
-
 
     @Test
     public void testDeleteSong_Success(@TempDir Path tempDir) throws IOException {
@@ -152,9 +147,9 @@ public class SongServiceIntegrationTest extends Tests {
         // Verify interactions
         verify(songRepository, times(1)).findById(EXISTING_SONG_ID);
         verify(songRepository, times(1)).delete(existingSong);
-        // Check that the MP3 file is not deleted
         verifyNoMoreInteractions(songRepository);
     }
+
     @Test
     public void testEditSong_Success(@TempDir Path tempDir) throws IOException {
         Long EXISTING_SONG_ID = 1L;
@@ -172,7 +167,6 @@ public class SongServiceIntegrationTest extends Tests {
         // Copy the test MP3 file to the temporary directory
         Files.copy(Paths.get(FILE_DIRECTORY, SHOT_IN_THE_DARK_MP3), tempDir.resolve("test_song.mp3"));
 
-        // Stub the songRepository.findById method
         when(songRepository.findById(EXISTING_SONG_ID)).thenReturn(Optional.of(existingSong));
 
         // Prepare the song object to be saved (with updated metadata)
@@ -189,10 +183,10 @@ public class SongServiceIntegrationTest extends Tests {
         ArgumentCaptor<Song> songCaptor = ArgumentCaptor.forClass(Song.class);
         when(songRepository.save(songCaptor.capture())).thenReturn(songToBeSaved);
 
-        // Perform the edit with no new file (replacing metadata only)
+        // Perform the edit with no new file (metadata update only)
         Song editedSong = songService.editSong(
                 EXISTING_SONG_ID,
-                null, // Pass null for no new file
+                null, // No new file provided
                 "Edited Song Name",
                 "Edited Artist",
                 "Edited Album",
@@ -212,20 +206,18 @@ public class SongServiceIntegrationTest extends Tests {
         verify(songRepository, times(1)).findById(EXISTING_SONG_ID);
         verify(songRepository, times(1)).save(any());
 
-        // Check that the MP3 file is not deleted during metadata edit
+        // Check that the MP3 file exists (not deleted during metadata edit)
         File mp3File = new File(existingSong.getFilePath());
         assertTrue(mp3File.exists());
 
-        // Additional verification to ensure that the MP3 file is not deleted
+        // Additional verification to ensure that the saved song file path exists
         File savedMp3File = new File(songCaptor.getValue().getFilePath());
         assertTrue(savedMp3File.exists());
     }
-
 
     private MultipartFile createMockMultipartFile(String filePath) throws IOException {
         File file = new File(filePath);
         byte[] content = Files.readAllBytes(file.toPath());
         return new MockMultipartFile("file", file.getName(), "audio/mpeg", content);
     }
-
 }
