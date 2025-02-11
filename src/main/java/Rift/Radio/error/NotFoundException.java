@@ -1,4 +1,4 @@
-package Rift.Radio.Error;
+package Rift.Radio.error;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException() {

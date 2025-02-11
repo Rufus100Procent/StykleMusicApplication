@@ -1,9 +1,9 @@
-package Rift.Radio.API;
+package Rift.Radio.api;
 
-import Rift.Radio.Error.MP3FileExistsException;
-import Rift.Radio.Model.Song;
-import Rift.Radio.Service.SongService;
-import Rift.Radio.Error.SongNameExistsException;
+import Rift.Radio.error.MP3FileExistsException;
+import Rift.Radio.model.Song;
+import Rift.Radio.service.SongService;
+import Rift.Radio.error.SongNameExistsException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

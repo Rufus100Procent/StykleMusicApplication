@@ -1,18 +1,17 @@
-package Rift.Radio.SongService;
+package Rift.Radio.songService;
 
 
-import Rift.Radio.Error.NotFoundException;
-import Rift.Radio.Error.SongNameExistsException;
-import Rift.Radio.Model.Song;
-import Rift.Radio.Repository.SongRepository;
-import Rift.Radio.Service.SongService;
+import Rift.Radio.error.NotFoundException;
+import Rift.Radio.error.SongNameExistsException;
+import Rift.Radio.model.Song;
+import Rift.Radio.repository.SongRepository;
+import Rift.Radio.service.SongService;
 import Rift.Radio.Tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;

@@ -1,10 +1,10 @@
-package Rift.Radio.SongService;
+package Rift.Radio.songService;
 
-import Rift.Radio.Error.MP3FileExistsException;
-import Rift.Radio.Error.SongNameExistsException;
-import Rift.Radio.Model.Song;
-import Rift.Radio.Repository.SongRepository;
-import Rift.Radio.Service.SongService;
+import Rift.Radio.error.MP3FileExistsException;
+import Rift.Radio.error.SongNameExistsException;
+import Rift.Radio.model.Song;
+import Rift.Radio.repository.SongRepository;
+import Rift.Radio.service.SongService;
 import Rift.Radio.Tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

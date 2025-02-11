@@ -1,4 +1,4 @@
-package Rift.Radio.Model;
+package Rift.Radio.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
