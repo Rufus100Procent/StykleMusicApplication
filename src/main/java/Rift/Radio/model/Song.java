@@ -2,6 +2,9 @@ package Rift.Radio.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @SuppressWarnings("unused")
 public class Song {
@@ -15,11 +18,20 @@ public class Song {
     private String artistName;
 
     private String album;
+
     private String genre;
+
     @Column(nullable = false)
     private int releaseYear;
+
     @Column(nullable = false)
     private String filePath;
+
+    @OneToOne(mappedBy = "song", cascade = CascadeType.ALL)
+    private LikedSong likedSong;
+
+    @ManyToMany(mappedBy = "songs")
+    private final Set<Playlist> playlists = new HashSet<>();
 
     public Song() {
     }
