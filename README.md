@@ -18,3 +18,8 @@ SOLO Project
 
 # Here is image of overall how the app is designed
 ![finalDesign](https://github.com/Rufus100Procent/MusicApplicationBetaTesting/assets/66412126/8a5ea5dc-6916-424e-b183-e6cb199ca2aa)
+
+# Up Comming version
+made in react
+
+![image](https://github.com/user-attachments/assets/a42b7685-03a2-4826-90f2-e1959561a97c)
