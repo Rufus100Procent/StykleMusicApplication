@@ -22,4 +22,4 @@ SOLO Project
 # Up Comming version
 made in react
 
-![image](https://github.com/user-attachments/assets/a42b7685-03a2-4826-90f2-e1959561a97c)
+![image](https://github.com/user-attachments/assets/ea385bf3-53c4-4744-82d9-0dd19e2a1197)
