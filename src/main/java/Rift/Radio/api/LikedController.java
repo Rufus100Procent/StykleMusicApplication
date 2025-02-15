@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v0/liked")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class LikedController {
 
     private final LikedService likedService;

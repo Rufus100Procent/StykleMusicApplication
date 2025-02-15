@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/v1/songs")
 public class SongController {
 
