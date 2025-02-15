@@ -18,6 +18,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
+@RequestMapping("/api/v1/songs")
 public class SongController {
 
     private final SongService songService;
@@ -27,12 +29,9 @@ public class SongController {
         this.songService = songService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> home() {
-        return ResponseEntity.ok("About");
-    }
 
-    @GetMapping("/all")
+
+    @GetMapping
     public ResponseEntity<?> getAllSongs(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "50") @Min(1) @Max(100) int pageSize) {
@@ -43,11 +42,6 @@ public class SongController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Internal server error");
         }
-    }
-
-    @GetMapping("/songs")
-    public ResponseEntity<?> songsView() {
-        return ResponseEntity.ok("musicApp");
     }
 
     @PostMapping("/upload")
