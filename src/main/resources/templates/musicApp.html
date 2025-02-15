@@ -725,7 +725,7 @@
 
     isFetching = true;
 
-    fetch(`/${song.id}/file`)
+    fetch(`/api/v1/songs/${song.id}/file`)
             .then((response) => {
               if (!response.ok) {
                 throw new Error('Failed to retrieve the song file');
@@ -822,7 +822,7 @@
     formData.append('releaseYear', releaseYear);
 
 
-    fetch('/upload', {
+    fetch('/api/v1/songs/upload', {
       method: 'POST',
       body: formData
     })
@@ -876,7 +876,7 @@
     // Show the custom prompt for confirmation
     showCustomPrompt("Are you sure you want to delete this song?", "Yes", (value) => {
       if (value.toLowerCase() === "yes") {
-        fetch(`/${songId}`, {
+        fetch(`/api/v1/songs/${songId}`, {
           method: "DELETE"
         })
                 .then((response) => {
@@ -943,7 +943,7 @@
             formData.append('genre', newGenre);
             formData.append('releaseYear', newReleaseYear);
 
-            fetch(`/${songId}/edit`, {
+            fetch(`/api/v1/songs/${songId}/edit`, {
               method: 'PUT',
               body: formData
             })
@@ -990,7 +990,7 @@
   };
 
   // Load the initial song list
-  fetch('/all')
+  fetch('/api/v1/songs')
           .then((response) => {
             if (!response.ok) {
               throw new Error('Failed to retrieve the song list');
@@ -1030,7 +1030,7 @@
             displayErrorMessages({ listError: 'Failed to retrieve the song list.' });
           });
   const downloadSong = (songId) => {
-    fetch(`/${songId}/download`)
+    fetch(`/api/v1/songs/${songId}/download`)
             .then((response) => {
               if (!response.ok) {
                 throw new Error('Failed to download the song');

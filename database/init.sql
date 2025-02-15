@@ -4,6 +4,7 @@ album TEXT,
 artist_name TEXT,
 file_path TEXT,
 release_year INT,
+liked BOOLEAN default false,
 song_name TEXT,
 genre TEXT
 );

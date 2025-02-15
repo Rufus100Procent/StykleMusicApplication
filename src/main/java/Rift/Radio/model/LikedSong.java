@@ -14,5 +14,19 @@ public class LikedSong {
     @JoinColumn(name = "song_id", unique = true, nullable = false)
     private Song song;
 
+    public Song getSong() {
+        return song;
+    }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSong(Song song) {
+        this.song = song;
+    }
 }

@@ -27,7 +27,10 @@ public class Song {
     @Column(nullable = false)
     private String filePath;
 
-    @OneToOne(mappedBy = "song", cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private boolean liked = false;
+
+    @OneToOne(mappedBy = "song", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private LikedSong likedSong;
 
     @ManyToMany(mappedBy = "songs")
@@ -104,6 +107,14 @@ public class Song {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     @Override
