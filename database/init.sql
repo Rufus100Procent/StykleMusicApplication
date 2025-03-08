@@ -4,7 +4,6 @@ album TEXT,
 artist_name TEXT,
 file_path TEXT,
 release_year INT,
-liked BOOLEAN default false,
 song_name TEXT,
 genre TEXT
 );
@@ -28,3 +27,21 @@ insert into public.song (id, album, artist_name, file_path, release_year, song_n
 insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (72, ' Cherry Pie', 'Warrant', 'src/main/resources/LocalStorage/MP3/Cherry Pie.mp3', 1990, 'Cherry Pie', 'Klassisk rock');
 insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (70, 'Out For Blood', 'Valley Of Wolves', 'src/main/resources/LocalStorage/MP3/Chosen One - Valley of Wolves (LYRICS).mp3', 2018, 'Chosen One', 'Blue/Rock');
 insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (71, 'Machine Head', 'Deep Purple', 'src/main/resources/LocalStorage/MP3/Deep Purple - Smoke on the Water (Audio).mp3', 1972, 'Smoke On the Water', 'Klassisk rock');
+
+
+
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (14, '', 'Chuck Berry', 'src/main/resources/LocalStorage/MP3/Sweet Little Sixteen.mp3', 1958, ' Sweet Little Sixteen', 'R&B/Soul, Pop, Rock, Blues');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (13, '', 'Chuck Berry', 'src/main/resources/LocalStorage/MP3/You Never Can Tell.mp3', 1964, ' You Never Can Tell ', 'Rock''n''roll, Rhythm and blues');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (7, 'In the Right Place', 'Dr. John', 'src/main/resources/LocalStorage/MP3/Dr. John - Right Place Wrong Time.mp3', 1973, 'Right place wrong time', ' R&B/Soul');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (6, 'Come on In', 'The Black Tornado, Thorbjørn Risager', 'src/main/resources/LocalStorage/MP3/Last Train.mp3', 2019, ' Last Train', 'Blues');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (4, 'I Be Trying', 'Cedric Burnside', 'src/main/resources/LocalStorage/MP3/Cedric Burnside - _Step In_ .mp3', 2021, 'Step In', 'Blues');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (5, 'Delta Kream', 'The Black Keys', 'src/main/resources/LocalStorage/MP3/The Black Keys - Crawling Kingsnake [Official Audio] [ ezmp3.cc ].mp3', 2021, ' Crawling Kingsnake', 'Blues');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (10, 'Aerosmith', 'Aerosmith', 'src/main/resources/LocalStorage/MP3/Aerosmith - Dream On (Audio) .mp3', 1973, ' Dream On', 'Rock');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (11, 'Alannah Myles', ' Alannah Myles', 'src/main/resources/LocalStorage/MP3/Alannah Myles Black Velvet.mp3', 1989, 'black velvet', 'Rock');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (3, 'Machine Head', 'Deep Purple', 'src/main/resources/LocalStorage/MP3/Deep Purple - Highway Star.mp3', 1972, 'highway star', 'Hard rock, Heavy metal, Metal, Rock');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (2, 'Black Holes', 'the blue stones', 'src/main/resources/LocalStorage/MP3/Rolling With the Punches.mp3', 2012, 'Rolling with Punches', 'Rock, Indie/Alternative');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (12, 'Stranger in Town', ' Bob Seger & The Silver Bullet Band', 'src/main/resources/LocalStorage/MP3/Old Time Rock & Roll.mp3', 1978, ' Old Time Rock & Roll', 'Rock');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (9, 'Iron Maiden: Flight 666', 'Iron Maiden', 'src/main/resources/LocalStorage/MP3/Iron Maiden - The Trooper (Remixed and Remastered) .mp3', 1983, ' The Trooper', 'Heavy metal, Metal');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (1, 'Tres Hombres', 'ZZ TOP', 'src/main/resources/LocalStorage/MP3/La Grange (2005 Remaster).mp3', 1973, 'La Grange - 2005 Remaster', 'Blue Rock / Rock');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (15, '', 'Chuck Berry', 'src/main/resources/LocalStorage/MP3/No Particular Place To Go .mp3', 1964, 'no particular place to go', 'Rock, Blues');
+insert into public.song (id, album, artist_name, file_path, release_year, song_name, genre) values (8, 'Woodstock', 'Låt av Portugal', 'src/main/resources/LocalStorage/MP3/Portugal. The Man - So Young.mp3', 2017, 'so young', ' Indierock, Indie/Alternativ');
