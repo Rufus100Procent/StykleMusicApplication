@@ -1,8 +1,8 @@
 package Rift.Radio.api;
 
-import Rift.Radio.model.LikedSong;
-import Rift.Radio.model.Song;
-import Rift.Radio.service.LikedService;
+import Rift.Radio.modal.LikedSong;
+import Rift.Radio.modal.Song;
+import Rift.Radio.service.LikedSongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/v0/liked")
 @CrossOrigin(origins = "http://localhost:5173")
-public class LikedController {
+public class LikedSongController {
 
-    private final LikedService likedService;
+    private final LikedSongService likedService;
 
     @Autowired
-    public LikedController(LikedService likedService) {
+    public LikedSongController(LikedSongService likedService) {
         this.likedService = likedService;
     }
 

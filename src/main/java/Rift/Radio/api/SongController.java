@@ -1,7 +1,7 @@
 package Rift.Radio.api;
 
 import Rift.Radio.error.SongException;
-import Rift.Radio.model.Song;
+import Rift.Radio.modal.Song;
 import Rift.Radio.service.SongService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

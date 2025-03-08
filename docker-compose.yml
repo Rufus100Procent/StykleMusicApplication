@@ -13,6 +13,15 @@ services:
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./database/data:/data/stykledb
+
+
+  #clamav:
+   # image: clamav/clamav:latest
+   # container_name: clamav-anti-virus-detector
+    #ports:
+     # - "3310:3310"
+
+
 #  jenkins:
 #    container_name: jenkins
 #    image: jenkins/jenkins:jdk17

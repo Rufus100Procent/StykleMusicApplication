@@ -1,10 +1,9 @@
-package Rift.Radio.songService;
+package Rift.Radio.service;
 
 
 import Rift.Radio.error.SongException;
-import Rift.Radio.model.Song;
+import Rift.Radio.modal.Song;
 import Rift.Radio.repository.SongRepository;
-import Rift.Radio.service.SongService;
 import Rift.Radio.Tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import jakarta.servlet.http.HttpServletResponse;
@@ -231,3 +230,4 @@ public class SongServiceUnitTest extends Tests {
         }
     }
 }
+

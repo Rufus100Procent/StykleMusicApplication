@@ -2,19 +2,20 @@ package Rift.Radio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @SpringBootApplication
-public class Main {
+public class Main  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Main.class, args);
 	}
 
 	@GetMapping("/")
-	public String home() {
+	public String h(){
 		return "musicApp";
 	}
 }

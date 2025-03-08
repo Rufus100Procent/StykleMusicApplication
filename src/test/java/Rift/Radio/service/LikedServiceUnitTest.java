@@ -1,11 +1,10 @@
-package Rift.Radio.songService;
+package Rift.Radio.service;
 
 import Rift.Radio.error.LikedException;
-import Rift.Radio.model.LikedSong;
-import Rift.Radio.model.Song;
-import Rift.Radio.repository.LikedRepository;
+import Rift.Radio.modal.LikedSong;
+import Rift.Radio.modal.Song;
+import Rift.Radio.repository.LikedSongRepository;
 import Rift.Radio.repository.SongRepository;
-import Rift.Radio.service.LikedService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,13 +24,13 @@ import static org.mockito.Mockito.*;
 public class LikedServiceUnitTest {
 
     @Mock
-    private LikedRepository likedRepository;
+    private LikedSongRepository likedRepository;
 
     @Mock
     private SongRepository songRepository;
 
     @InjectMocks
-    private LikedService likedService;
+    private LikedSongService likedService;
 
     private Song testSong;
     private LikedSong testLikedSong;

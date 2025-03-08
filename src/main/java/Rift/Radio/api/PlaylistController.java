@@ -1,8 +1,8 @@
 package Rift.Radio.api;
 
 import Rift.Radio.error.PlaylistException;
-import Rift.Radio.model.Playlist;
-import Rift.Radio.model.Song;
+import Rift.Radio.modal.Playlist;
+import Rift.Radio.modal.Song;
 import Rift.Radio.service.PlaylistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v0/playlists")

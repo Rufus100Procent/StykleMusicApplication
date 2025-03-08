@@ -1,11 +1,10 @@
-package Rift.Radio.songService;
+package Rift.Radio.service;
 
 import Rift.Radio.error.PlaylistException;
-import Rift.Radio.model.Playlist;
-import Rift.Radio.model.Song;
+import Rift.Radio.modal.Playlist;
+import Rift.Radio.modal.Song;
 import Rift.Radio.repository.PlaylistRepository;
 import Rift.Radio.repository.SongRepository;
-import Rift.Radio.service.PlaylistService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

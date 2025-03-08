@@ -2,9 +2,9 @@ package Rift.Radio.service;
 
 import Rift.Radio.error.ErrorType;
 import Rift.Radio.error.LikedException;
-import Rift.Radio.model.LikedSong;
-import Rift.Radio.model.Song;
-import Rift.Radio.repository.LikedRepository;
+import Rift.Radio.modal.LikedSong;
+import Rift.Radio.modal.Song;
+import Rift.Radio.repository.LikedSongRepository;
 import Rift.Radio.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class LikedService {
+public class LikedSongService {
 
-    private final LikedRepository likedRepository;
+    private final LikedSongRepository likedRepository;
     private final SongRepository songRepository;
 
     @Autowired
-    public LikedService(LikedRepository likedRepository, SongRepository songRepository) {
+    public LikedSongService(LikedSongRepository likedRepository, SongRepository songRepository) {
         this.likedRepository = likedRepository;
         this.songRepository = songRepository;
     }

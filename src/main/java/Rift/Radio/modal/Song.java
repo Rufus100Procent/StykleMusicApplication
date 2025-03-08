@@ -1,9 +1,10 @@
-package Rift.Radio.model;
+package Rift.Radio.modal;
 
 import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 
 @Entity
 @SuppressWarnings("unused")
@@ -27,8 +28,8 @@ public class Song {
     @Column(nullable = false)
     private String filePath;
 
-    @Column(nullable = false)
-    private boolean liked = false;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean liked;
 
     @OneToOne(mappedBy = "song", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private LikedSong likedSong;
@@ -55,6 +56,26 @@ public class Song {
         this.genre = genre;
         this.releaseYear = releaseYear;
         this.filePath = filePath;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public LikedSong getLikedSong() {
+        return likedSong;
+    }
+
+    public void setLikedSong(LikedSong likedSong) {
+        this.likedSong = likedSong;
+    }
+
+    public Set<Playlist> getPlaylists() {
+        return playlists;
     }
 
     public void setId(Long id) {
@@ -107,14 +128,6 @@ public class Song {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
     }
 
     @Override

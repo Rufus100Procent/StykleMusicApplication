@@ -1,9 +1,8 @@
-package Rift.Radio.songService;
+package Rift.Radio.service;
 
 import Rift.Radio.error.SongException;
-import Rift.Radio.model.Song;
+import Rift.Radio.modal.Song;
 import Rift.Radio.repository.SongRepository;
-import Rift.Radio.service.SongService;
 import Rift.Radio.Tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

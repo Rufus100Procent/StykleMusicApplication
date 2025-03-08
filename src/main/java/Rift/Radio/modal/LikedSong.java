@@ -1,6 +1,7 @@
-package Rift.Radio.model;
+package Rift.Radio.modal;
 
 import jakarta.persistence.*;
+
 
 @Entity
 @SuppressWarnings("unused")
@@ -14,8 +15,18 @@ public class LikedSong {
     @JoinColumn(name = "song_id", unique = true, nullable = false)
     private Song song;
 
+    public LikedSong() {}
+
+    public LikedSong(Song song) {
+        this.song = song;
+    }
+
     public Song getSong() {
         return song;
+    }
+
+    public void setSong(Song song) {
+        this.song = song;
     }
 
     public Long getId() {
@@ -24,9 +35,5 @@ public class LikedSong {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setSong(Song song) {
-        this.song = song;
     }
 }

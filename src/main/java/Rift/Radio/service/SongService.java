@@ -1,7 +1,8 @@
 package Rift.Radio.service;
 
-import Rift.Radio.error.*;
-import Rift.Radio.model.Song;
+import Rift.Radio.error.ErrorType;
+import Rift.Radio.error.SongException;
+import Rift.Radio.modal.Song;
 import Rift.Radio.repository.SongRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -22,6 +23,8 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class SongService {
@@ -270,3 +273,4 @@ public class SongService {
     }
 
 }
+
