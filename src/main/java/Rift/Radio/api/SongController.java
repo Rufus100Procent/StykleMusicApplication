@@ -50,7 +50,7 @@ public class SongController {
             @RequestParam("songName") @NotBlank String songName,
             @RequestParam("artistName") @NotBlank String artistName,
             @RequestParam("album") String album,
-            @RequestParam("releaseYear") @Min(1800) @Max(2023) int releaseYear,
+            @RequestParam("releaseYear") @Min(1800) @Max(2025) int releaseYear,
             @RequestParam("genre") String genre) {
         try {
             Song song = songService.uploadSong(file, songName, artistName, album, releaseYear, genre);

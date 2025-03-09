@@ -1,5 +1,6 @@
 package Rift.Radio.modal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 
@@ -13,6 +14,7 @@ public class LikedSong {
 
     @OneToOne
     @JoinColumn(name = "song_id", unique = true, nullable = false)
+    @JsonBackReference
     private Song song;
 
     public LikedSong() {}

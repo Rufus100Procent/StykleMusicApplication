@@ -1,6 +1,8 @@
 package Rift.Radio.modal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +37,7 @@ public class Song {
     private LikedSong likedSong;
 
     @ManyToMany(mappedBy = "songs")
+    @JsonBackReference
     private final Set<Playlist> playlists = new HashSet<>();
 
     public Song() {
@@ -45,9 +48,6 @@ public class Song {
 
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public Song(String songName, String artistName, String album, String genre, int releaseYear, String filePath) {
         this.songName = songName;
@@ -58,24 +58,8 @@ public class Song {
         this.filePath = filePath;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    public LikedSong getLikedSong() {
-        return likedSong;
-    }
-
-    public void setLikedSong(LikedSong likedSong) {
-        this.likedSong = likedSong;
-    }
-
-    public Set<Playlist> getPlaylists() {
-        return playlists;
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
@@ -128,6 +112,26 @@ public class Song {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public LikedSong getLikedSong() {
+        return likedSong;
+    }
+
+    public void setLikedSong(LikedSong likedSong) {
+        this.likedSong = likedSong;
+    }
+
+    public Set<Playlist> getPlaylists() {
+        return playlists;
     }
 
     @Override

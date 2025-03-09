@@ -47,13 +47,22 @@ public class SongService {
             throw new SongException(ErrorType.Duplicated_SONG, "Song name already exists");
         }
 
-        try {
+        validateFile(file);
 
-            validateFile(file);
-            String fileName = StringUtils.cleanPath(
-                    StringUtils.hasText(file.getOriginalFilename()) ? file.getOriginalFilename() : "untitled.mp3");
-            String storagePath = "src/main/resources/LocalStorage/MP3/";
-            String filePath = storagePath + fileName;
+        try {
+            Path resourceDirectory = Paths.get(System.getProperty("user.dir"),
+                    "src", "main", "resources", "localstorage", "mp3");
+            File storageDir = resourceDirectory.toFile();
+            if (!storageDir.exists() && !storageDir.mkdirs()) {
+                log.error("Failed to create storage directory at '{}'", storageDir.getAbsolutePath());
+                throw new SongException(ErrorType.FILE_STORAGE_ERROR, "Could not create storage directory");
+            }
+
+            String cleanName = StringUtils.hasText(file.getOriginalFilename())
+                    ? file.getOriginalFilename() : "untitled.mp3";
+            String fileName = StringUtils.cleanPath(cleanName);
+            String filePath = resourceDirectory.resolve(fileName).toString();
+
             if (songRepository.existsByFilePath(filePath)) {
                 log.error("Upload aborted – file already exists at '{}'", filePath);
                 throw new SongException(ErrorType.MP3_ALREADY_EXIST, "MP3 file already uploaded");
@@ -61,6 +70,7 @@ public class SongService {
 
             log.debug("Transferring file to '{}'", filePath);
             file.transferTo(new File(filePath));
+
             Song song = new Song();
             song.setSongName(songName);
             song.setArtistName(artistName);
@@ -68,12 +78,13 @@ public class SongService {
             song.setReleaseYear(releaseYear);
             song.setGenre(genre);
             song.setFilePath(filePath);
+
             Song savedSong = songRepository.save(song);
             log.info("Upload successful – song '{}' saved", savedSong.getSongName());
             return savedSong;
 
         } catch (IOException e) {
-            log.error("Upload error for song '{}': {}", songName, e.getMessage(), e);
+            log.error("Upload error for '{}': {}", songName, e.getMessage());
             throw new SongException(ErrorType.FILE_NOT_FOUND, "Failed to upload the song", e);
         }
     }

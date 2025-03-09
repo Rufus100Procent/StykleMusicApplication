@@ -1,5 +1,6 @@
 package Rift.Radio.modal;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -25,6 +26,7 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
+    @JsonManagedReference
     private Set<Song> songs = new HashSet<>();
 
     public String getDescription() {
